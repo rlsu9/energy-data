@@ -10,6 +10,6 @@ We're starting with US electricity data from various ISOs, e.g. CAISO, MISO, PJM
 
 ## data sources:
 We are starting with US ISOs, which currently include:
-- MISO, which only has current data and is updated every five minutes.
+- [MISO](./crawler/parsers/US_MISO.py), which only has current data and is updated every five minutes.
 - (TODO) CAISO, which has both current day and historic data.
 - (TODO) PJM, which only has current day data publicly available.
