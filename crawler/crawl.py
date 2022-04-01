@@ -2,6 +2,7 @@
 
 from datetime import datetime, timedelta
 import parsers.US_MISO
+import parsers.US_PJM
 from dateutil import tz, parser
 import psycopg2, psycopg2.extras
 
@@ -11,6 +12,11 @@ map_regions = {
         'timeZone': tz.gettz('America/New_York'),
         'fetchFn': parsers.US_MISO.fetch_production,
     },
+    'US-PJM': {
+        'updateFrequency': timedelta(minutes=30),
+        'timeZone': tz.gettz('America/New_York'),
+        'fetchFn': parsers.US_PJM.fetch_production,
+    }
 }
 
 def getdbconn(host='/var/run/postgresql/', database="electricity-data"):
