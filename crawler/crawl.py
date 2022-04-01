@@ -3,6 +3,7 @@
 from datetime import datetime, timedelta
 import parsers.US_MISO
 import parsers.US_PJM
+import parsers.US_CA
 from dateutil import tz, parser
 import psycopg2, psycopg2.extras
 
@@ -11,12 +12,20 @@ map_regions = {
         'updateFrequency': timedelta(minutes=3),
         'timeZone': tz.gettz('America/New_York'),
         'fetchFn': parsers.US_MISO.fetch_production,
+        'fetchResultIsList': False
     },
     'US-PJM': {
         'updateFrequency': timedelta(minutes=30),
         'timeZone': tz.gettz('America/New_York'),
         'fetchFn': parsers.US_PJM.fetch_production,
-    }
+        'fetchResultIsList': False
+    },
+    'US-CA': {
+        'updateFrequency': timedelta(days=1),
+        'timeZone': tz.gettz('America/Los_Angeles'),
+        'fetchFn': parsers.US_CA.fetch_production,
+        'fetchResultIsList': True
+    },
 }
 
 def getdbconn(host='/var/run/postgresql/', database="electricity-data"):
@@ -50,19 +59,21 @@ def set_last_updated(conn, region, run_timestamp):
 
 def fetch_new_data(region):
     fetchFn = map_regions[region]['fetchFn']
+    l_result = []
     try:
-        data = fetchFn()
+        l_data = fetchFn() if map_regions[region]['fetchResultIsList'] else [fetchFn()]
+    except Exception as e:
+        print("Failed to execute query.")
+        raise e
+    for data in l_data:
         timestamp = data['datetime']
         print('time:', timestamp)
         d_power_mw_by_category = data['production']
         for category in d_power_mw_by_category:
             power_mw = d_power_mw_by_category[category]
-            print('category: %s, power_mw: %f' % (category, power_mw))
-        pass
-    except Exception as e:
-        print("Failed to execute query.")
-        raise e
-    return (timestamp, d_power_mw_by_category)
+            print('\tcategory: %s, power_mw: %f' % (category, power_mw))
+        l_result.append((timestamp, d_power_mw_by_category))
+    return l_result
 
 def upload_new_data(conn, region, timestamp, d_power_mw_by_category):
     rows = []
@@ -81,8 +92,9 @@ def upload_new_data(conn, region, timestamp, d_power_mw_by_category):
         raise e
 
 def fetchandupdate(conn, region, run_timestamp):
-    (timestamp, d_power_mw_by_category) = fetch_new_data(region)
-    upload_new_data(conn, region, timestamp, d_power_mw_by_category)
+    l_result = fetch_new_data(region)
+    for (timestamp, d_power_mw_by_category) in l_result:
+        upload_new_data(conn, region, timestamp, d_power_mw_by_category)
     set_last_updated(conn, region, run_timestamp)
 
 def crawlall():
