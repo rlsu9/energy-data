@@ -1,0 +1,4 @@
+CREATE TABLE LastUpdated(
+    Region VARCHAR(32) NOT NULL PRIMARY KEY,
+    LastUpdated TIMESTAMP NOT NULL
+)
