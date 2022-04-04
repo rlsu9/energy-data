@@ -8,6 +8,6 @@ fi
 dbname="$1"
 dumpfile="$2"
 
-set -x
+# set -x
 pg_dump $dbname | gzip -c > "$dumpfile"
 

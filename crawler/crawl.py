@@ -98,6 +98,7 @@ def fetchandupdate(conn, region, run_timestamp):
     set_last_updated(conn, region, run_timestamp)
 
 def crawlall():
+    print("Electricity data crawler running at", str(datetime.now()))
     conn = getdbconn()
     for region in map_regions:
         last_updated = get_last_updated(conn, region)
