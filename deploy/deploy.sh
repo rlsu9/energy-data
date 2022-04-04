@@ -10,7 +10,7 @@ echo "Deployment folder: \"$ROOTDIR\""
 
 
 echo "Copying files to deployment folder  ..."
-rsync -auhvzP --delete --exclude '.git' --exclude '__pycache__' ./ $ROOTDIR
+rsync -auhvzP --delete --exclude '.git' --exclude '__pycache__' --exclude 'logs' ./ $ROOTDIR
 
 
 echo "Installing cron schedule ..."
