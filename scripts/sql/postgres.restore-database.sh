@@ -10,5 +10,3 @@ dumpfile="$2"
 
 set -x
 cat "$dumpfile" | gunzip | psql --set ON_ERROR_STOP=on $dbname
-pg_dump $dbname | gzip -c > "$dumpfile"
-
