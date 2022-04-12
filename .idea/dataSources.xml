@@ -1,7 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="electricity-data@localhost" uuid="3131d41b-9555-443b-b27f-5937f637ebe9">
+    <data-source source="LOCAL" name="electricity-data@yeti-02" uuid="3131d41b-9555-443b-b27f-5937f637ebe9">
+      <driver-ref>postgresql</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.postgresql.Driver</jdbc-driver>
+      <jdbc-url>jdbc:postgresql://localhost:5432/electricity-data</jdbc-url>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
+    <data-source source="LOCAL" name="electricity-data@yeti-09" uuid="3c3e7c23-9784-44c7-b841-0922d5e7b9a7">
       <driver-ref>postgresql</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.postgresql.Driver</jdbc-driver>
