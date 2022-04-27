@@ -1,0 +1,1 @@
+CREATE ROLE xxx LOGIN PASSWORD 'yyy';
