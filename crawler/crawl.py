@@ -5,6 +5,7 @@ import parsers.US_MISO
 import parsers.US_PJM
 import parsers.US_CA
 import parsers.US_NEISO
+import parsers.US_BPA
 from dateutil import tz, parser
 import psycopg2, psycopg2.extras
 
@@ -31,6 +32,12 @@ map_regions = {
         'updateFrequency': timedelta(days=1),
         'timeZone': tz.gettz('America/New_York'),
         'fetchFn': parsers.US_NEISO.fetch_production,
+        'fetchResultIsList': True
+    },
+    'US-BPA': {
+        'updateFrequency': timedelta(days=1),
+        'timeZone': tz.gettz('America/Los_Angeles'),
+        'fetchFn': parsers.US_BPA.fetch_production,
         'fetchResultIsList': True
     },
 }
