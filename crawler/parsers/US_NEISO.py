@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+# Source: https://github.com/electricitymap/electricitymap-contrib/blob/master/parsers/US_BPA.py
 
 """Real time parser for the New England ISO (NEISO) area."""
 from datetime import datetime, date, timedelta
