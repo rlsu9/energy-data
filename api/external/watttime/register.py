@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+# Source: https://www.watttime.org/api-documentation/#register-new-user
+
 import requests
 from util import get_username_password
 

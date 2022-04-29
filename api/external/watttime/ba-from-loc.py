@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+# Source: https://www.watttime.org/api-documentation/#determine-grid-region
+
 import requests
 from requests.auth import HTTPBasicAuth
 import argparse

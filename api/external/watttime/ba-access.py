@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+# Source: https://www.watttime.org/api-documentation/#list-of-grid-regions
+
 import requests
 from util import get_watttime_token
 

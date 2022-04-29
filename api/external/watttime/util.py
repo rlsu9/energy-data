@@ -13,6 +13,8 @@ def get_username_password():
     password = parser['auth']['password']
     return (username, password)
 
+# Source: https://www.watttime.org/api-documentation/#login-amp-obtain-token
+
 def get_watttime_token():
     login_url = 'https://api2.watttime.org/v2/login'
     (username, password) = get_username_password()
