@@ -7,6 +7,7 @@ import parsers.US_CA
 import parsers.US_NEISO
 import parsers.US_BPA
 import parsers.US_NY
+import parsers.US_SPP
 from dateutil import tz, parser
 import arrow
 import psycopg2, psycopg2.extras
@@ -53,6 +54,14 @@ map_regions = {
         'fetchFn': parsers.US_NY.fetch_production,
         'fetchResultIsList': True,
         'fetchCurrentData': False
+    },
+    'US-SPP': {
+        # Realtime source is updated every 2 hours, but pulling more frequently to avoid missing data
+        'updateFrequency': timedelta(hours=1),
+        'timeZone': tz.gettz('Etc/GMT'),
+        'fetchFn': parsers.US_SPP.fetch_production,
+        'fetchResultIsList': True,
+        'fetchCurrentData': True
     },
 }
 
