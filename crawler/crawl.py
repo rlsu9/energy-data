@@ -8,6 +8,7 @@ import parsers.US_NEISO
 import parsers.US_BPA
 import parsers.US_NY
 import parsers.US_SPP
+import parsers.US_PREPA
 from dateutil import tz, parser
 import arrow
 import psycopg2, psycopg2.extras
@@ -61,6 +62,15 @@ map_regions = {
         'timeZone': tz.gettz('Etc/GMT'),
         'fetchFn': parsers.US_SPP.fetch_production,
         'fetchResultIsList': True,
+        'fetchCurrentData': True
+    },
+    'US-PR': {
+        # The source parser seems to indicate that this gets updated twice per hour, around :10 and :40,
+        #   and it's better to avoid these times.
+        'updateFrequency': timedelta(minutes=30),
+        'timeZone': tz.gettz('America/Puerto_Rico'),
+        'fetchFn': parsers.US_PREPA.fetch_production,
+        'fetchResultIsList': False,
         'fetchCurrentData': True
     },
 }
