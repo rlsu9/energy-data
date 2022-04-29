@@ -17,42 +17,42 @@ map_regions = {
         'timeZone': tz.gettz('America/New_York'),
         'fetchFn': parsers.US_MISO.fetch_production,
         'fetchResultIsList': False,
-        'currentDataOnly': True
+        'fetchCurrentData': True
     },
     'US-PJM': {
         'updateFrequency': timedelta(minutes=30),
         'timeZone': tz.gettz('America/New_York'),
         'fetchFn': parsers.US_PJM.fetch_production,
         'fetchResultIsList': False,
-        'currentDataOnly': True
+        'fetchCurrentData': True
     },
     'US-CA': {
         'updateFrequency': timedelta(days=1),
         'timeZone': tz.gettz('America/Los_Angeles'),
         'fetchFn': parsers.US_CA.fetch_production,
         'fetchResultIsList': True,
-        'currentDataOnly': False
+        'fetchCurrentData': False
     },
     'US-NEISO': {
         'updateFrequency': timedelta(days=1),
         'timeZone': tz.gettz('America/New_York'),
         'fetchFn': parsers.US_NEISO.fetch_production,
         'fetchResultIsList': True,
-        'currentDataOnly': False
+        'fetchCurrentData': False
     },
     'US-BPA': {
         'updateFrequency': timedelta(days=1),
         'timeZone': tz.gettz('America/Los_Angeles'),
         'fetchFn': parsers.US_BPA.fetch_production,
         'fetchResultIsList': True,
-        'currentDataOnly': True
+        'fetchCurrentData': True
     },
     'US-NY': {
         'updateFrequency': timedelta(days=1),
         'timeZone': tz.gettz('America/New_York'),
         'fetchFn': parsers.US_NY.fetch_production,
         'fetchResultIsList': True,
-        'currentDataOnly': False
+        'fetchCurrentData': False
     },
 }
 
@@ -88,9 +88,13 @@ def set_last_updated(conn, region, run_timestamp):
 def fetch_new_data(region):
     fetchFn = map_regions[region]['fetchFn']
     l_result = []
-    target_datetime = None
-    if map_regions[region]['updateFrequency'] >= timedelta(days=1) and not map_regions[region]['currentDataOnly']:
-        target_datetime = arrow.get(arrow.now().shift(days=-1).date(), map_regions[region]['timeZone'])
+    if map_regions[region]['fetchCurrentData']:
+        target_datetime = None
+    else:
+        if map_regions[region]['updateFrequency'] >= timedelta(days=1):
+            target_datetime = arrow.get(arrow.now().shift(days=-1).date(), map_regions[region]['timeZone'])
+        else:
+            raise NotImplementedError("Need to specify the target datatime for historic data")
     print('Target datetime:', target_datetime)
     try:
         l_data = fetchFn(target_datetime=target_datetime)
