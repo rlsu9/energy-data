@@ -6,6 +6,7 @@ import parsers.US_PJM
 import parsers.US_CA
 import parsers.US_NEISO
 import parsers.US_BPA
+import parsers.US_NY
 from dateutil import tz, parser
 import arrow
 import psycopg2, psycopg2.extras
@@ -45,6 +46,13 @@ map_regions = {
         'fetchFn': parsers.US_BPA.fetch_production,
         'fetchResultIsList': True,
         'currentDataOnly': True
+    },
+    'US-NY': {
+        'updateFrequency': timedelta(days=1),
+        'timeZone': tz.gettz('America/New_York'),
+        'fetchFn': parsers.US_NY.fetch_production,
+        'fetchResultIsList': True,
+        'currentDataOnly': False
     },
 }
 
