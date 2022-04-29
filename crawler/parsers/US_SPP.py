@@ -11,6 +11,8 @@ from pandas.tseries.offsets import DateOffset
 import datetime
 import pandas as pd
 import requests
+import urllib3
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 HISTORIC_GENERATION_BASE_URL = 'https://marketplace.spp.org/file-browser-api/download/generation-mix-historical?path=%2F'
 
