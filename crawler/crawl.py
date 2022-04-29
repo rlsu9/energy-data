@@ -7,6 +7,7 @@ import parsers.US_CA
 import parsers.US_NEISO
 import parsers.US_BPA
 from dateutil import tz, parser
+import arrow
 import psycopg2, psycopg2.extras
 
 map_regions = {
@@ -14,31 +15,36 @@ map_regions = {
         'updateFrequency': timedelta(minutes=3),
         'timeZone': tz.gettz('America/New_York'),
         'fetchFn': parsers.US_MISO.fetch_production,
-        'fetchResultIsList': False
+        'fetchResultIsList': False,
+        'currentDataOnly': True
     },
     'US-PJM': {
         'updateFrequency': timedelta(minutes=30),
         'timeZone': tz.gettz('America/New_York'),
         'fetchFn': parsers.US_PJM.fetch_production,
-        'fetchResultIsList': False
+        'fetchResultIsList': False,
+        'currentDataOnly': True
     },
     'US-CA': {
         'updateFrequency': timedelta(days=1),
         'timeZone': tz.gettz('America/Los_Angeles'),
         'fetchFn': parsers.US_CA.fetch_production,
-        'fetchResultIsList': True
+        'fetchResultIsList': True,
+        'currentDataOnly': False
     },
     'US-NEISO': {
         'updateFrequency': timedelta(days=1),
         'timeZone': tz.gettz('America/New_York'),
         'fetchFn': parsers.US_NEISO.fetch_production,
-        'fetchResultIsList': True
+        'fetchResultIsList': True,
+        'currentDataOnly': False
     },
     'US-BPA': {
         'updateFrequency': timedelta(days=1),
         'timeZone': tz.gettz('America/Los_Angeles'),
         'fetchFn': parsers.US_BPA.fetch_production,
-        'fetchResultIsList': True
+        'fetchResultIsList': True,
+        'currentDataOnly': True
     },
 }
 
@@ -74,8 +80,14 @@ def set_last_updated(conn, region, run_timestamp):
 def fetch_new_data(region):
     fetchFn = map_regions[region]['fetchFn']
     l_result = []
+    target_datetime = None
+    if map_regions[region]['updateFrequency'] >= timedelta(days=1) and not map_regions[region]['currentDataOnly']:
+        target_datetime = arrow.get(arrow.now().shift(days=-1).date(), map_regions[region]['timeZone'])
+    print('Target datetime:', target_datetime)
     try:
-        l_data = fetchFn() if map_regions[region]['fetchResultIsList'] else [fetchFn()]
+        l_data = fetchFn(target_datetime=target_datetime)
+        if not map_regions[region]['fetchResultIsList']:
+            l_data = [l_data]
     except Exception as e:
         print("Failed to execute query.")
         raise e

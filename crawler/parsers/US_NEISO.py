@@ -44,7 +44,7 @@ def get_json_data(target_datetime, params, session=None):
     target_datetime = arrow.get(target_datetime) if target_datetime else arrow.get()
     target_ne = target_datetime.to('America/New_York')
     target_ne_day = target_ne.format('MM/DD/YYYY')
-    print(target_ne_day)
+    # print(target_ne_day)
 
     postdata = {
         '_nstmp_formDate': epoch_time,
@@ -117,7 +117,7 @@ def production_data_processer(raw_data, logger) -> list:
 
     return sorted(clean_data)
 
-def fetch_production(zone_key='US-NEISO', session=None, target_datetime=datetime.now() + timedelta(days=-1), logger=logging.getLogger(__name__)) -> list:
+def fetch_production(zone_key='US-NEISO', session=None, target_datetime=None, logger=logging.getLogger(__name__)) -> list:
     """Requests the last known production mix (in MW) of a given country."""
 
     postdata = {

@@ -14,10 +14,11 @@ import logging
 # CAISO_PROXY = 'https://us-ca-proxy-jfnx5klx2a-uw.a.run.app'
 # FUEL_SOURCE_CSV = f'{CAISO_PROXY}/outlook/SP/fuelsource.csv'
 
-def fetch_production(zone_key='US-CA', session=None, target_datetime=datetime.now() + timedelta(days=-1),
+def fetch_production(zone_key='US-CA', session=None, target_datetime=None,
                      logger: logging.Logger = logging.getLogger(__name__)) -> list:
     """Requests the last known production mix (in MW) of a given country."""
-    target_datetime = arrow.get(target_datetime)
+    target_datetime = arrow.get(target_datetime) if target_datetime else arrow.get()
+    target_datetime = target_datetime.to('US/Pacific')
     target_date = target_datetime.strftime('%Y%m%d')
 
     # Get the production from the CSV
