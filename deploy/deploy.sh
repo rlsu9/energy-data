@@ -14,6 +14,7 @@ rsync -auhvzP --delete \
     --exclude '__pycache__' \
     --filter='+ /crawler/' \
     --filter='+ /deploy/' \
+    --filter='+ /scripts/' \
     --filter='- /*' \
     ./ $ROOTDIR
 
