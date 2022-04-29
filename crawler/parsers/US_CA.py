@@ -45,7 +45,7 @@ def fetch_production(zone_key='US-CA', session=None, target_datetime=None,
     daily_data = []
     for i in range(0, latest_index + 1):
         h, m = map(int, csv['Time'][i].split(':'))
-        date = arrow.utcnow().to('US/Pacific').replace(hour=h, minute=m,
+        date = target_datetime.replace(hour=h, minute=m,
                                                        second=0, microsecond=0)
         data = {
             'zoneKey': zone_key,
