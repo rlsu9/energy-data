@@ -4,6 +4,7 @@ from datetime import datetime, timedelta
 import parsers.US_MISO
 import parsers.US_PJM
 import parsers.US_CA
+import parsers.US_NEISO
 from dateutil import tz, parser
 import psycopg2, psycopg2.extras
 
@@ -24,6 +25,12 @@ map_regions = {
         'updateFrequency': timedelta(days=1),
         'timeZone': tz.gettz('America/Los_Angeles'),
         'fetchFn': parsers.US_CA.fetch_production,
+        'fetchResultIsList': True
+    },
+    'US-NEISO': {
+        'updateFrequency': timedelta(days=1),
+        'timeZone': tz.gettz('America/New_York'),
+        'fetchFn': parsers.US_NEISO.fetch_production,
         'fetchResultIsList': True
     },
 }
