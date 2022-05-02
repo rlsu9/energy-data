@@ -64,15 +64,16 @@ map_regions = {
         'fetchResultIsList': True,
         'fetchCurrentData': True
     },
-    'US-PR': {
-        # The source parser seems to indicate that this gets updated twice per hour, around :10 and :40,
-        #   and it's better to avoid these times.
-        'updateFrequency': timedelta(minutes=30),
-        'timeZone': tz.gettz('America/Puerto_Rico'),
-        'fetchFn': parsers.US_PREPA.fetch_production,
-        'fetchResultIsList': False,
-        'fetchCurrentData': True
-    },
+    # Disable Puerto Rico for now, as the data seems stale after 03/24/2022
+    # 'US-PR': {
+    #     # The source parser seems to indicate that this gets updated twice per hour, around :10 and :40,
+    #     #   and it's better to avoid these times.
+    #     'updateFrequency': timedelta(minutes=30),
+    #     'timeZone': tz.gettz('America/Puerto_Rico'),
+    #     'fetchFn': parsers.US_PREPA.fetch_production,
+    #     'fetchResultIsList': False,
+    #     'fetchCurrentData': True
+    # },
 }
 
 def getdbconn(host='/var/run/postgresql/', database="electricity-data"):
