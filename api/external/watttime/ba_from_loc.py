@@ -7,7 +7,7 @@ import argparse
 from util import get_watttime_token
 
 # Get the balancing authority based on GPS location
-def get_ba_from_loc(latitude, longitude):
+def get_ba_from_loc(latitude: float, longitude: float):
     region_url = 'https://api2.watttime.org/v2/ba-from-loc'
     headers = {'Authorization': 'Bearer {}'.format(get_watttime_token())}
     params = {'latitude': latitude, 'longitude': longitude}

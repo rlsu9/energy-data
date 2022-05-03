@@ -6,7 +6,7 @@ import requests
 from util import get_watttime_token
 import argparse
 
-def get_accessible_regions(all_regions):
+def get_accessible_regions(all_regions: bool):
     list_url = 'https://api2.watttime.org/v2/ba-access'
     headers = {'Authorization': 'Bearer {}'.format(get_watttime_token())}
     params = {'all': str(all_regions).lower()}
