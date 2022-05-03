@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import sys
 from datetime import datetime, timedelta
 import parsers.US_MISO
 import parsers.US_PJM
@@ -155,17 +156,24 @@ def fetchandupdate(conn, region, run_timestamp):
         upload_new_data(conn, region, timestamp, d_power_mw_by_category)
     set_last_updated(conn, region, run_timestamp)
 
+def crawl_region(conn, region):
+    last_updated = get_last_updated(conn, region)
+    run_timestamp = datetime.now()
+    delta_since_last_update = run_timestamp - last_updated
+    print("region: %s, last updated: %s (%.0f min ago)" % (region, str(last_updated), delta_since_last_update.total_seconds() / 60))
+    if delta_since_last_update < map_regions[region]['updateFrequency']:
+        return
+    fetchandupdate(conn, region, run_timestamp)
+
 def crawlall():
     print("Electricity data crawler running at", str(datetime.now()))
     conn = getdbconn()
     for region in map_regions:
-        last_updated = get_last_updated(conn, region)
-        run_timestamp = datetime.now()
-        delta_since_last_update = run_timestamp - last_updated
-        print("region: %s, last updated: %s (%.0f min ago)" % (region, str(last_updated), delta_since_last_update.total_seconds() / 60))
-        if delta_since_last_update < map_regions[region]['updateFrequency']:
-            continue
-        fetchandupdate(conn, region, run_timestamp)
+        try:
+            crawl_region(conn, region)
+        except Exception as e:
+            print("Exception occurred while crawling region %s" % region, file=sys.stderr)
+            print(e, file=sys.stderr)
 
 if __name__ == '__main__':
     crawlall()
