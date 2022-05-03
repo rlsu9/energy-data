@@ -15,8 +15,7 @@ def get_ba_from_loc(latitude: float, longitude: float):
     headers = {'Authorization': 'Bearer {}'.format(get_watttime_token())}
     params = {'latitude': latitude, 'longitude': longitude}
     response = requests.get(region_url, headers=headers, params=params)
-    assert 200 <= response.status_code < 300, "Request failed %d" % response.status_code
-    return response.json()
+    return (response.json(), response.status_code)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -30,4 +29,6 @@ if __name__ == '__main__':
         latitude = float(loc_array[0])
         longitude = float(loc_array[1])
         loc = (latitude, longitude)
-    print(get_ba_from_loc(loc[0], loc[1]))
+    (response, status_code) = get_ba_from_loc(loc[0], loc[1])
+    assert 200 <= status_code < 300, "Request failed %d: %s" % (status_code, response)
+    print(response)

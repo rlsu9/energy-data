@@ -18,8 +18,9 @@ def register():
         'org': ''
     }
     response = requests.post(register_url, json=params)
-    assert 200 <= response.status_code < 300, "Request failed %d" % response.status_code
-    return response.json()
+    return (response.json(), response.status_code)
 
 if __name__ == '__main__':
-    print(register())
+    (response, status_code) = register()
+    assert 200 <= status_code < 300, "Request failed %d: %s" % (status_code, response)
+    print(response)

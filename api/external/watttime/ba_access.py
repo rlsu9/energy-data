@@ -14,12 +14,13 @@ def get_accessible_regions(all_regions: bool):
     headers = {'Authorization': 'Bearer {}'.format(get_watttime_token())}
     params = {'all': str(all_regions).lower()}
     response = requests.get(list_url, headers=headers, params=params)
-    assert 200 <= response.status_code < 300, "Request failed %d" % response.status_code
-    return response.json()
+    return (response.json(), response.status_code)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--all-regions', action='store_true', help='Get all regions')
     args = parser.parse_args()
 
-    print(get_accessible_regions(args.all_regions))
+    (response, status_code) = get_accessible_regions(args.all_regions)
+    assert 200 <= status_code < 300, "Request failed %d: %s" % (status_code, response)
+    print(response)
