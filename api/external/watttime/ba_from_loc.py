@@ -16,7 +16,7 @@ def get_ba_from_loc(latitude: float, longitude: float):
     params = {'latitude': latitude, 'longitude': longitude}
     response = requests.get(region_url, headers=headers, params=params)
     assert 200 <= response.status_code < 300, "Request failed %d" % response.status_code
-    return response.text
+    return response.json()
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()

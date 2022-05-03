@@ -19,7 +19,7 @@ def register():
     }
     response = requests.post(register_url, json=params)
     assert 200 <= response.status_code < 300, "Request failed %d" % response.status_code
-    return response.text
+    return response.json()
 
 if __name__ == '__main__':
     print(register())
