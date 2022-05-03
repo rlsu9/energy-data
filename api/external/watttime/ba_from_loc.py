@@ -4,7 +4,10 @@
 
 import requests
 import argparse
-from util import get_watttime_token
+if __package__:
+    from . util import get_watttime_token
+else:
+    from util import get_watttime_token
 
 # Get the balancing authority based on GPS location
 def get_ba_from_loc(latitude: float, longitude: float):

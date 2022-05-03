@@ -3,8 +3,11 @@
 # Source: https://www.watttime.org/api-documentation/#list-of-grid-regions
 
 import requests
-from util import get_watttime_token
 import argparse
+if __package__:
+    from . util import get_watttime_token
+else:
+    from util import get_watttime_token
 
 def get_accessible_regions(all_regions: bool):
     list_url = 'https://api2.watttime.org/v2/ba-access'
