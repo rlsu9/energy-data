@@ -24,7 +24,7 @@ TODOs:
 
 ## Deployment
 Deployment scripts are in [deploy](./deploy).
-The main script ([deploy.sh](./deploy/deploy.sh)) copies the entire source tree to a "production" folder and installs the `run-*.sh` files with appropriate schedules via `crontab`.
+The crawler deployment script ([deploy-crawler.sh](./deploy/deploy-crawler.sh)) copies the entire source tree to a "production" folder and installs the `run-*.sh` files with appropriate schedules via `crontab`.
 Currently, we run:
 - [Database backup](./deploy/run-backup.sh) once per day.
 - [Main crawler](./deploy/run-crawler.sh) once every minute.
