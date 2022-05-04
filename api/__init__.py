@@ -3,11 +3,13 @@
 from flask import Flask
 from flask_restful import Api
 import webargs
+import secrets
 
-from resources.balancing_authority import BalancingAuthority
+from .resources.balancing_authority import BalancingAuthority
 
 
 app = Flask(__name__)
+app.config['SECRET_KEY'] = secrets.token_hex()
 api = Api(app)
 
 api.add_resource(BalancingAuthority, '/balancing-authority/')

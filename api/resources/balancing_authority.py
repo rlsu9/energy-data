@@ -4,7 +4,7 @@ from flask_restful import Resource
 from webargs import fields
 from webargs.flaskparser import use_kwargs
 
-from external.watttime.ba_from_loc import get_ba_from_loc
+from ..external.watttime.ba_from_loc import get_ba_from_loc
 
 balancing_authority_args = {
     'latitude': fields.Float(required=True, validate=lambda x: abs(x) <= 90.),
