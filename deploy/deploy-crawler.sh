@@ -6,7 +6,7 @@ set -e
 # set -x
 
 ROOTDIR=/c3lab-migration/prod/electricity-data-crawler
-echo "Deployment folder: \"$ROOTDIR\""
+echo "Deploying cralwer to: \"$ROOTDIR\""
 
 
 echo "Copying files to deployment folder  ..."
