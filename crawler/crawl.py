@@ -75,6 +75,7 @@ map_regions = {
     #     'fetchResultIsList': False,
     #     'fetchCurrentData': True
     # },
+    # HI data is also disabled for now due to stale data after 04/13/2022
 }
 
 def getdbconn(host='/var/run/postgresql/', database="electricity-data"):
