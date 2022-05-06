@@ -15,6 +15,8 @@ rsync -auhvzP --delete \
     --filter='+ /crawler/' \
     --filter='+ /deploy/' \
     --filter='+ /scripts/' \
+    --filter='+ /scripts/sql/' \
+    --filter='- /scripts/*' \
     --filter='- /*' \
     ./ $ROOTDIR
 git describe --all --long --dirty > $ROOTDIR/git-version.txt
