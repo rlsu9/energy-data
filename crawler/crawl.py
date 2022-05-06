@@ -9,6 +9,7 @@ import parsers.US_NEISO
 import parsers.US_BPA
 import parsers.US_NY
 import parsers.US_SPP
+import parsers.US_ERCOT
 import parsers.US_PREPA
 from dateutil import tz, parser
 import arrow
@@ -64,6 +65,14 @@ map_regions = {
         'fetchFn': parsers.US_SPP.fetch_production,
         'fetchResultIsList': True,
         'fetchCurrentData': True
+    },
+    'US-ERCOT': {
+        # Realtime source is updated every 2 hours, but pulling more frequently to avoid missing data
+        'updateFrequency': timedelta(days=1),
+        'timeZone': tz.gettz('America/Chicago'),
+        'fetchFn': parsers.US_ERCOT.fetch_production,
+        'fetchResultIsList': True,
+        'fetchCurrentData': False
     },
     # Disable Puerto Rico for now, as the data seems stale after 03/24/2022
     # 'US-PR': {
