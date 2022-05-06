@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import sys
+import traceback
 from datetime import datetime, timedelta
 import parsers.US_MISO
 import parsers.US_PJM
@@ -184,6 +185,7 @@ def crawlall():
         except Exception as e:
             print("Exception occurred while crawling region %s" % region, file=sys.stderr)
             print(e, file=sys.stderr)
+            print(traceback.format_exc())
 
 if __name__ == '__main__':
     crawlall()
