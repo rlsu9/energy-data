@@ -17,6 +17,7 @@ rsync -auhvzP --delete \
     --filter='+ /scripts/' \
     --filter='- /*' \
     ./ $ROOTDIR
+git describe --all --long --dirty > $ROOTDIR/git-version.txt
 
 
 echo "Installing cron schedule ..."

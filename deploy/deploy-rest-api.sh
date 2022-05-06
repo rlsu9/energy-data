@@ -27,6 +27,7 @@ rsync -auhvzP \
     --filter='- /deploy/*' \
     --filter='- /*' \
     ./ "$PROD_DIR"
+git describe --all --long --dirty > $PROD_DIR/git-version.txt
 
 
 echo "Reloading flask app via supervisor ..."
