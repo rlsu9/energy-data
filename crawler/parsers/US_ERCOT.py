@@ -2,99 +2,95 @@
 
 # Copyright (c) 2022 C3-Lab (c3lab.net)
 
-from dateutil import parser, tz
+from dateutil import tz
 from logging import getLogger
 import requests
-import re, sys, arrow
+import sys, arrow
 from datetime import datetime
+from .util_eia import get_eia_api_key
 
-# Source: https://www.eia.gov/electricity/gridmonitor/dashboard/electric_overview/balancing_authority/ERCO
-#   electricity generation by energy sources
-# This has about 1 week worth of data, in hour granularity
-EIA_JSON_URL = "https://www.eia.gov/electricity/930-api/export/data/json"
+EIA_TEXAS_SERIES_BASE_URL = 'https://api.eia.gov/series/?'
 
-GENERATION_MAPPING = {
-    'Wind': 'wind',
-    'Hydro': 'hydro',
-    'Fossil/Biomass': 'biomass',
-    'Nuclear': 'nuclear',
-    'VER': 'wind/solar',
+EIA_SERIES_ID_MAPPING = {
+    'coal': 'EBA.TEX-ALL.NG.COL.HL',
+    'hydro': 'EBA.TEX-ALL.NG.WAT.HL',
+    'gas': 'EBA.TEX-ALL.NG.NG.HL',
+    'nuclear': 'EBA.TEX-ALL.NG.NUC.HL',
+    'other': 'EBA.TEX-ALL.NG.OTH.HL',
+    'solar': 'EBA.TEX-ALL.NG.SUN.HL',
+    'wind': 'EBA.TEX-ALL.NG.WND.HL',
 }
 
-def get_data_json(url, session=None):
+def parse_eia_timestamp(timestamp_str):
+    # It can be in either hourly format or second-format: e.g. '20220506T00-05' and '2022-05-06T09:49:21-0400'.
+    l_transform_parseformat = [
+        ('%s00', '%Y%m%dT%H%z'),
+        ('%s', '%Y-%m-%dT%H:%M:%S%z'),
+    ]
+    for (transform, parseformat) in l_transform_parseformat:
+        try:
+            return arrow.get(datetime.strptime(transform % timestamp_str, parseformat))
+        except:
+            pass
+    raise ValueError('Cannot parse timestamp "%s"' % timestamp_str)
+
+def convert_to_eia_timestamp(timestamp):
+    # EIA API requires a two-digit timezone offset after hours, but %z in strftime() return four digits
+    return timestamp.strftime('%Y%m%dT%H%z')[:-2]
+
+def get_data_json(series_id, start_date, end_date, session=None):
     s = session or requests.Session()
+    params = {
+        'api_key': get_eia_api_key(),
+        'series_id': series_id,
+        'start': convert_to_eia_timestamp(start_date),
+        'end': convert_to_eia_timestamp(end_date),
+    }
+    url = EIA_TEXAS_SERIES_BASE_URL + '&'.join(['%s=%s' % (k, v) for k, v in params.items()])
     response = s.post(url)
     assert response.ok, "Failed to retrieve data from %s: %s" % (url, response.text)
     return response.json()
 
-def convert_timestamp_str(timestamp_str: str):
-    """Convert raw timestmap string from EIA API to proper timestamp object."""
-    # timestamp_str: e.g. '4/28/2022 12 a.m. CDT'
-    '''
-    regex = re.compile(r'(\d+)/(\d+)/(\d+) (\d+) (a.m.|p.m.) CDT')
-    m = regex.match(timestamp_str)
-    assert m, "Failed to parse timestamp string \"%s\"" % timestamp_str
-    month = int(m.group(1))
-    day = int(m.group(2))
-    year = int(m.group(3))
-    hour = int(m.group(4))
-    am_or_pm = m.group(5)
-    if hour == 12:
-        hour = 0
-    if am_or_pm == 'p.m.':
-        hour += 12
-    return arrow.get(datetime(year, month, day, hour, tzinfo=tz.gettz('America/Chicago')))
-    '''
-    assert timestamp_str.endswith('CDT') or timestamp_str.endswith('CST'), \
-        "Timezone has changed, refusing to parse %s" % timestamp_str
-    if timestamp_str.endswith('CDT'):
-        timestamp_str = timestamp_str.removesuffix('CDT')
-    if timestamp_str.endswith('CST'):
-        timestamp_str = timestamp_str.removesuffix('CST')
-    timestamp_str = timestamp_str.replace('a.m.', 'am').replace('p.m.', 'pm').strip()
-    dt = datetime.strptime(timestamp_str, '%m/%d/%Y %I %p')
-    return arrow.get(dt, tzinfo=tz.gettz('America/Chicago'))
-
-def transform_data(raw_data):
-    """Change raw JSON to a list of (timestamp, {fuel-source: power_in_mw}) entries."""
-    data_by_timestamp = {}
-    # raw_data['title']: 'Electric Reliability Council of Texas, Inc. (ERCO) electricity generation by energy source 4/28/2022 – 5/5/2022, Central Time'
-    for series in raw_data['series']:
-        fuel_source_raw = series['name']
-        if fuel_source_raw in GENERATION_MAPPING:
-            fuel_source = GENERATION_MAPPING[fuel_source_raw]
-        else:
-            print("Unknow fuel source %s" % fuel_source_raw, file=sys.stderr)
-            fuel_source = 'unknown'
-        for data in series['data']:
-            # E.g. {'Timestamp (Hour Ending)': '4/28/2022 12 a.m. CDT', 'value': 22103}
-            timestamp_str = data['Timestamp (Hour Ending)']
-            timestamp = convert_timestamp_str(timestamp_str)
-            power_in_mw = data['value']
-            if timestamp not in data_by_timestamp:
-                data_by_timestamp[timestamp] = {}
-            data_by_timestamp[timestamp][fuel_source] = power_in_mw
-    return [(timestamp, d_power_by_fuel_source) for timestamp, d_power_by_fuel_source in data_by_timestamp]
-
 def fetch_production(zone_key = 'US-ERCOT', session=None, target_datetime=None, logger=getLogger(__name__)) -> dict:
     """Requests the last known production mix (in MW) of a given zone."""
-    if target_datetime is not None:
-        raise NotImplementedError('This parser is not yet able to parse past dates')
+    target_datetime = arrow.get(target_datetime) if target_datetime else arrow.get()
+    target_datetime = target_datetime.to('America/Chicago')
+    target_date = arrow.get(target_datetime.date(), tzinfo=tz.gettz('America/Chicago'))
+    request_start = target_date
+    request_end = target_date.shift(days=1)
 
-    # Note: This unfortunately doesn't work and we need to load the data directly from downloaded JSON file.
-    raw_data = get_data_json(EIA_JSON_URL)
-    print(raw_data)
-    processed_data = transform_data(raw_data)
+    production_by_timestamp = {}
+    for fuel_source, series_id in EIA_SERIES_ID_MAPPING.items():
+        response = get_data_json(series_id, request_start, request_end)
+        # print(response, file=sys.stderr)
+        assert len(response['series']) == 1, "Incorrect number of series returned"
+        response_series = response['series'][0]
+        assert response['request']['series_id'] == series_id == response_series['series_id']
+        assert response_series['units'] == 'megawatthours', 'Unit has changed from MW!'
+        response_start = parse_eia_timestamp(response_series['start'])
+        response_end = parse_eia_timestamp(response_series['end'])
+        response_updated = parse_eia_timestamp(response_series['updated'])
+        if request_start < response_start:
+            logger.warning("Requested start time is earlier than what's available")
+        if request_end > response_end:
+            logger.warning("Requested end time is later than what's available")
+        if response_updated < request_end:
+            logger.warning("Updated timestamp is less than end date, missing data is possible")
+        for (timestamp_str, power_in_mw) in response_series['data']:
+            timestamp = parse_eia_timestamp(timestamp_str)
+            if timestamp not in production_by_timestamp:
+                production_by_timestamp[timestamp] = {}
+            production_by_timestamp[timestamp][fuel_source] = power_in_mw
     data = []
-    for item in processed_data:
+    for timestamp, production in production_by_timestamp.items():
         datapoint = {'zoneKey': zone_key,
-                     'datetime': item[0],
-                     'production': item[1],
+                     'datetime': timestamp.datetime,
+                     'production': production,
                      'storage': {},
                      'source': 'eia.gov'}
-
         data.append(datapoint)
+    return data
 
 if __name__ == "__main__":
-    print('fetch_production() ->')
-    print(fetch_production())
+    print('fetch_production(target_datetime=arrow.get(tzinfo=tz.gettz("America/Chicago")).shift(days=-1)) ->')
+    print(fetch_production(target_datetime=arrow.get(tzinfo=tz.gettz("America/Chicago")).shift(days=-1)))
