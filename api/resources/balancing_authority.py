@@ -1,99 +1,20 @@
 #!/usr/bin/env python3
 
+import os, traceback
+from pathlib import Path
 from flask_restful import Resource
 from webargs import fields
 from webargs.flaskparser import use_kwargs
 import logging
+import yaml
 
 from ..external.watttime.ba_from_loc import get_ba_from_loc
+
+YAML_CONFIG = 'balancing_authority.yaml'
 
 balancing_authority_args = {
     'latitude': fields.Float(required=True, validate=lambda x: abs(x) <= 90.),
     'longitude': fields.Float(required=True, validate=lambda x: abs(x) <= 180.),
-}
-
-REVERSE_MAPPING_WATTTIME_BA = {
-    'US-CA': [
-        'CAISO_ESCONDIDO',
-        'CAISO_LONGBEACH',
-        'CAISO_NORTH',
-        'CAISO_PALMSPRINGS',
-        'CAISO_REDDING',
-        'CAISO_SANBERNARDINO',
-        'CAISO_SANDIEGO',
-    ],
-    'US-BPA': [
-        'BPA'
-    ],
-    'US-ERCOT': [
-        'ERCOT_AUSTIN',
-        'ERCOT_COAST',
-        'ERCOT_EASTTX',
-        'ERCOT_HIDALGO',
-        'ERCOT_NORTHCENTRAL',
-        'ERCOT_PANHANDLE',
-        'ERCOT_SANANTONIO',
-        'ERCOT_SECOAST',
-        'ERCOT_SOUTHTX',
-        'ERCOT_WESTTX',
-    ],
-    'US-MISO': [
-        'MISO_BEAUMONT',
-        'MISO_DETROIT',
-        'MISO_EAU_CLAIRE',
-        'MISO_GRAND_RAPIDS',
-        'MISO_INDIANAPOLIS',
-        'MISO_LAFAYETTE',
-        'MISO_LOWER_MS_RIVER',
-        'MISO_MADISON',
-        'MISO_MASON_CITY',
-        'MISO_MINNEAPOLIS',
-        'MISO_NEW_ORLEANS',
-        'MISO_N_DAKOTA',
-        'MISO_SAINT_LOUIS',
-        'MISO_SPRINGFIELD',
-        'MISO_UPPER_PENINSULA',
-        'MISO_WORTHINGTON',
-    ],
-    'US-NEISO': [
-        # None
-    ],
-    'US-NY': [
-        'NYISO_CAPITAL',
-        'NYISO_CENTRAL',
-        'NYISO_HUDSON',
-        'NYISO_LONG',
-        'NYISO_MOHAWK',
-        'NYISO_NORTH',
-        'NYISO_NYC',
-        'NYISO_WEST',
-    ],
-    'US-PJM': [
-        'PJM_CHICAGO',
-        'PJM_DC',
-        'PJM_EASTERN_KY',
-        'PJM_EASTERN_OH',
-        'PJM_NJ',
-        'PJM_ROANOKE',
-        'PJM_SOUTHWEST_OH',
-        'PJM_WESTERN_KY',
-    ],
-    'US-PR': [
-        # None
-    ],
-    'US-SPP': [
-        'SPP_FORTPECK',
-        'SPP_KANSAS',
-        'SPP_KC',
-        'SPP_MEMPHIS',
-        'SPP_ND',
-        'SPP_OKCTY',
-        'SPP_SIOUX',
-        'SPP_SPRINGFIELD',
-        'SPP_SWOK',
-        'SPP_TX',
-        'SPP_WESTNE',
-    ],
 }
 
 def get_mapping_wattime_ba_to_iso(reverse_mapping: dict):
@@ -105,7 +26,18 @@ def get_mapping_wattime_ba_to_iso(reverse_mapping: dict):
             lookup_table[watttime_ba] = iso
     return lookup_table
 
-MAPPING_WATTTIME_BA_TO_ISO = get_mapping_wattime_ba_to_iso(REVERSE_MAPPING_WATTTIME_BA)
+def load_map_iso_to_watttime_ba():
+    with open(os.path.join(Path(__file__).parent.absolute(), YAML_CONFIG), 'r') as f:
+        try:
+            yaml_data = yaml.safe_load(f)
+        except yaml.YAMLError as e:
+            logging.fatal('Failed to load ISO-to-WattTime-ba mapping')
+            logging.fatal(e)
+            logging.fatal(traceback.format_exc())
+    assert 'map_iso_to_watttime_ba' in yaml_data, 'map_iso_to_watttime_ba not found'
+    return yaml_data['map_iso_to_watttime_ba']
+
+MAPPING_WATTTIME_BA_TO_ISO = get_mapping_wattime_ba_to_iso(load_map_iso_to_watttime_ba())
 
 def convert_watttime_ba_abbrev(watttime_abbrev):
     if watttime_abbrev in MAPPING_WATTTIME_BA_TO_ISO:
