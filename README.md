@@ -17,6 +17,7 @@ We are starting with US ISOs, which currently include:
 - [SPP](./crawler/parsers/US_SPP.py), which only has current data for the past two hours, so we pull every hour.
 - [PR](./crawler/parsers/US_PREPA.py) (**disabled**), which only has current data, but is stale and always shows 03/24/2022, so it's disabled for now.
 - [HI](./crawler/parsers/US_HI.py) (**disabled**), which has daily historic data, but stopped after 04/13/2022, so it's disabled for now.
+- [ERCOT](./crawler/parsers/US_ERCOT.py), which uses the new data source from EIA, and has historic data. We plan to migrate other sources to EIA as well to standardize the data sources.
 
 You can find the exact list at the top of the main crawler file [crawl.py](./crawler/crawl.py).
 
