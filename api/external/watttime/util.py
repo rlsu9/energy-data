@@ -2,6 +2,7 @@
 
 import os
 import configparser
+from urllib import response
 import requests
 from requests.auth import HTTPBasicAuth
 
@@ -20,6 +21,8 @@ def get_username_password():
 def get_watttime_token():
     login_url = 'https://api2.watttime.org/v2/login'
     (username, password) = get_username_password()
-    token = requests.get(login_url, auth=HTTPBasicAuth(username, password)).json()['token']
+    response = requests.get(login_url, auth=HTTPBasicAuth(username, password))
+    assert response.ok, "Failed to get token (%d): %s" % (response.status_code, response.text)
+    token = response.json()['token']
     return token
 

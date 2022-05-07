@@ -14,9 +14,9 @@ balancing_authority_args = {
 class BalancingAuthority(Resource):
     @use_kwargs(balancing_authority_args, location='query')
     def get(self, latitude, longitude):
-        (watttime_response, watttime_status_code) = get_ba_from_loc(latitude, longitude)
+        watttime_response = get_ba_from_loc(latitude, longitude)
         return {
             'latitude': latitude,
             'longitude': longitude,
-            'balancing_authority': watttime_response
-        }, watttime_status_code
+            'balancing_authority': watttime_response.json()
+        }, watttime_response.status_code

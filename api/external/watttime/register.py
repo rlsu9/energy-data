@@ -17,10 +17,10 @@ def register():
         'email': 'c3lab@c3lab.net',
         'org': ''
     }
-    response = requests.post(register_url, json=params)
+    return requests.post(register_url, json=params)
     return (response.json(), response.status_code)
 
 if __name__ == '__main__':
-    (response, status_code) = register()
-    assert 200 <= status_code < 300, "Request failed %d: %s" % (status_code, response)
-    print(response)
+    response = register()
+    assert response.ok, "Request failed %d: %s" % (response.status_code, response.text)
+    print(response.json())
