@@ -55,6 +55,7 @@ def data_processor(df, logger) -> list:
     """
 
     # Remove leading whitespace in column headers.
+    df = df.dropna(thresh=2)
     df.columns = df.columns.str.strip()
     df = df.rename(columns={'Gas Self': 'Natural Gas Self'}) #Fix naming error which otherwise misclassifies Gas Self as Unknown
     #Some historical csvs split the production into 'Market' and 'Self',
