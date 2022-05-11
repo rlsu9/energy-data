@@ -18,6 +18,7 @@ rsync -auhvzP --delete \
     --filter='- /external/*' \
     --filter='+ /resources/' \
     --filter='+ /__init__.py' \
+    --filter='+ /util.py' \
     --filter='- /*' \
     ./api/ "$PROD_DIR/flask_app"
 rsync -auhvzP \

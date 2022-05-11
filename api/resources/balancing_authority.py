@@ -5,10 +5,12 @@ from pathlib import Path
 from flask_restful import Resource
 from webargs import fields
 from webargs.flaskparser import use_kwargs
-import logging
+from ..util import getLogger
 import yaml
 
 from ..external.watttime.ba_from_loc import get_ba_from_loc
+
+logger = getLogger()
 
 YAML_CONFIG = 'balancing_authority.yaml'
 
@@ -31,9 +33,9 @@ def load_map_iso_to_watttime_ba():
         try:
             yaml_data = yaml.safe_load(f)
         except yaml.YAMLError as e:
-            logging.fatal('Failed to load ISO-to-WattTime-ba mapping')
-            logging.fatal(e)
-            logging.fatal(traceback.format_exc())
+            logger.fatal('Failed to load ISO-to-WattTime-ba mapping')
+            logger.fatal(e)
+            logger.fatal(traceback.format_exc())
     assert 'map_iso_to_watttime_ba' in yaml_data, 'map_iso_to_watttime_ba not found'
     return yaml_data['map_iso_to_watttime_ba']
 
@@ -43,12 +45,13 @@ def convert_watttime_ba_abbrev(watttime_abbrev):
     if watttime_abbrev in MAPPING_WATTTIME_BA_TO_ISO:
         return MAPPING_WATTTIME_BA_TO_ISO[watttime_abbrev]
     else:
-        logging.warning('Unknown watttime abbrev "%s"' % watttime_abbrev)
+        logger.warning('Unknown watttime abbrev "%s"' % watttime_abbrev)
         return 'unknown:' + watttime_abbrev
 
 class BalancingAuthority(Resource):
     @use_kwargs(balancing_authority_args, location='query')
     def get(self, latitude, longitude):
+        logger.info("get(%f, %f)" % (latitude, longitude))
         watttime_response = get_ba_from_loc(latitude, longitude)
         watttime_json = watttime_response.json()
         response = {
@@ -58,6 +61,7 @@ class BalancingAuthority(Resource):
 
         if not watttime_response.ok:
             error = watttime_json['error'] if 'error' in watttime_json else 'Unknown error from WattTime API'
+            logger.warning('WattTime error: %s' % error)
             return response | { 'error': error }, watttime_response.status_code
 
         try:
@@ -65,8 +69,8 @@ class BalancingAuthority(Resource):
             watttime_name = watttime_json['name']
             watttime_id = watttime_json['id']
         except Exception as e:
-            logging.error('Response: %s' % watttime_json)
-            logging.error(f"Failed to parse watttime response: {e}")
+            logger.error('Response: %s' % watttime_json)
+            logger.error(f"Failed to parse watttime response: {e}")
             return {
                 'error': 'Failed to parse WattTime API response'
             }, 500

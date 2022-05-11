@@ -6,6 +6,7 @@ import webargs
 import secrets
 
 from .resources.balancing_authority import BalancingAuthority
+from .util import getLogger
 
 
 app = Flask(__name__)
@@ -29,3 +30,8 @@ def webargs_validation_handler(error, req, schema, *, error_status_code, error_h
 
 if __name__ == '__main__':
     app.run(debug=True)
+else:
+    # Source: https://trstringer.com/logging-flask-gunicorn-the-manageable-way/
+    gunicorn_logger = getLogger()
+    app.logger.handlers = gunicorn_logger.handlers
+    app.logger.setLevel(gunicorn_logger.level)
