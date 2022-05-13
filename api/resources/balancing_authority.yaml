@@ -1,7 +1,7 @@
 map_iso_to_watttime_ba:
   US-BPA:
   - BPA
-  US-CA:
+  US-CAISO:
   - CAISO_ESCONDIDO
   - CAISO_LONGBEACH
   - CAISO_NORTH

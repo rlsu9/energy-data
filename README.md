@@ -11,7 +11,7 @@ We're starting with US electricity data from various ISOs, e.g. CAISO, MISO, PJM
 ### Data sources
 We are starting with US ISOs, which currently include:
 - [MISO](./crawler/parsers/US_MISO.py), which only has current data and is updated every five minutes.
-- [CAISO](./crawler/parsers/US_CA.py), [NEISO](./crawler/parsers/US_NEISO.py) and [NY](./crawler/parsers/US_NY.py), which has data for past few days, so we pull last day's full data daily.
+- [CAISO](./crawler/parsers/US_CISO.py), [NEISO](./crawler/parsers/US_NEISO.py) and [NY](./crawler/parsers/US_NY.py), which has data for past few days, so we pull last day's full data daily.
 - [PJM](./crawler/parsers/US_PJM.py), which only has current day data publicly available on their website, updated every hour.
 - [BPA](./crawler/parsers/US_BPA.py), which has the data for past two days, so we pull daily.
 - [SPP](./crawler/parsers/US_SPP.py), which only has current data for the past two hours, so we pull every hour.

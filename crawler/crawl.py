@@ -5,7 +5,7 @@ import traceback
 from datetime import datetime, timedelta
 import parsers.US_MISO
 import parsers.US_PJM
-import parsers.US_CA
+import parsers.US_CAISO
 import parsers.US_NEISO
 import parsers.US_BPA
 import parsers.US_NY
@@ -32,10 +32,10 @@ map_regions = {
         'fetchResultIsList': False,
         'fetchCurrentData': True
     },
-    'US-CA': {
+    'US-CAISO': {
         'updateFrequency': timedelta(days=1),
         'timeZone': tz.gettz('America/Los_Angeles'),
-        'fetchFn': parsers.US_CA.fetch_production,
+        'fetchFn': parsers.US_CAISO.fetch_production,
         'fetchResultIsList': True,
         'fetchCurrentData': False
     },

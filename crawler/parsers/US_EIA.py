@@ -120,7 +120,7 @@ def parse_eia_response(response, eia_respondent: str) -> dict:
         production_by_timestamp[timestamp][fuel_type] = power_in_mw
     return production_by_timestamp
 
-def fetch_production(zone_key = 'US-CA', target_datetime=None, logger=getLogger(__name__)) -> dict:
+def fetch_production(zone_key = 'US-CAISO', target_datetime=None, logger=getLogger(__name__)) -> dict:
     """
         Requests the last known production mix (in MW) of a given zone.
         Note: UTC time is used in this EIA API wrapper, so we convert @target_datetime to utc before invoking EIA API.
