@@ -1,12 +1,11 @@
 #!/usr/bin/env python3
 
-import os, traceback
+import os
 from pathlib import Path
 from flask_restful import Resource
 from webargs import fields
 from webargs.flaskparser import use_kwargs
-from ..util import getLogger
-import yaml
+from ..util import getLogger, loadYamlData
 
 from ..external.watttime.ba_from_loc import get_ba_from_loc
 
@@ -14,13 +13,14 @@ logger = getLogger()
 
 YAML_CONFIG = 'balancing_authority.yaml'
 
-balancing_authority_args = {
-    'latitude': fields.Float(required=True, validate=lambda x: abs(x) <= 90.),
-    'longitude': fields.Float(required=True, validate=lambda x: abs(x) <= 180.),
-}
-
-def get_mapping_wattime_ba_to_iso(reverse_mapping: dict):
-    '''Invert the reverse mapping table to provide direct lookup table'''
+def get_mapping_wattime_ba_to_iso(config_path: os.path):
+    '''Load the ISO-to-WattTime-BA mapping from config and inverse it to provide direct lookup table'''
+    # Load ISO-to-WattTime-BA mapping from yaml config
+    yaml_data = loadYamlData(config_path)
+    assert yaml_data is not None and 'map_iso_to_watttime_ba' in yaml_data, \
+        'Failed to load map_iso_to_watttime_ba'
+    reverse_mapping = yaml_data['map_iso_to_watttime_ba']
+    # Inverse the one-to-many mapping to get direct lookup table (WattTime BA -> ISO)
     lookup_table = {}
     for iso, l_watttime_ba in reverse_mapping.items():
         for watttime_ba in l_watttime_ba:
@@ -28,18 +28,7 @@ def get_mapping_wattime_ba_to_iso(reverse_mapping: dict):
             lookup_table[watttime_ba] = iso
     return lookup_table
 
-def load_map_iso_to_watttime_ba():
-    with open(os.path.join(Path(__file__).parent.absolute(), YAML_CONFIG), 'r') as f:
-        try:
-            yaml_data = yaml.safe_load(f)
-        except yaml.YAMLError as e:
-            logger.fatal('Failed to load ISO-to-WattTime-ba mapping')
-            logger.fatal(e)
-            logger.fatal(traceback.format_exc())
-    assert 'map_iso_to_watttime_ba' in yaml_data, 'map_iso_to_watttime_ba not found'
-    return yaml_data['map_iso_to_watttime_ba']
-
-MAPPING_WATTTIME_BA_TO_ISO = get_mapping_wattime_ba_to_iso(load_map_iso_to_watttime_ba())
+MAPPING_WATTTIME_BA_TO_ISO = get_mapping_wattime_ba_to_iso(os.path.join(Path(__file__).parent.absolute(), YAML_CONFIG))
 
 def convert_watttime_ba_abbrev(watttime_abbrev):
     if watttime_abbrev in MAPPING_WATTTIME_BA_TO_ISO:
@@ -47,6 +36,11 @@ def convert_watttime_ba_abbrev(watttime_abbrev):
     else:
         logger.warning('Unknown watttime abbrev "%s"' % watttime_abbrev)
         return 'unknown:' + watttime_abbrev
+
+balancing_authority_args = {
+    'latitude': fields.Float(required=True, validate=lambda x: abs(x) <= 90.),
+    'longitude': fields.Float(required=True, validate=lambda x: abs(x) <= 180.),
+}
 
 class BalancingAuthority(Resource):
     @use_kwargs(balancing_authority_args, location='query')
