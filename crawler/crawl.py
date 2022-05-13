@@ -12,6 +12,7 @@ import parsers.US_NY
 import parsers.US_SPP
 import parsers.US_ERCOT
 import parsers.US_PREPA
+import parsers.US_EIA
 from dateutil import tz, parser
 import arrow
 import psycopg2, psycopg2.extras
@@ -71,7 +72,7 @@ map_regions = {
         # Realtime source is updated every 2 hours, but pulling more frequently to avoid missing data
         'updateFrequency': timedelta(days=1),
         'timeZone': tz.gettz('America/Chicago'),
-        'fetchFn': parsers.US_ERCOT.fetch_production,
+        'fetchFn': parsers.US_EIA.fetch_production,
         'fetchResultIsList': True,
         'fetchCurrentData': False
     },
@@ -129,14 +130,15 @@ def fetch_new_data(region):
             raise NotImplementedError("Need to specify the target datatime for historic data")
     print('Target datetime:', target_datetime)
     try:
-        l_data = fetchFn(target_datetime=target_datetime)
+        l_data = fetchFn(zone_key=region, target_datetime=target_datetime)
         if not map_regions[region]['fetchResultIsList']:
             l_data = [l_data]
     except Exception as e:
         print("Failed to execute query.")
         raise e
+    l_data.sort(key=lambda e: e['datetime'])
     for data in l_data:
-        timestamp = data['datetime']
+        timestamp = arrow.get(data['datetime']).to(map_regions[region]['timeZone']).datetime
         print('time:', timestamp)
         d_power_mw_by_category = data['production']
         for category in d_power_mw_by_category:
