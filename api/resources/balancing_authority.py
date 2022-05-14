@@ -11,26 +11,27 @@ from ..external.watttime.ba_from_loc import get_ba_from_loc
 
 YAML_CONFIG = 'balancing_authority.yaml'
 
-def get_mapping_wattime_ba_to_iso(config_path: os.path):
-    '''Load the ISO-to-WattTime-BA mapping from config and inverse it to provide direct lookup table'''
-    # Load ISO-to-WattTime-BA mapping from yaml config
+def get_mapping_wattime_ba_to_region(config_path: os.path):
+    '''Load the region-to-WattTime-BA mapping from config and inverse it to provide direct lookup table'''
+    # Load region-to-WattTime-BA mapping from yaml config
     yaml_data = loadYamlData(config_path)
-    assert yaml_data is not None and 'map_iso_to_watttime_ba' in yaml_data, \
-        'Failed to load map_iso_to_watttime_ba'
-    reverse_mapping = yaml_data['map_iso_to_watttime_ba']
-    # Inverse the one-to-many mapping to get direct lookup table (WattTime BA -> ISO)
+    region_to_watttime_ba_map_name = 'map_region_to_watttime_ba'
+    assert yaml_data is not None and region_to_watttime_ba_map_name in yaml_data, \
+        f'Failed to load {region_to_watttime_ba_map_name}'
+    reverse_mapping = yaml_data[region_to_watttime_ba_map_name]
+    # Inverse the one-to-many mapping to get direct lookup table (WattTime BA -> region)
     lookup_table = {}
-    for iso, l_watttime_ba in reverse_mapping.items():
+    for region, l_watttime_ba in reverse_mapping.items():
         for watttime_ba in l_watttime_ba:
-            assert watttime_ba not in lookup_table, "Duplicate ba in ISO-to-WattTime-BA mapping table: %s" % watttime_ba
-            lookup_table[watttime_ba] = iso
+            assert watttime_ba not in lookup_table, "Duplicate ba in region-to-WattTime-BA mapping table: %s" % watttime_ba
+            lookup_table[watttime_ba] = region
     return lookup_table
 
-MAPPING_WATTTIME_BA_TO_ISO = get_mapping_wattime_ba_to_iso(os.path.join(Path(__file__).parent.absolute(), YAML_CONFIG))
+MAPPING_WATTTIME_BA_TO_REGION = get_mapping_wattime_ba_to_region(os.path.join(Path(__file__).parent.absolute(), YAML_CONFIG))
 
-def convert_watttime_ba_abbrev(watttime_abbrev) -> str:
-    if watttime_abbrev in MAPPING_WATTTIME_BA_TO_ISO:
-        return MAPPING_WATTTIME_BA_TO_ISO[watttime_abbrev]
+def convert_watttime_ba_abbrev_to_region(watttime_abbrev) -> str:
+    if watttime_abbrev in MAPPING_WATTTIME_BA_TO_REGION:
+        return MAPPING_WATTTIME_BA_TO_REGION[watttime_abbrev]
     else:
         logger.warning('Unknown watttime abbrev "%s"' % watttime_abbrev)
         return 'unknown:' + watttime_abbrev
@@ -82,7 +83,7 @@ class BalancingAuthority(Resource):
         if error_status_code:
             return orig_request | watttime_lookup_result, error_status_code
 
-        iso = convert_watttime_ba_abbrev(watttime_lookup_result['watttime_abbrev'])
+        region = convert_watttime_ba_abbrev_to_region(watttime_lookup_result['watttime_abbrev'])
         return orig_request | watttime_lookup_result | {
-            'iso': iso,
+            'region': region,
         }

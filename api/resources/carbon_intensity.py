@@ -10,7 +10,7 @@ from webargs import fields
 from webargs.flaskparser import use_kwargs
 
 from ..util import logger, loadYamlData, get_psql_connection, psql_execute_list, psql_execute_scalar
-from .balancing_authority import convert_watttime_ba_abbrev, lookup_watttime_balancing_authority
+from .balancing_authority import convert_watttime_ba_abbrev_to_region, lookup_watttime_balancing_authority
 
 class ElectricityDataLookupException(Exception):
     pass
@@ -27,23 +27,23 @@ def get_map_carbon_intensity_by_fuel_source(config_path: os.path) -> dict[str, f
 MAP_CARBON_INTENSITY_BY_FUEL_SOURCE = get_map_carbon_intensity_by_fuel_source(os.path.join(Path(__file__).parent.absolute(), 'carbon_intensity.yaml'))
 DEFAULT_CARBON_INTENSITY_FOR_UNKNOWN_SOURCE = 700
 
-def validate_region_exists(conn: psycopg2.extensions.connection, iso: str) -> None:
+def validate_region_exists(conn: psycopg2.extensions.connection, region: str) -> None:
     cursor = conn.cursor()
     region_exists = psql_execute_scalar(cursor,
         "SELECT EXISTS(SELECT 1 FROM EnergyMixture WHERE region = %s)",
-        [iso])
+        [region])
     if not region_exists:
-        raise ElectricityDataLookupException(f"Region {iso} doesn't exist in database.")
+        raise ElectricityDataLookupException(f"Region {region} doesn't exist in database.")
 
-def get_matching_timestamp(conn: psycopg2.extensions.connection, iso: str, timestamp: datetime) -> datetime:
+def get_matching_timestamp(conn: psycopg2.extensions.connection, region: str, timestamp: datetime) -> datetime:
     """Get the matching stamp in electricity generation records for the given time."""
     cursor = conn.cursor()
     timestamp_before: datetime|None = psql_execute_scalar(cursor,
         "SELECT MAX(DateTime) FROM EnergyMixture WHERE Region = %s AND DateTime <= %s;"
-        , [iso, timestamp])
+        , [region, timestamp])
     timestamp_after: datetime|None = psql_execute_scalar(cursor,
         "SELECT MIN(DateTime) FROM EnergyMixture WHERE Region = %s AND DateTime >= %s;"
-        , [iso, timestamp])
+        , [region, timestamp])
     if timestamp_before is None:
         raise ElectricityDataLookupException("Timestamp is too old. No data available.")
     if timestamp_after is None:
@@ -52,11 +52,11 @@ def get_matching_timestamp(conn: psycopg2.extensions.connection, iso: str, times
     # Always choose the beginning of the period
     return timestamp_before
 
-def get_power_by_fuel_source(conn: psycopg2.extensions.connection, iso: str, timestamp: datetime) -> dict[str, float]:
+def get_power_by_fuel_source(conn: psycopg2.extensions.connection, region: str, timestamp: datetime) -> dict[str, float]:
     cursor = conn.cursor()
     records: list[tuple[str, float]] = psql_execute_list(cursor,
         "SELECT category, power_mw FROM EnergyMixture WHERE region = %s AND datetime = %s;",
-        [iso, timestamp])
+        [region, timestamp])
     d_power_by_fuel_source: dict[str, float] = {}
     for (category, power_mw) in records:
         d_power_by_fuel_source[category] = power_mw
@@ -74,11 +74,11 @@ def calculate_average_carbon_intensity(power_by_fuel_source: dict[str, float]) -
         l_weight.append(power_in_mw)
     return np.average(l_carbon_intensity, weights=l_weight)
 
-def get_carbon_intensity(iso: str, timestamp: datetime) -> float:
+def get_carbon_intensity(region: str, timestamp: datetime) -> float:
     conn = get_psql_connection()
-    validate_region_exists(conn, iso)
-    matching_timestamp = get_matching_timestamp(conn, iso, timestamp)
-    power_by_fuel_source = get_power_by_fuel_source(conn, iso, matching_timestamp)
+    validate_region_exists(conn, region)
+    matching_timestamp = get_matching_timestamp(conn, region, timestamp)
+    power_by_fuel_source = get_power_by_fuel_source(conn, region, matching_timestamp)
     return calculate_average_carbon_intensity(power_by_fuel_source)
 
 carbon_intensity_args = {
@@ -101,15 +101,15 @@ class CarbonIntensity(Resource):
         if error_status_code:
             return orig_request | watttime_lookup_result, error_status_code
 
-        iso = convert_watttime_ba_abbrev(watttime_lookup_result['watttime_abbrev'])
+        region = convert_watttime_ba_abbrev_to_region(watttime_lookup_result['watttime_abbrev'])
         try:
-            carbon_intensity = get_carbon_intensity(iso, timestamp)
+            carbon_intensity = get_carbon_intensity(region, timestamp)
         except ElectricityDataLookupException as e:
             return orig_request | {
                 'error': str(e)
             }
 
         return orig_request | watttime_lookup_result | {
-            'iso': iso,
+            'region': region,
             'carbon_intensity': carbon_intensity,
         }
