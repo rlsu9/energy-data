@@ -35,7 +35,7 @@ def convert_watttime_ba_abbrev(watttime_abbrev) -> str:
         logger.warning('Unknown watttime abbrev "%s"' % watttime_abbrev)
         return 'unknown:' + watttime_abbrev
 
-def lookup_watttime_balancing_authority(latitude: float, longitude: float) -> tuple[dict, int|None]:
+def lookup_watttime_balancing_authority(latitude: float, longitude: float) -> tuple[dict, int]:
     """
         Lookup the balancing authority from WattTime API, and returns:
         1) parsed information, or error message, and optionally 2) error status code."""
@@ -62,7 +62,7 @@ def lookup_watttime_balancing_authority(latitude: float, longitude: float) -> tu
         'watttime_abbrev': watttime_abbrev,
         'watttime_name': watttime_name,
         'watttime_id': watttime_id,
-    }
+    }, None
 
 balancing_authority_args = {
     'latitude': fields.Float(required=True, validate=lambda x: abs(x) <= 90.),
