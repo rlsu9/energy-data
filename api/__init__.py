@@ -6,6 +6,7 @@ import webargs
 import secrets
 
 from .resources.balancing_authority import BalancingAuthority
+from .resources.carbon_intensity import CarbonIntensity
 from .util import getLogger
 
 
@@ -14,6 +15,7 @@ app.config['SECRET_KEY'] = secrets.token_hex()
 api = Api(app)
 
 api.add_resource(BalancingAuthority, '/balancing-authority/')
+api.add_resource(CarbonIntensity, '/carbon-intensity/')
 
 # Source: https://github.com/marshmallow-code/webargs/issues/181#issuecomment-621159812
 @webargs.flaskparser.parser.error_handler

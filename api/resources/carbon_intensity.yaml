@@ -1,0 +1,12 @@
+# carbon intensity from electricityMap as of 05/12/2022
+carbon_intensity_by_fuel_source:
+  biomass: 230
+  coal: 820
+  gas: 490
+  geothermal: 38
+  hydro: 24
+  nuclear: 12
+  oil: 650
+  solar: 45
+  wind: 11
+  unknown: 700  # This is just an estimate
