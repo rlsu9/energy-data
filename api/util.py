@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 from typing import Any, Sequence
+from datetime import datetime, date
 import yaml
 import logging
 import traceback
@@ -20,6 +21,12 @@ def loadYamlData(filepath):
             logger.fatal(e)
             logger.fatal(traceback.format_exc())
             return None
+
+def json_serialize(self, o: object) -> str:
+    """This defines serilization for object types that `json` cannot handle by default."""
+    if isinstance(o, (datetime, date)):
+        return o.isoformat()
+    raise TypeError("Type %s is not serializable" % type(o))
 
 def get_psql_connection(host='/var/run/postgresql/', database="electricity-data") -> psycopg2.extensions.connection:
     """Get a new postgresql connection."""

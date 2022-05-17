@@ -4,15 +4,18 @@ from flask import Flask
 from flask_restful import Api
 import webargs
 import secrets
+import json
 
 from api.resources.balancing_authority import BalancingAuthority
 from api.resources.carbon_intensity import CarbonIntensity
-from api.util import getLogger
+from api.util import getLogger, json_serialize
 
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = secrets.token_hex()
 api = Api(app)
+
+json.JSONEncoder.default = json_serialize
 
 api.add_resource(BalancingAuthority, '/balancing-authority/')
 api.add_resource(CarbonIntensity, '/carbon-intensity/')
