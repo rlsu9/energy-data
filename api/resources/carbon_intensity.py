@@ -9,8 +9,8 @@ from flask_restful import Resource
 from webargs import fields
 from webargs.flaskparser import use_kwargs
 
-from ..util import logger, loadYamlData, get_psql_connection, psql_execute_list, psql_execute_scalar
-from .balancing_authority import convert_watttime_ba_abbrev_to_region, lookup_watttime_balancing_authority
+from api.util import logger, loadYamlData, get_psql_connection, psql_execute_list, psql_execute_scalar
+from api.resources.balancing_authority import convert_watttime_ba_abbrev_to_region, lookup_watttime_balancing_authority
 
 class ElectricityDataLookupException(Exception):
     pass

@@ -6,8 +6,8 @@ from flask_restful import Resource
 from webargs import fields
 from webargs.flaskparser import use_kwargs
 
-from ..util import logger, loadYamlData
-from ..external.watttime.ba_from_loc import get_ba_from_loc
+from api.util import logger, loadYamlData
+from api.external.watttime.ba_from_loc import get_ba_from_loc
 
 YAML_CONFIG = 'balancing_authority.yaml'
 

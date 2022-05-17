@@ -5,9 +5,9 @@ from flask_restful import Api
 import webargs
 import secrets
 
-from .resources.balancing_authority import BalancingAuthority
-from .resources.carbon_intensity import CarbonIntensity
-from .util import getLogger
+from api.resources.balancing_authority import BalancingAuthority
+from api.resources.carbon_intensity import CarbonIntensity
+from api.util import getLogger
 
 
 app = Flask(__name__)
