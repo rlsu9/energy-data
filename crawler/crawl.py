@@ -32,13 +32,13 @@ map_regions = {
         'fetchResultIsList': False,
         'fetchCurrentData': True
     },
-    # 'US-CAISO': {
-    #     'updateFrequency': timedelta(days=1),
-    #     'timeZone': tz.gettz('America/Los_Angeles'),
-    #     'fetchFn': parsers.US_CAISO.fetch_production,
-    #     'fetchResultIsList': True,
-    #     'fetchCurrentData': False
-    # },
+    'US-CAISO': {
+        'updateFrequency': timedelta(days=1),
+        'timeZone': tz.gettz('America/Los_Angeles'),
+        'fetchFn': parsers.US_CAISO.fetch_production,
+        'fetchResultIsList': True,
+        'fetchCurrentData': False
+    },
     'US-NEISO': {
         'updateFrequency': timedelta(days=1),
         'timeZone': tz.gettz('America/New_York'),
