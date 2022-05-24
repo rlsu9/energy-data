@@ -9,11 +9,8 @@ from flask_restful import Resource
 from webargs import fields
 from webargs.flaskparser import use_kwargs
 
-from api.util import logger, loadYamlData, get_psql_connection, psql_execute_list, psql_execute_scalar
+from api.util import logger, loadYamlData, get_psql_connection, psql_execute_list, psql_execute_scalar, PSqlExecuteException
 from api.resources.balancing_authority import convert_watttime_ba_abbrev_to_region, lookup_watttime_balancing_authority
-
-class ElectricityDataLookupException(Exception):
-    pass
 
 def get_map_carbon_intensity_by_fuel_source(config_path: os.path) -> dict[str, float]:
     '''Load the carbon intensity per fuel source map from config.'''
@@ -33,7 +30,7 @@ def validate_region_exists(conn: psycopg2.extensions.connection, region: str) ->
         "SELECT EXISTS(SELECT 1 FROM EnergyMixture WHERE region = %s)",
         [region])
     if not region_exists:
-        raise ElectricityDataLookupException(f"Region {region} doesn't exist in database.")
+        raise PSqlExecuteException(f"Region {region} doesn't exist in database.")
 
 def get_matching_timestamp(conn: psycopg2.extensions.connection, region: str, timestamp: datetime) -> datetime:
     """Get the matching stamp in electricity generation records for the given time."""
@@ -45,9 +42,9 @@ def get_matching_timestamp(conn: psycopg2.extensions.connection, region: str, ti
         "SELECT MIN(DateTime) FROM EnergyMixture WHERE Region = %s AND DateTime >= %s;"
         , [region, timestamp])
     if timestamp_before is None:
-        raise ElectricityDataLookupException("Time range is too old. No data available.")
+        raise PSqlExecuteException("Time range is too old. No data available.")
     if timestamp_after is None:
-        raise ElectricityDataLookupException("Time range is too new. Data not yet available.")
+        raise PSqlExecuteException("Time range is too new. Data not yet available.")
     assert timestamp_before <= timestamp_after, "before must be less than after"
     # Always choose the beginning of the period
     return timestamp_before
@@ -109,7 +106,7 @@ class CarbonIntensity(Resource):
             'start': start,
             'end': end,
         } }
-        logger.info("get(%f, %f, %s, %s)" % (latitude, longitude, start, end))
+        logger.info("CarbonIntensity.get(%f, %f, %s, %s)" % (latitude, longitude, start, end))
 
         watttime_lookup_result, error_status_code = lookup_watttime_balancing_authority(latitude, longitude)
         if error_status_code:
@@ -118,7 +115,7 @@ class CarbonIntensity(Resource):
         region = convert_watttime_ba_abbrev_to_region(watttime_lookup_result['watttime_abbrev'])
         try:
             l_carbon_intensity = get_carbon_intensity_list(region, start, end)
-        except ElectricityDataLookupException as e:
+        except PSqlExecuteException as e:
             return orig_request | {
                 'error': str(e)
             }, 500

@@ -28,31 +28,37 @@ def json_serialize(self, o: object) -> str:
         return o.isoformat()
     raise TypeError("Type %s is not serializable" % type(o))
 
+class PSqlExecuteException(Exception):
+    pass
+
 def get_psql_connection(host='/var/run/postgresql/', database="electricity-data") -> psycopg2.extensions.connection:
     """Get a new postgresql connection."""
     try:
         conn = psycopg2.connect(host=host, database=database, user="postgres")
         return conn
     except Exception as e:
-        logging.error("Failed to connect to database.")
-        raise e
+        logging.error(f"get_psql_connection: {e}")
+        logger.fatal(traceback.format_exc())
+        raise PSqlExecuteException("Failed to connect to database.")
 
-def psql_execute_scalar(cursor: psycopg2.extensions.cursor, query: str, vars: Sequence[Any]) -> Any|None:
+def psql_execute_scalar(cursor: psycopg2.extensions.cursor, query: str, vars: Sequence[Any] = []) -> Any|None:
     """Execute the psql query and return the first column of first row."""
     try:
         cursor.execute(query, vars)
         result = cursor.fetchone()
     except Exception as e:
-        logging.error(f'Failed to execute query "{query}" with params: {vars}.')
-        raise e
+        logging.error(f'psql_execute_scalar("{query}", {vars}): {e}')
+        logger.fatal(traceback.format_exc())
+        raise PSqlExecuteException("Failed to execute SQL query.")
     return result[0] if result is not None else None
 
-def psql_execute_list(cursor: psycopg2.extensions.cursor, query: str, vars: Sequence[Any]) -> list[tuple]:
+def psql_execute_list(cursor: psycopg2.extensions.cursor, query: str, vars: Sequence[Any] = []) -> list[tuple]:
     """Execute the psql query and return all rows as a list of tuples."""
     try:
         cursor.execute(query, vars)
         result = cursor.fetchall()
     except Exception as e:
-        logging.error(f'Failed to execute query "{query}" with params: {vars}.')
-        raise e
+        logging.error(f'psql_execute_scalar("{query}", {vars}): {e}')
+        logger.fatal(traceback.format_exc())
+        raise PSqlExecuteException("Failed to execute SQL query.")
     return result
