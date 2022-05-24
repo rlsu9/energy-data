@@ -6,7 +6,7 @@ from flask_restful import Resource
 from webargs import fields
 from webargs.flaskparser import use_kwargs
 
-from api.util import logger, loadYamlData
+from api.util import PSqlExecuteException, get_psql_connection, logger, loadYamlData, psql_execute_list
 from api.external.watttime.ba_from_loc import get_ba_from_loc
 
 YAML_CONFIG = 'balancing_authority.yaml'
@@ -73,7 +73,7 @@ balancing_authority_args = {
 class BalancingAuthority(Resource):
     @use_kwargs(balancing_authority_args, location='query')
     def get(self, latitude: float, longitude: float):
-        logger.info("get(%f, %f)" % (latitude, longitude))
+        logger.info("BalancingAuthority.get(%f, %f)" % (latitude, longitude))
         orig_request = { 'request': {
             'latitude': latitude,
             'longitude': longitude,
@@ -87,3 +87,20 @@ class BalancingAuthority(Resource):
         return orig_request | watttime_lookup_result | {
             'region': region,
         }
+
+def get_all_balancing_authorities():
+    """Return a list of all balancing authorities for which we have collect data."""
+    conn = get_psql_connection()
+    cursor = conn.cursor()
+    results: list[tuple[str]] = psql_execute_list(cursor, "SELECT DISTINCT region FROM EnergyMixture ORDER BY region;")
+    return [row[0] for row in results]  # one column per row
+
+class BalancingAuthorityList(Resource):
+    def get(self):
+        logger.info("BalancingAuthorityList.get()")
+        try:
+            return get_all_balancing_authorities()
+        except PSqlExecuteException as e:
+            return {
+                'error': str(e)
+            }, 500

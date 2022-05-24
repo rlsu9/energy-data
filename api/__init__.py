@@ -6,7 +6,7 @@ import webargs
 import secrets
 import json
 
-from api.resources.balancing_authority import BalancingAuthority
+from api.resources.balancing_authority import BalancingAuthority, BalancingAuthorityList
 from api.resources.carbon_intensity import CarbonIntensity
 from api.util import getLogger, json_serialize
 
@@ -18,6 +18,7 @@ api = Api(app)
 json.JSONEncoder.default = json_serialize
 
 api.add_resource(BalancingAuthority, '/balancing-authority/')
+api.add_resource(BalancingAuthorityList, '/balancing-authority/list')
 api.add_resource(CarbonIntensity, '/carbon-intensity/')
 
 # Source: https://github.com/marshmallow-code/webargs/issues/181#issuecomment-621159812
