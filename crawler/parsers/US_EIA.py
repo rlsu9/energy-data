@@ -27,6 +27,7 @@ EIA_V2_REGION_MAPPING = {
     'US-NY': 'NYIS',  # or NY
     'US-PJM': 'PJM',
     'US-SPP': 'SWPP',
+    'US-PACW': 'PACW',
     # '': '',
 }
 

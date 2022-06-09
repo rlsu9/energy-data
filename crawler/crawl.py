@@ -69,13 +69,19 @@ map_regions = {
         'fetchCurrentData': True
     },
     'US-ERCOT': {
-        # Realtime source is updated every 2 hours, but pulling more frequently to avoid missing data
         'updateFrequency': timedelta(days=1),
         'timeZone': tz.gettz('America/Chicago'),
         'fetchFn': parsers.US_EIA.fetch_production,
         'fetchResultIsList': True,
         'fetchCurrentData': False
     },
+    'US-PACW': {
+        'updateFrequency': timedelta(days=1),
+        'timeZone': tz.gettz('America/Los_Angeles'),
+        'fetchFn': parsers.US_EIA.fetch_production,
+        'fetchResultIsList': True,
+        'fetchCurrentData': False
+    }
     # Disable Puerto Rico for now, as the data seems stale after 03/24/2022
     # 'US-PR': {
     #     # The source parser seems to indicate that this gets updated twice per hour, around :10 and :40,

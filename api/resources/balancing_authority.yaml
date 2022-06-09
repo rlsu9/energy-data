@@ -69,3 +69,5 @@ map_region_to_watttime_ba:
   - SPP_SWOK
   - SPP_TX
   - SPP_WESTNE
+  US-PACW:
+  - PACW
