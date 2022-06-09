@@ -16,6 +16,12 @@ import parsers.US_EIA
 from dateutil import tz, parser
 import arrow
 import psycopg2, psycopg2.extras
+import argparse
+
+parser = argparse.ArgumentParser()
+parser.add_argument('-B', '--backfill', action='store_true', help='Run backfill')
+parser.add_argument('-D', '--days-for-backfill', default=30, type=int, help='Number of days to run backfill for')
+args = parser.parse_args()
 
 map_regions = {
     'US-MISO': {
@@ -124,15 +130,17 @@ def set_last_updated(conn, region, run_timestamp):
         print("Failed to execute set_last_updated query.")
         raise e
 
-def fetch_new_data(region):
+def fetch_new_data(region, target_datetime: datetime = None):
     fetchFn = map_regions[region]['fetchFn']
     l_result = []
     if map_regions[region]['fetchCurrentData']:
         target_datetime = None
     else:
         if map_regions[region]['updateFrequency'] >= timedelta(days=1):
-            target_datetime = arrow.get(arrow.now().shift(days=-1).date(), map_regions[region]['timeZone'])
-        else:
+            if target_datetime is None:
+                target_datetime = arrow.now().shift(days=-1)
+            target_datetime = arrow.get(target_datetime.date(), map_regions[region]['timeZone'])
+        elif target_datetime is None:
             raise NotImplementedError("Need to specify the target datatime for historic data")
     print('Target datetime:', target_datetime)
     try:
@@ -170,22 +178,35 @@ def upload_new_data(conn, region, timestamp, d_power_mw_by_category):
         raise e
 
 def fetchandupdate(conn, region, run_timestamp):
-    l_result = fetch_new_data(region)
+    if args.backfill:
+        l_result = []
+        for date_offset in range(args.days_for_backfill):
+            l_result += fetch_new_data(region, target_datetime=arrow.get().shift(days= -1 - date_offset))
+    else:
+        l_result = fetch_new_data(region)
     for (timestamp, d_power_mw_by_category) in l_result:
         upload_new_data(conn, region, timestamp, d_power_mw_by_category)
-    set_last_updated(conn, region, run_timestamp)
+    if not args.backfill:
+        set_last_updated(conn, region, run_timestamp)
 
-def crawl_region(conn, region):
+def should_run_now(conn, region, run_timestamp):
     last_updated = get_last_updated(conn, region)
-    run_timestamp = datetime.now()
     delta_since_last_update = run_timestamp - last_updated
     print("region: %s, last updated: %s (%.0f min ago)" % (region, str(last_updated), delta_since_last_update.total_seconds() / 60))
-    if delta_since_last_update < map_regions[region]['updateFrequency']:
-        return
-    fetchandupdate(conn, region, run_timestamp)
+    return delta_since_last_update > map_regions[region]['updateFrequency']
+
+def crawl_region(conn, region):
+    run_timestamp = datetime.now()
+    if args.backfill:
+        fetchandupdate(conn, region, run_timestamp)
+    else:
+        if should_run_now(conn, region, run_timestamp):
+            fetchandupdate(conn, region, run_timestamp)
 
 def crawlall():
     print("Electricity data crawler running at", str(datetime.now()))
+    if args.backfill:
+        print(f"Backfill mode is on. # of days to backfill is {args.days_for_backfill}.")
     conn = getdbconn()
     for region in map_regions:
         try:
