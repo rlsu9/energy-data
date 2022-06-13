@@ -18,11 +18,6 @@ import arrow
 import psycopg2, psycopg2.extras
 import argparse
 
-parser = argparse.ArgumentParser()
-parser.add_argument('-B', '--backfill', action='store_true', help='Run backfill')
-parser.add_argument('-D', '--days-for-backfill', default=30, type=int, help='Number of days to run backfill for')
-args = parser.parse_args()
-
 map_regions = {
     'US-MISO': {
         'updateFrequency': timedelta(minutes=3),
@@ -100,6 +95,12 @@ map_regions = {
     # },
     # HI data is also disabled for now due to stale data after 04/13/2022
 }
+
+parser = argparse.ArgumentParser()
+parser.add_argument('-B', '--backfill', action='store_true', help='Run backfill')
+parser.add_argument('-D', '--days-for-backfill', default=30, type=int, help='Number of days to run backfill for')
+parser.add_argument('-R', '--regions', nargs='+', choices=map_regions.keys(), help='Select a subset of regions')
+args = parser.parse_args()
 
 def getdbconn(host='/var/run/postgresql/', database="electricity-data"):
     try:
@@ -209,6 +210,8 @@ def crawlall():
         print(f"Backfill mode is on. # of days to backfill is {args.days_for_backfill}.")
     conn = getdbconn()
     for region in map_regions:
+        if args.regions and region not in args.regions:
+            continue
         try:
             crawl_region(conn, region)
         except Exception as e:
