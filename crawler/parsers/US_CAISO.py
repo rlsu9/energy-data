@@ -25,6 +25,7 @@ def fetch_production(zone_key='US-CAISO', session=None, target_datetime=None,
     url = f'http://www.caiso.com/outlook/SP/History/{target_date}/fuelsource.csv'
     print(url)
     csv = pandas.read_csv(url)
+    csv.columns = csv.columns.str.lower()
     latest_index = len(csv) - 1
     production_map = {
         'Solar': 'solar',
@@ -44,7 +45,7 @@ def fetch_production(zone_key='US-CAISO', session=None, target_datetime=None,
     }
     daily_data = []
     for i in range(0, latest_index + 1):
-        h, m = map(int, csv['Time'][i].split(':'))
+        h, m = map(int, csv['time'][i].split(':'))
         date = target_datetime.replace(hour=h, minute=m,
                                                        second=0, microsecond=0)
         data = {
@@ -57,7 +58,7 @@ def fetch_production(zone_key='US-CAISO', session=None, target_datetime=None,
 
         # map items from names in CAISO CSV to names used in Electricity Map
         for ca_gen_type, mapped_gen_type in production_map.items():
-            production = float(csv[ca_gen_type][i])
+            production = float(csv[ca_gen_type.lower()][i])
             
             if production < 0 and (mapped_gen_type == 'solar' or mapped_gen_type == 'nuclear'):
                 # logger.warn(ca_gen_type + ' production for US_CA was reported as less than 0 and was clamped')
@@ -67,7 +68,7 @@ def fetch_production(zone_key='US-CAISO', session=None, target_datetime=None,
             data['production'][mapped_gen_type] += production
 
         for ca_storage_type, mapped_storage_type in storage_map.items():
-            storage = -float(csv[ca_storage_type][i])
+            storage = -float(csv[ca_storage_type.lower()][i])
 
             # if another mean of storage created a value, sum them up
             data['storage'][mapped_storage_type] += storage
