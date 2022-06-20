@@ -100,6 +100,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument('-B', '--backfill', action='store_true', help='Run backfill')
 parser.add_argument('-D', '--days-for-backfill', default=30, type=int, help='Number of days to run backfill for')
 parser.add_argument('-R', '--regions', nargs='+', choices=map_regions.keys(), help='Select a subset of regions')
+parser.add_argument('-N', '--dry-run', action='store_true', help='Only pull data but do not write to database')
 args = parser.parse_args()
 
 def getdbconn(host='/var/run/postgresql/', database="electricity-data"):
@@ -185,10 +186,13 @@ def fetchandupdate(conn, region, run_timestamp):
             l_result += fetch_new_data(region, target_datetime=arrow.get().shift(days= -1 - date_offset))
     else:
         l_result = fetch_new_data(region)
-    for (timestamp, d_power_mw_by_category) in l_result:
-        upload_new_data(conn, region, timestamp, d_power_mw_by_category)
-    if not args.backfill:
-        set_last_updated(conn, region, run_timestamp)
+    if args.dry_run:
+        print('Dry run mode on. Not updating database ...')
+    else:
+        for (timestamp, d_power_mw_by_category) in l_result:
+            upload_new_data(conn, region, timestamp, d_power_mw_by_category)
+        if not args.backfill:
+            set_last_updated(conn, region, run_timestamp)
 
 def should_run_now(conn, region, run_timestamp):
     last_updated = get_last_updated(conn, region)
@@ -206,6 +210,8 @@ def crawl_region(conn, region):
 
 def crawlall():
     print("Electricity data crawler running at", str(datetime.now()))
+    if args.dry_run:
+        print('Dry run mode is on.')
     if args.backfill:
         print(f"Backfill mode is on. # of days to backfill is {args.days_for_backfill}.")
     conn = getdbconn()
