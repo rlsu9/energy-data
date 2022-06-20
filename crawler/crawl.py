@@ -103,7 +103,9 @@ OVERRIDE_DATA_SOURCES = MAP_OVERRIDE_FETCHFNS.keys()
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-B', '--backfill', action='store_true', help='Run backfill')
-parser.add_argument('-D', '--days-for-backfill', default=30, type=int, help='Number of days to run backfill for')
+parser.add_argument('-D', '--days-for-backfill', type=int, help='Number of days to run backfill for')
+parser.add_argument('--backfill-begin-date', type=lambda s: datetime.strptime(s, '%Y-%m-%d'), help='The begin date for backfill')
+parser.add_argument('--backfill-end-date', type=lambda s: datetime.strptime(s, '%Y-%m-%d'), help='The end date for backfill')
 parser.add_argument('-R', '--regions', nargs='+', choices=map_regions.keys(), help='Select a subset of regions')
 parser.add_argument('-N', '--dry-run', action='store_true', help='Only pull data but do not write to database')
 parser.add_argument('--override-data-source', choices=OVERRIDE_DATA_SOURCES, help='Override the crawler data source')
@@ -190,8 +192,17 @@ def upload_new_data(conn, region, timestamp, d_power_mw_by_category):
 def fetchandupdate(conn, region, run_timestamp):
     if args.backfill:
         l_result = []
-        for date_offset in range(args.days_for_backfill):
-            l_result += fetch_new_data(region, target_datetime=arrow.get().shift(days= -1 - date_offset))
+        if args.days_for_backfill:
+            for date_offset in range(args.days_for_backfill):
+                l_result += fetch_new_data(region, target_datetime=arrow.get().shift(days= -1 - date_offset))
+        elif args.backfill_begin_date and args.backfill_end_date:
+            backfill_current_date = arrow.get(args.backfill_begin_date)
+            backfill_end_date = arrow.get(args.backfill_end_date)
+            while backfill_current_date <= backfill_end_date:
+                l_result += fetch_new_data(region, target_datetime=backfill_current_date)
+                backfill_current_date = backfill_current_date.shift(days=1)
+        else:
+            raise NotImplementedError()
     else:
         l_result = fetch_new_data(region)
     if args.dry_run:
@@ -221,7 +232,18 @@ def crawlall():
     if args.dry_run:
         print('Dry run mode is on.')
     if args.backfill:
-        print(f"Backfill mode is on. # of days to backfill is {args.days_for_backfill}.")
+        print("Backfill mode is on.")
+        if args.days_for_backfill:
+            print(f"# of days to backfill is {args.days_for_backfill}.")
+        elif args.backfill_begin_date and args.backfill_end_date:
+            if args.backfill_begin_date > args.backfill_end_date:
+                raise ValueError("backfill-begin-date cannot be later than backfill-end-date")
+            print('Backfill date range: [%s, %s]' % (\
+                args.backfill_begin_date.strftime('%Y-%m-%d'),
+                args.backfill_end_date.strftime('%Y-%m-%d')
+                ))
+        else:
+            raise ValueError("Backfill mode is on, but neither days-for-backfill nor (backfill-begin-date and backfill-end-date) is specified.")
     conn = getdbconn()
     for region in map_regions:
         if args.regions and region not in args.regions:
