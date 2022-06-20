@@ -96,11 +96,17 @@ map_regions = {
     # HI data is also disabled for now due to stale data after 04/13/2022
 }
 
+MAP_OVERRIDE_FETCHFNS = {
+    'us-eia': parsers.US_EIA.fetch_production
+}
+OVERRIDE_DATA_SOURCES = MAP_OVERRIDE_FETCHFNS.keys()
+
 parser = argparse.ArgumentParser()
 parser.add_argument('-B', '--backfill', action='store_true', help='Run backfill')
 parser.add_argument('-D', '--days-for-backfill', default=30, type=int, help='Number of days to run backfill for')
 parser.add_argument('-R', '--regions', nargs='+', choices=map_regions.keys(), help='Select a subset of regions')
 parser.add_argument('-N', '--dry-run', action='store_true', help='Only pull data but do not write to database')
+parser.add_argument('--override-data-source', choices=OVERRIDE_DATA_SOURCES, help='Override the crawler data source')
 args = parser.parse_args()
 
 def getdbconn(host='/var/run/postgresql/', database="electricity-data"):
@@ -135,7 +141,7 @@ def set_last_updated(conn, region, run_timestamp):
 def fetch_new_data(region, target_datetime: datetime = None):
     fetchFn = map_regions[region]['fetchFn']
     l_result = []
-    if map_regions[region]['fetchCurrentData']:
+    if not args.backfill and map_regions[region]['fetchCurrentData']:
         target_datetime = None
     else:
         if map_regions[region]['updateFrequency'] >= timedelta(days=1):
@@ -145,9 +151,11 @@ def fetch_new_data(region, target_datetime: datetime = None):
         elif target_datetime is None:
             raise NotImplementedError("Need to specify the target datatime for historic data")
     print('Target datetime:', target_datetime)
+    if args.override_data_source:
+        fetchFn = MAP_OVERRIDE_FETCHFNS[args.override_data_source]
     try:
         l_data = fetchFn(zone_key=region, target_datetime=target_datetime)
-        if not map_regions[region]['fetchResultIsList']:
+        if not map_regions[region]['fetchResultIsList'] and not args.override_data_source:
             l_data = [l_data]
     except Exception as e:
         print("Failed to execute query.")
