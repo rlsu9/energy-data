@@ -116,7 +116,8 @@ class CarbonIntensity(Resource):
         try:
             l_carbon_intensity = get_carbon_intensity_list(region, start, end)
         except PSqlExecuteException as e:
-            return orig_request | {
+            return orig_request | watttime_lookup_result | {
+                'region': region,
                 'error': str(e)
             }, 500
 
