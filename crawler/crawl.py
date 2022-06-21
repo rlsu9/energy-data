@@ -188,6 +188,7 @@ def upload_new_data(conn, region, timestamp, d_power_mw_by_category):
     except Exception as e:
         print("Failed to upload new data")
         raise e
+    return len(rows)
 
 def fetchandupdate(conn, region, run_timestamp):
     if args.backfill:
@@ -208,8 +209,10 @@ def fetchandupdate(conn, region, run_timestamp):
     if args.dry_run:
         print('Dry run mode on. Not updating database ...')
     else:
+        total_rows_uploaded = 0
         for (timestamp, d_power_mw_by_category) in l_result:
-            upload_new_data(conn, region, timestamp, d_power_mw_by_category)
+            total_rows_uploaded += upload_new_data(conn, region, timestamp, d_power_mw_by_category)
+        print(f'Uploaded {total_rows_uploaded} rows.')
         if not args.backfill:
             set_last_updated(conn, region, run_timestamp)
 
