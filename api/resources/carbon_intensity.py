@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import os
+from typing import Tuple
 import numpy as np
 import psycopg2
 from pathlib import Path
@@ -32,22 +33,27 @@ def validate_region_exists(conn: psycopg2.extensions.connection, region: str) ->
     if not region_exists:
         raise PSqlExecuteException(f"Region {region} doesn't exist in database.")
 
-def get_matching_timestamp(conn: psycopg2.extensions.connection, region: str, timestamp: datetime) -> datetime:
-    """Get the matching stamp in electricity generation records for the given time."""
+def get_available_time_range(conn: psycopg2.extensions.connection, region: str) -> \
+    Tuple[datetime, datetime]:
+    """Get the timestamp range for which we have electricity data in given region."""
     cursor = conn.cursor()
-    timestamp_before: datetime|None = psql_execute_scalar(cursor,
-        "SELECT MAX(DateTime) FROM EnergyMixture WHERE Region = %s AND DateTime <= %s;"
-        , [region, timestamp])
-    timestamp_after: datetime|None = psql_execute_scalar(cursor,
-        "SELECT MIN(DateTime) FROM EnergyMixture WHERE Region = %s AND DateTime >= %s;"
-        , [region, timestamp])
-    if timestamp_before is None:
-        raise PSqlExecuteException("Time range is too old. No data available.")
-    if timestamp_after is None:
+    timestamp_min: datetime|None = psql_execute_scalar(cursor,
+        "SELECT MIN(DateTime) FROM EnergyMixture WHERE Region = %s;"
+        , [region])
+    timestamp_max: datetime|None = psql_execute_scalar(cursor,
+        "SELECT MAX(DateTime) FROM EnergyMixture WHERE Region = %s;"
+        , [region])
+    return (timestamp_min, timestamp_max)
+
+def validate_time_range(conn: psycopg2.extensions.connection, region: str, start: datetime, end: datetime) -> None:
+    """Validate we have electricity data for the given time range."""
+    if start > end:
+        raise PSqlExecuteException("end must be before start")
+    (available_start, available_end) = get_available_time_range(conn, region)
+    if start > available_end:
         raise PSqlExecuteException("Time range is too new. Data not yet available.")
-    assert timestamp_before <= timestamp_after, "before must be less than after"
-    # Always choose the beginning of the period
-    return timestamp_before
+    if end < available_start:
+        raise PSqlExecuteException("Time range is too old. No data available.")
 
 def get_power_by_timemstamp_and_fuel_source(conn: psycopg2.extensions.connection, region: str, start: datetime, end: datetime) -> dict[datetime, dict[str, float]]:
     cursor = conn.cursor()
@@ -85,9 +91,8 @@ def calculate_average_carbon_intensity(power_by_timestamp_and_fuel_source: dict[
 def get_carbon_intensity_list(region: str, start: datetime, end: datetime) -> float:
     conn = get_psql_connection()
     validate_region_exists(conn, region)
-    matching_start = get_matching_timestamp(conn, region, start)
-    matching_end = get_matching_timestamp(conn, region, end)
-    power_by_fuel_source = get_power_by_timemstamp_and_fuel_source(conn, region, matching_start, matching_end)
+    validate_time_range(conn, region, start, end)
+    power_by_fuel_source = get_power_by_timemstamp_and_fuel_source(conn, region, start, end)
     return calculate_average_carbon_intensity(power_by_fuel_source)
 
 carbon_intensity_args = {
