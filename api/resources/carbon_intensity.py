@@ -57,7 +57,7 @@ def validate_time_range(conn: psycopg2.extensions.connection, region: str, start
 
 def get_power_by_timemstamp_and_fuel_source(conn: psycopg2.extensions.connection, region: str, start: datetime, end: datetime) -> dict[datetime, dict[str, float]]:
     cursor = conn.cursor()
-    records: list[tuple[str, float]] = psql_execute_list(cursor,
+    records: list[tuple[str, datetime, datetime]] = psql_execute_list(cursor,
         """SELECT datetime, category, power_mw FROM EnergyMixture
             WHERE region = %s AND %s <= datetime AND datetime <= %s
             ORDER BY datetime, category;""",
@@ -69,7 +69,7 @@ def get_power_by_timemstamp_and_fuel_source(conn: psycopg2.extensions.connection
         d_power_bytimestamp_and_fuel_source[timestamp][category] = power_mw
     return d_power_bytimestamp_and_fuel_source
 
-def calculate_average_carbon_intensity(power_by_timestamp_and_fuel_source: dict[datetime, dict[str, float]]) -> dict[datetime, float]:
+def calculate_average_carbon_intensity(power_by_timestamp_and_fuel_source: dict[datetime, dict[str, float]]) -> list[dict]:
     l_carbon_intensity_by_timestamp = []
     for timestamp, power_by_fuel_source in power_by_timestamp_and_fuel_source.items():
         l_carbon_intensity = []
