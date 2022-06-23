@@ -113,7 +113,7 @@ args = parser.parse_args()
 
 def getdbconn(host='/var/run/postgresql/', database="electricity-data"):
     try:
-        conn = psycopg2.connect(host=host, database=database, user="postgres")
+        conn = psycopg2.connect(host=host, database=database, user="crawler_rw")
         return conn
     except Exception as e:
         print("Failed to connect to database.")
