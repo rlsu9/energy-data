@@ -55,6 +55,21 @@ def validate_time_range(conn: psycopg2.extensions.connection, region: str, start
     if end < available_start:
         raise PSqlExecuteException("Time range is too old. No data available.")
 
+def get_average_carbon_intensity(conn: psycopg2.extensions.connection, region: str, start: datetime, end: datetime)  -> list[dict]:
+    cursor = conn.cursor()
+    records: list[tuple[datetime, float]] = psql_execute_list(cursor,
+        """SELECT datetime, carbonintensity FROM CarbonIntensity
+            WHERE region = %s AND %s <= datetime AND datetime <= %s
+            ORDER BY datetime;""",
+        [region, start, end])
+    l_carbon_intensity = []
+    for (timestamp, carbon_intensity) in records:
+        l_carbon_intensity.append({
+            'timestamp': timestamp,
+            'carbon_intensity': carbon_intensity,
+        })
+    return l_carbon_intensity
+
 def get_power_by_timemstamp_and_fuel_source(conn: psycopg2.extensions.connection, region: str, start: datetime, end: datetime) -> dict[datetime, dict[str, float]]:
     cursor = conn.cursor()
     records: list[tuple[str, datetime, datetime]] = psql_execute_list(cursor,
@@ -92,8 +107,9 @@ def get_carbon_intensity_list(region: str, start: datetime, end: datetime) -> fl
     conn = get_psql_connection()
     validate_region_exists(conn, region)
     validate_time_range(conn, region, start, end)
-    power_by_fuel_source = get_power_by_timemstamp_and_fuel_source(conn, region, start, end)
-    return calculate_average_carbon_intensity(power_by_fuel_source)
+    return get_average_carbon_intensity(conn, region, start, end)
+    # power_by_fuel_source = get_power_by_timemstamp_and_fuel_source(conn, region, start, end)
+    # return calculate_average_carbon_intensity(power_by_fuel_source)
 
 carbon_intensity_args = {
     'latitude': fields.Float(required=True, validate=lambda x: abs(x) <= 90.),
