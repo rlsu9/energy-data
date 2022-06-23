@@ -34,7 +34,7 @@ class PSqlExecuteException(Exception):
 def get_psql_connection(host='/var/run/postgresql/', database="electricity-data") -> psycopg2.extensions.connection:
     """Get a new postgresql connection."""
     try:
-        conn = psycopg2.connect(host=host, database=database, user="postgres")
+        conn = psycopg2.connect(host=host, database=database, user="restapi_ro")
         return conn
     except Exception as e:
         logging.error(f"get_psql_connection: {e}")
