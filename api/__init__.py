@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
-from flask import Flask
+import time
+from flask import Flask, g
 from flask_restful import Api
 import webargs
 import secrets
@@ -8,7 +9,7 @@ import json
 
 from api.resources.balancing_authority import BalancingAuthority, BalancingAuthorityList
 from api.resources.carbon_intensity import CarbonIntensity
-from api.util import getLogger, json_serialize
+from api.util import getLogger, json_serialize, logger
 
 
 app = Flask(__name__)
@@ -33,6 +34,15 @@ def webargs_validation_handler(error, req, schema, *, error_status_code, error_h
         exc=error,
         messages=error.messages,
     )
+
+@app.before_request
+def before_request():
+    g.start = time.time()
+
+@app.teardown_request
+def teardown_request(exception=None):
+    diff = time.time() - g.start
+    logger.debug(f'Request took {diff}s')
 
 if __name__ == '__main__':
     app.run(debug=True)
