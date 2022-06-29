@@ -160,7 +160,7 @@ def fetch_new_data(region, target_datetime: datetime = None):
         if not map_regions[region]['fetchResultIsList'] and not args.override_data_source:
             l_data = [l_data]
     except Exception as e:
-        print("Failed to execute query.")
+        print("Failed to execute fetchFn. See stderr log for details.")
         raise e
     l_data.sort(key=lambda e: e['datetime'])
     for data in l_data:
@@ -255,9 +255,11 @@ def crawlall():
         try:
             crawl_region(conn, region)
         except Exception as e:
-            print("Exception occurred while crawling region %s" % region, file=sys.stderr)
-            print(e, file=sys.stderr)
-            print(traceback.format_exc())
+            print(datetime.now().isoformat(),
+                    f"Exception occurred while crawling region {region}:",
+                    e,
+                    file=sys.stderr)
+            print(traceback.format_exc(), file=sys.stderr)
 
 if __name__ == '__main__':
     crawlall()
