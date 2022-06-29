@@ -219,11 +219,11 @@ def fetchandupdate(conn, region, run_timestamp):
 def should_run_now(conn, region, run_timestamp):
     last_updated = get_last_updated(conn, region)
     delta_since_last_update = run_timestamp - last_updated
-    print("region: %s, last updated: %s (%.0f min ago)" % (region, str(last_updated), delta_since_last_update.total_seconds() / 60))
+    print("Last updated: %s (%.0f min ago)" % (str(last_updated), delta_since_last_update.total_seconds() / 60))
     return delta_since_last_update > map_regions[region]['updateFrequency']
 
 def crawl_region(conn, region):
-    print(f'region: {region}')
+    print(f'Region: {region}')
     run_timestamp = datetime.now()
     if args.backfill:
         fetchandupdate(conn, region, run_timestamp)
