@@ -9,6 +9,7 @@ import json
 
 from api.resources.balancing_authority import BalancingAuthority, BalancingAuthorityList
 from api.resources.carbon_intensity import CarbonIntensity
+from api.resources.carbon_aware_scheduler import CarbonAwareScheduler
 from api.util import getLogger, json_serialize, logger
 
 
@@ -21,6 +22,7 @@ json.JSONEncoder.default = json_serialize
 api.add_resource(BalancingAuthority, '/balancing-authority/')
 api.add_resource(BalancingAuthorityList, '/balancing-authority/list')
 api.add_resource(CarbonIntensity, '/carbon-intensity/')
+api.add_resource(CarbonAwareScheduler, '/carbon-aware-scheduler/')
 
 # Source: https://github.com/marshmallow-code/webargs/issues/181#issuecomment-621159812
 @webargs.flaskparser.parser.error_handler

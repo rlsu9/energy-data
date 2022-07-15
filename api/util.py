@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
 
+from enum import Enum
 from typing import Any, Sequence
-from datetime import datetime, date
+from datetime import datetime, date, timedelta
 import yaml
 import logging
 import traceback
 import psycopg2
+import dataclasses
 
 def getLogger():
     return logging.getLogger('gunicorn.error')
@@ -26,6 +28,12 @@ def json_serialize(self, o: object) -> str:
     """This defines serilization for object types that `json` cannot handle by default."""
     if isinstance(o, (datetime, date)):
         return o.isoformat()
+    if isinstance(o, timedelta):
+        return o.total_seconds()
+    if dataclasses.is_dataclass(o):
+        return dataclasses.asdict(o)
+    if isinstance(o, Enum):
+        return o.value
     raise TypeError("Type %s is not serializable" % type(o))
 
 class PSqlExecuteException(Exception):
