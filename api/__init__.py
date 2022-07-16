@@ -10,7 +10,7 @@ import json
 from api.resources.balancing_authority import BalancingAuthority, BalancingAuthorityList
 from api.resources.carbon_intensity import CarbonIntensity
 from api.resources.carbon_aware_scheduler import CarbonAwareScheduler
-from api.util import getLogger, json_serialize, logger
+from api.util import json_serialize, logger
 
 
 app = Flask(__name__)
@@ -50,6 +50,6 @@ if __name__ == '__main__':
     app.run(debug=True)
 else:
     # Source: https://trstringer.com/logging-flask-gunicorn-the-manageable-way/
-    gunicorn_logger = getLogger()
+    gunicorn_logger = logger
     app.logger.handlers = gunicorn_logger.handlers
     app.logger.setLevel(gunicorn_logger.level)

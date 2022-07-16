@@ -9,10 +9,8 @@ import traceback
 import psycopg2
 import dataclasses
 
-def getLogger():
-    return logging.getLogger('gunicorn.error')
 
-logger = getLogger()
+logger = logging.getLogger('gunicorn.error')
 
 def loadYamlData(filepath):
     with open(filepath, 'r') as f:
