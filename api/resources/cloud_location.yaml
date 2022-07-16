@@ -1,0 +1,24 @@
+---
+public_clouds:
+- provider: AWS
+  regions:
+  - code: us-west-1
+    name: US West (N. California)
+    gps:
+    - 37.00578
+    - -121.56828
+  - code: us-west-2
+    name: US West (Oregon)
+    gps:
+    - 45.84041
+    - -119.28946
+  - code: us-east-1
+    name: US East (N. Virginia)
+    gps:
+    - 39.983334
+    - -82.98333
+  - code: us-east-2
+    name: US East (Ohio)
+    gps:
+    - 39.040283
+    - -77.485165

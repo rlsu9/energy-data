@@ -11,6 +11,9 @@ from marshmallow import validate
 
 from api.util import logger, PSqlExecuteException
 from api.resources.balancing_authority import convert_watttime_ba_abbrev_to_region, lookup_watttime_balancing_authority
+from api.resources.cloud_location import CloudLocationManager
+
+g_cloud_locations = CloudLocationManager.get_all_cloud_locations()
 
 validate_timedelta_is_positive = lambda dt: dt.total_seconds() > 0
 metadata_timedelta = dict(
