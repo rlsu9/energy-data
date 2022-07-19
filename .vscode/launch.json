@@ -5,6 +5,20 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Python: gunicorn api",
+            "type": "python",
+            "request": "launch",
+            "program": "${userHome}/anaconda3/envs/flask/bin/gunicorn",
+            "args": [
+                "api:app",
+                "--bind=localhost:8082",
+                "-w=1",
+                "--log-level=debug",
+                "--reload"
+            ],
+            "justMyCode": true,
+        },
+        {
             "name": "Python: Flask",
             "type": "python",
             "request": "launch",
