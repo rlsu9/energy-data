@@ -2,7 +2,7 @@
 
 from dataclasses import dataclass, field
 from enum import Enum
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from flask_restful import Resource
 from webargs import fields
 from webargs.flaskparser import use_args, use_kwargs
@@ -36,7 +36,7 @@ class ScheduleType(Enum):
 @dataclass
 class WorkloadSchedule:
     type: ScheduleType = field(metadata=dict(by_value=True))
-    interval: timedelta = field(metadata=metadata_timedelta)
+    start_time: datetime = field_with_validation(validate.Range(min=datetime.now(timezone.utc)))
 
 @dataclass
 class Dataset:
