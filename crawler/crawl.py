@@ -116,6 +116,7 @@ parser.add_argument('--backfill-begin-date', type=lambda s: datetime.strptime(s,
 parser.add_argument('--backfill-end-date', type=lambda s: datetime.strptime(s, '%Y-%m-%d'), help='The end date for backfill')
 parser.add_argument('-R', '--regions', nargs='+', choices=map_regions.keys(), help='Select a subset of regions')
 parser.add_argument('-N', '--dry-run', action='store_true', help='Only pull data but do not write to database')
+parser.add_argument('-F', '--force', action='store_true', help='Force pulling new data and ignore last updated')
 parser.add_argument('--override-data-source', choices=OVERRIDE_DATA_SOURCES, help='Override the crawler data source')
 args = parser.parse_args()
 
@@ -233,7 +234,7 @@ def should_run_now(conn, region, run_timestamp):
 def crawl_region(conn, region):
     print(f'Region: {region}')
     run_timestamp = datetime.now()
-    if args.backfill:
+    if args.backfill or args.force:
         fetchandupdate(conn, region, run_timestamp)
     else:
         if should_run_now(conn, region, run_timestamp):
