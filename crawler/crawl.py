@@ -2,7 +2,7 @@
 
 import sys
 import traceback
-from datetime import datetime, timedelta
+from datetime import date, datetime, timedelta
 import parsers.US_MISO
 import parsers.US_PJM
 import parsers.US_CAISO
@@ -20,10 +20,13 @@ import argparse
 
 map_regions = {
     'US-MISO': {
+        # interval between pulling new data
         'updateFrequency': timedelta(minutes=3),
         'timeZone': tz.gettz('America/New_York'),
         'fetchFn': parsers.US_MISO.fetch_production,
+        # Whether returned result is for a single timestamp or multiple
         'fetchResultIsList': False,
+        # Whether the crawler supports an input timestamp, or only supports current time
         'fetchCurrentData': True
     },
     'US-PJM': {
@@ -34,28 +37,33 @@ map_regions = {
         'fetchCurrentData': True
     },
     'US-CAISO': {
-        'updateFrequency': timedelta(days=1),
+        # Daily feed, but updated every ~ 5min
+        'updateFrequency': timedelta(minutes=5),
         'timeZone': tz.gettz('America/Los_Angeles'),
         'fetchFn': parsers.US_CAISO.fetch_production,
         'fetchResultIsList': True,
         'fetchCurrentData': False
     },
     'US-NEISO': {
-        'updateFrequency': timedelta(days=1),
+        # Daily feed, but updated every ~ 5min
+        'updateFrequency': timedelta(minutes=5),
         'timeZone': tz.gettz('America/New_York'),
         'fetchFn': parsers.US_NEISO.fetch_production,
         'fetchResultIsList': True,
         'fetchCurrentData': False
     },
     'US-BPA': {
-        'updateFrequency': timedelta(days=1),
+        # Daily feed, but updated every ~ 5min
+        # BPA keeps about 2 days' history
+        'updateFrequency': timedelta(minutes=5),
         'timeZone': tz.gettz('America/Los_Angeles'),
         'fetchFn': parsers.US_BPA.fetch_production,
         'fetchResultIsList': True,
         'fetchCurrentData': True
     },
     'US-NY': {
-        'updateFrequency': timedelta(days=1),
+        # Daily feed, but updated every ~ 5min
+        'updateFrequency': timedelta(minutes=5),
         'timeZone': tz.gettz('America/New_York'),
         'fetchFn': parsers.US_NY.fetch_production,
         'fetchResultIsList': True,
@@ -63,7 +71,7 @@ map_regions = {
     },
     'US-SPP': {
         # Realtime source is updated every 2 hours, but pulling more frequently to avoid missing data
-        'updateFrequency': timedelta(hours=1),
+        'updateFrequency': timedelta(minutes=5),
         'timeZone': tz.gettz('Etc/GMT'),
         'fetchFn': parsers.US_SPP.fetch_production,
         'fetchResultIsList': True,
@@ -151,7 +159,7 @@ def fetch_new_data(region, target_datetime: datetime = None):
                 target_datetime = arrow.now().shift(days=-1)
             target_datetime = arrow.get(target_datetime.date(), map_regions[region]['timeZone'])
         elif target_datetime is None:
-            raise NotImplementedError("Need to specify the target datatime for historic data")
+            target_datetime = arrow.get(date.today(), map_regions[region]['timeZone'])
     print('Target datetime:', target_datetime)
     if args.override_data_source:
         fetchFn = MAP_OVERRIDE_FETCHFNS[args.override_data_source]
