@@ -3,6 +3,7 @@
 from dataclasses import dataclass, field
 from enum import Enum
 from datetime import datetime, timedelta, timezone
+from typing import Optional
 from flask_restful import Resource
 from webargs import fields
 from webargs.flaskparser import use_args, use_kwargs
@@ -32,11 +33,25 @@ def field_with_validation(validation_function):
 class ScheduleType(Enum):
     UNIFORM_RANDOM = "uniform-random"
     POISSON = "poisson"
+    ONETIME = "onetime"
 
 @dataclass
 class WorkloadSchedule:
     type: ScheduleType = field(metadata=dict(by_value=True))
     start_time: datetime = field_with_validation(validate.Range(min=datetime.now(timezone.utc)))
+    interval: Optional[timedelta] = field(metadata=metadata_timedelta, default=None)
+
+    @validates_schema
+    def validate_schema(self, data, **kwargs):
+        errors = dict()
+        if 'type' not in data:
+            return
+        if data['type'] is ScheduleType.ONETIME and 'interval' in data and data['interval']:
+            errors['interval'] = 'interval must be empty for one-time workload'
+        if data['type'] is not ScheduleType.ONETIME and ('interval' not in data or not data['interval']):
+            errors['interval'] = 'interval must be specified for recurring workload'
+        if errors:
+            raise ValidationError(errors)
 
 @dataclass
 class Dataset:
