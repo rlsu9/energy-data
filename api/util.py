@@ -4,13 +4,12 @@ from enum import Enum
 from typing import Any, Sequence
 from datetime import datetime, date, timedelta
 import yaml
-import logging
 import traceback
 import psycopg2
 import dataclasses
+import logging
 
-
-logger = logging.getLogger('gunicorn.error')
+logger = logging.getLogger()
 
 def loadYamlData(filepath):
     with open(filepath, 'r') as f:
