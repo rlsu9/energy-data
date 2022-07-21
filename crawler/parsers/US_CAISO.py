@@ -23,7 +23,6 @@ def fetch_production(zone_key='US-CAISO', session=None, target_datetime=None,
 
     # Get the production from the CSV
     url = f'http://www.caiso.com/outlook/SP/History/{target_date}/fuelsource.csv'
-    print(url)
     csv = pandas.read_csv(url)
     csv.columns = csv.columns.str.lower()
     latest_index = len(csv) - 1
