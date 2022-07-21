@@ -7,7 +7,7 @@ from typing import Optional
 from marshmallow_dataclass import dataclass
 from marshmallow import validate, validates_schema, ValidationError
 
-from api.resources.cloud_location import CloudLocationManager
+from api.models.cloud_location import CloudLocationManager
 
 g_cloud_manager = CloudLocationManager()
 

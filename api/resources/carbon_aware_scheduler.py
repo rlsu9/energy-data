@@ -8,8 +8,8 @@ import marshmallow_dataclass
 
 from api.util import logger, PSqlExecuteException
 from api.resources.balancing_authority import convert_watttime_ba_abbrev_to_region, lookup_watttime_balancing_authority
-from api.resources.cloud_location import CloudLocationLookupException, CloudLocationManager
-from api.resources.models.workload import Workload
+from api.models.cloud_location import CloudLocationLookupException, CloudLocationManager
+from api.models.workload import Workload
 
 g_cloud_manager = CloudLocationManager()
 
