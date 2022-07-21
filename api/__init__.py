@@ -8,7 +8,7 @@ import secrets
 import json
 import logging
 
-from api.util import json_serialize, logger
+from api.util import json_serialize
 json.JSONEncoder.default = json_serialize
 
 def create_app():
@@ -17,8 +17,8 @@ def create_app():
     if __name__ != '__main__':
         # Source: https://trstringer.com/logging-flask-gunicorn-the-manageable-way/
         gunicorn_logger = logging.getLogger('gunicorn.error')
-        logger.addHandler(gunicorn_logger)
-        logger.setLevel(gunicorn_logger.level)
+        app.logger.handlers = gunicorn_logger.handlers
+        app.logger.setLevel(gunicorn_logger.level)
 
     from api.resources.balancing_authority import BalancingAuthority, BalancingAuthorityList
     from api.resources.carbon_intensity import CarbonIntensity
@@ -50,6 +50,6 @@ def create_app():
     @app.teardown_request
     def teardown_request(exception=None):
         diff = time.time() - g.start
-        logger.debug(f'Request took {1000 * diff:.0f}ms')
+        app.logger.debug(f'Request took {1000 * diff:.0f}ms')
 
     return app

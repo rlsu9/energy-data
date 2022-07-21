@@ -6,7 +6,8 @@ import os
 from pathlib import Path
 from typing import Tuple
 
-from api.util import loadYamlData, logger
+from api.util import loadYamlData
+from flask import current_app
 
 class CloudLocationLookupException(Exception):
     pass
@@ -55,7 +56,7 @@ class CloudLocationManager:
         return sorted(self.all_public_clouds.keys())
 
     def get_cloud_region_codes(self, cloud_provider: str) -> list[str]:
-        logger.debug('get_cloud_region_codes(%s)' % cloud_provider)
+        current_app.logger.debug('get_cloud_region_codes(%s)' % cloud_provider)
         if cloud_provider not in self.all_public_clouds:
             return []
         return [region.code for region in self.all_public_clouds[cloud_provider].regions]

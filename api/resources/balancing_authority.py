@@ -5,8 +5,9 @@ from pathlib import Path
 from flask_restful import Resource
 from webargs import fields
 from webargs.flaskparser import use_kwargs
+from flask import current_app
 
-from api.util import PSqlExecuteException, get_psql_connection, logger, loadYamlData, psql_execute_list
+from api.util import PSqlExecuteException, get_psql_connection, loadYamlData, psql_execute_list
 from api.external.watttime.ba_from_loc import get_ba_from_loc
 
 YAML_CONFIG = 'balancing_authority.yaml'
@@ -33,7 +34,7 @@ def convert_watttime_ba_abbrev_to_region(watttime_abbrev) -> str:
     if watttime_abbrev in MAPPING_WATTTIME_BA_TO_REGION:
         return MAPPING_WATTTIME_BA_TO_REGION[watttime_abbrev]
     else:
-        logger.warning('Unknown watttime abbrev "%s"' % watttime_abbrev)
+        current_app.logger.warning('Unknown watttime abbrev "%s"' % watttime_abbrev)
         return 'unknown:' + watttime_abbrev
 
 def lookup_watttime_balancing_authority(latitude: float, longitude: float) -> tuple[dict, int]:
@@ -45,7 +46,7 @@ def lookup_watttime_balancing_authority(latitude: float, longitude: float) -> tu
 
     if not watttime_response.ok:
         error = watttime_json['error'] if 'error' in watttime_json else 'Unknown error from WattTime API'
-        logger.warning('WattTime error: %s' % error)
+        current_app.logger.warning('WattTime error: %s' % error)
         return { 'error': error }, watttime_response.status_code
 
     try:
@@ -53,8 +54,8 @@ def lookup_watttime_balancing_authority(latitude: float, longitude: float) -> tu
         watttime_name = watttime_json['name']
         watttime_id = watttime_json['id']
     except Exception as e:
-        logger.error('Response: %s' % watttime_json)
-        logger.error(f"Failed to parse watttime response: {e}")
+        current_app.logger.error('Response: %s' % watttime_json)
+        current_app.logger.error(f"Failed to parse watttime response: {e}")
         return {
             'error': 'Failed to parse WattTime API response'
         }, 500
@@ -73,7 +74,7 @@ balancing_authority_args = {
 class BalancingAuthority(Resource):
     @use_kwargs(balancing_authority_args, location='query')
     def get(self, latitude: float, longitude: float):
-        logger.info("BalancingAuthority.get(%f, %f)" % (latitude, longitude))
+        current_app.logger.info("BalancingAuthority.get(%f, %f)" % (latitude, longitude))
         orig_request = { 'request': {
             'latitude': latitude,
             'longitude': longitude,
@@ -97,7 +98,7 @@ def get_all_balancing_authorities():
 
 class BalancingAuthorityList(Resource):
     def get(self):
-        logger.info("BalancingAuthorityList.get()")
+        current_app.logger.info("BalancingAuthorityList.get()")
         try:
             return get_all_balancing_authorities()
         except PSqlExecuteException as e:

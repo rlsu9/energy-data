@@ -5,8 +5,9 @@ from flask_restful import Resource
 from webargs import fields
 from webargs.flaskparser import use_args, use_kwargs
 import marshmallow_dataclass
+from flask import current_app
 
-from api.util import logger, PSqlExecuteException
+from api.util import PSqlExecuteException
 from api.resources.balancing_authority import convert_watttime_ba_abbrev_to_region, lookup_watttime_balancing_authority
 from api.models.cloud_location import CloudLocationLookupException, CloudLocationManager
 from api.models.workload import Workload
@@ -29,7 +30,7 @@ class CarbonAwareScheduler(Resource):
             'end': end,
             'workload': workload
         } }
-        logger.info("CarbonAwareScheduler.get(%s, %s, %s)" % (start, end, workload))
+        current_app.logger.info("CarbonAwareScheduler.get(%s, %s, %s)" % (start, end, workload))
 
         try:
             (latitude, longitude) = g_cloud_manager.get_gps_coordinate(args.preferred_cloud_location.cloud_provider,

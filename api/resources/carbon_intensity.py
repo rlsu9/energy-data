@@ -9,8 +9,9 @@ from datetime import datetime
 from flask_restful import Resource
 from webargs import fields
 from webargs.flaskparser import use_kwargs
+from flask import current_app
 
-from api.util import logger, loadYamlData, get_psql_connection, psql_execute_list, psql_execute_scalar, PSqlExecuteException
+from api.util import loadYamlData, get_psql_connection, psql_execute_list, psql_execute_scalar, PSqlExecuteException
 from api.resources.balancing_authority import convert_watttime_ba_abbrev_to_region, lookup_watttime_balancing_authority
 
 def get_map_carbon_intensity_by_fuel_source(config_path: os.path) -> dict[str, float]:
@@ -127,7 +128,7 @@ class CarbonIntensity(Resource):
             'start': start,
             'end': end,
         } }
-        logger.info("CarbonIntensity.get(%f, %f, %s, %s)" % (latitude, longitude, start, end))
+        current_app.logger.info("CarbonIntensity.get(%f, %f, %s, %s)" % (latitude, longitude, start, end))
 
         watttime_lookup_result, error_status_code = lookup_watttime_balancing_authority(latitude, longitude)
         if error_status_code:

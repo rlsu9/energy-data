@@ -8,17 +8,16 @@ import traceback
 import psycopg2
 import dataclasses
 import logging
-
-logger = logging.getLogger()
+from flask import current_app
 
 def loadYamlData(filepath):
     with open(filepath, 'r') as f:
         try:
             return yaml.safe_load(f)
         except yaml.YAMLError as e:
-            logger.fatal('Failed to load YAML data from "%s"' % filepath)
-            logger.fatal(e)
-            logger.fatal(traceback.format_exc())
+            current_app.logger.fatal('Failed to load YAML data from "%s"' % filepath)
+            current_app.logger.fatal(e)
+            current_app.logger.fatal(traceback.format_exc())
             return None
 
 def json_serialize(self, o: object) -> str:
@@ -43,7 +42,7 @@ def get_psql_connection(host='/var/run/postgresql/', database="electricity-data"
         return conn
     except Exception as e:
         logging.error(f"get_psql_connection: {e}")
-        logger.fatal(traceback.format_exc())
+        current_app.logger.fatal(traceback.format_exc())
         raise PSqlExecuteException("Failed to connect to database.")
 
 def psql_execute_scalar(cursor: psycopg2.extensions.cursor, query: str, vars: Sequence[Any] = []) -> Any|None:
@@ -53,7 +52,7 @@ def psql_execute_scalar(cursor: psycopg2.extensions.cursor, query: str, vars: Se
         result = cursor.fetchone()
     except Exception as e:
         logging.error(f'psql_execute_scalar("{query}", {vars}): {e}')
-        logger.fatal(traceback.format_exc())
+        current_app.logger.fatal(traceback.format_exc())
         raise PSqlExecuteException("Failed to execute SQL query.")
     return result[0] if result is not None else None
 
@@ -64,6 +63,6 @@ def psql_execute_list(cursor: psycopg2.extensions.cursor, query: str, vars: Sequ
         result = cursor.fetchall()
     except Exception as e:
         logging.error(f'psql_execute_scalar("{query}", {vars}): {e}')
-        logger.fatal(traceback.format_exc())
+        current_app.logger.fatal(traceback.format_exc())
         raise PSqlExecuteException("Failed to execute SQL query.")
     return result
