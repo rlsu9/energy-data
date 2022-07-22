@@ -1,8 +1,11 @@
 #!/usr/bin/env python3
 
-def test_balancing_authority_list(client, logger):
+import pytest
+from api.tests.util import logger, assert_response_ok
+
+def test_balancing_authority_list(client):
     response = client.get('/balancing-authority/list')
-    assert response.status_code < 400, "status_code not ok: %d" % response.status_code
+    assert_response_ok(response)
 
     expected_regions_subset = {
         'US-BPA',
