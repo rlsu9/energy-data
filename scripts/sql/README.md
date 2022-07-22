@@ -2,5 +2,5 @@
 
 Postgres helper script can be used like this:
 
-`(sudo -u postgres) psql -d dbname < script.sql`
+(Optionally `sudo -u postgres`) `psql -d <dbname> < <script.sql>`
 
