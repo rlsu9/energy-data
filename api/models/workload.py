@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from dataclasses import dataclass, field
+from dataclasses import field
 from enum import Enum
 from datetime import datetime, timedelta, timezone
 from typing import Optional
@@ -8,6 +8,7 @@ from marshmallow_dataclass import dataclass
 from marshmallow import validate, validates_schema, ValidationError
 
 from api.models.cloud_location import CloudLocationManager
+from api.util import get_all_enum_values
 
 g_cloud_manager = CloudLocationManager()
 
@@ -25,6 +26,13 @@ def field_default():
 def field_with_validation(validation_function):
     return field(metadata=dict(validate=validation_function))
 
+def field_enum(enum_type):
+    return field(metadata=dict(by_value=True, error=custom_validation_error_enum(enum_type)))
+
+def custom_validation_error_enum(enum_type):
+    possible_values = get_all_enum_values(enum_type)
+    return f'Must be one of %s.' % ', '.join(possible_values)
+
 class ScheduleType(Enum):
     UNIFORM_RANDOM = "uniform-random"
     POISSON = "poisson"
@@ -32,7 +40,7 @@ class ScheduleType(Enum):
 
 @dataclass
 class WorkloadSchedule:
-    type: ScheduleType = field(metadata=dict(by_value=True))
+    type: ScheduleType = field_enum(ScheduleType)
     start_time: datetime = field_with_validation(validate.Range(min=datetime.now(timezone.utc)))
     interval: Optional[timedelta] = field(metadata=metadata_timedelta, default=None)
 

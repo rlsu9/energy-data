@@ -66,3 +66,7 @@ def psql_execute_list(cursor: psycopg2.extensions.cursor, query: str, vars: Sequ
         current_app.logger.fatal(traceback.format_exc())
         raise PSqlExecuteException("Failed to execute SQL query.")
     return result
+
+def get_all_enum_values(enum_type):
+    """Get all values of a particular Enum type."""
+    return [e.value for e in enum_type]
