@@ -8,30 +8,9 @@ from marshmallow_dataclass import dataclass
 from marshmallow import validate, validates_schema, ValidationError
 
 from api.models.cloud_location import CloudLocationManager
-from api.util import get_all_enum_values
+from api.models.dataclass_extensions import *
 
 g_cloud_manager = CloudLocationManager()
-
-validate_timedelta_is_positive = lambda dt: dt.total_seconds() > 0
-metadata_timedelta = dict(
-    validate = validate_timedelta_is_positive,
-    precision = 'seconds',
-    serialization_type = float
-)
-validate_number_is_nonnegative = validate.Range(min=0, min_inclusive=True)
-
-def field_default():
-    return field(metadata=dict())
-
-def field_with_validation(validation_function):
-    return field(metadata=dict(validate=validation_function))
-
-def field_enum(enum_type):
-    return field(metadata=dict(by_value=True, error=custom_validation_error_enum(enum_type)))
-
-def custom_validation_error_enum(enum_type):
-    possible_values = get_all_enum_values(enum_type)
-    return f'Must be one of %s.' % ', '.join(possible_values)
 
 class ScheduleType(Enum):
     UNIFORM_RANDOM = "uniform-random"
