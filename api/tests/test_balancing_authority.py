@@ -15,23 +15,23 @@ class TestBalancingAuthority_Get:
         actual_regions: list[str] = response.json
         logger.debug("Received %d regions." % len(actual_regions))
         assert expected_regions_subset.issubset(actual_regions)
-    
-    @pytest.mark.parametrize('coordinate, expected_region, location', [
-        ((32.8801, -117.2340), 'US-CAISO', "UCSD"),
-        ((43.0389, -87.9065), 'US-MISO', "Milwaukee, WI"),
-        ((39.9833, -82.9833), 'US-PJM', "Columbus, OH"),    # (AWS us-east-1)
-        ((39.0438, -77.4874), 'US-PJM', "Ashburn, VA"),     # (AWS us-east-2)
-        ((45.8399, -119.7006), 'US-BPA', "Boardman, OR"),   # (AWS us-west-1)
-        # NOTE: for some reason, WattTime thinks this should be BPA instead of PACW
-        ((44.0521, -123.0868), 'US-BPA', "Eugene, OR"),
-        ((30.2672, -97.7431), 'US-ERCOT', "Austin, TX"),
+
+    @pytest.mark.parametrize('location, expected_region', [
+        ('UCSD', 'US-CAISO'),
+        ('Milwaukee, WI', 'US-MISO'),
+        ('Columbus, OH', 'US-PJM'),     # (AWS us-east-1)
+        ('Ashburn, VA', 'US-PJM'),      # (AWS us-east-2)
+        ('Boardman, OR', 'US-BPA'),     # (AWS us-west-1)
+        ('Eugene, OR', 'US-BPA'),       # NOTE: for some reason, WattTime thinks this should be BPA instead of PACW
+        ('Austin, TX', 'US-ERCOT'),
     ])
-    def test_balancing_authority_get(self, coordinate, expected_region, location, client):
+    def test_balancing_authority_get(self, location, expected_region, client, get_gps_coordinate):
         logger.info(f"Expecting ISO({location}) == {expected_region}")
-        assert len(coordinate) == 2
+        gps_coordinate = get_gps_coordinate(location)
+        assert len(gps_coordinate) == 2
         response = client.get('/balancing-authority/', query_string={
-            'latitude': coordinate[0],
-            'longitude': coordinate[1]
+            'latitude': gps_coordinate[0],
+            'longitude': gps_coordinate[1]
         })
         assert_response_ok(response)
 
