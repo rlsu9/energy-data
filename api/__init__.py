@@ -7,8 +7,9 @@ import webargs
 import secrets
 import json
 import logging
+from varname import nameof
 
-from api.util import json_serialize
+from api.util import json_serialize, PSqlExecuteException
 json.JSONEncoder.default = json_serialize
 
 def create_app():
@@ -24,7 +25,14 @@ def create_app():
     from api.resources.carbon_intensity import CarbonIntensity
     from api.resources.carbon_aware_scheduler import CarbonAwareScheduler
 
-    api = Api(app)
+    errors_custom_responses = {
+        nameof(PSqlExecuteException): {
+            'message': 'An unknown database exception has occurred',
+            'status': 500
+        }
+    }
+
+    api = Api(app, errors=errors_custom_responses)
     api.add_resource(BalancingAuthority, '/balancing-authority/')
     api.add_resource(BalancingAuthorityList, '/balancing-authority/list')
     api.add_resource(CarbonIntensity, '/carbon-intensity/')
