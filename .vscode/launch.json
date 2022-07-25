@@ -16,7 +16,7 @@
                 "--log-level=debug",
                 "--reload"
             ],
-            "justMyCode": true,
+            "justMyCode": false,
         },
         {
             "name": "Python: Flask",
