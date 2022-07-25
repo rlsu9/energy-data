@@ -2,7 +2,7 @@
 
 import sys
 import traceback
-from datetime import date, datetime, timedelta
+from datetime import date, datetime, timedelta, time
 import parsers.US_MISO
 import parsers.US_PJM
 import parsers.US_CAISO
@@ -42,7 +42,11 @@ map_regions = {
         'timeZone': tz.gettz('America/Los_Angeles'),
         'fetchFn': parsers.US_CAISO.fetch_production,
         'fetchResultIsList': True,
-        'fetchCurrentData': False
+        'fetchCurrentData': False,
+        'scheduledDowntime': (
+            time(0, 0),
+            time(0, 15)
+        )
     },
     'US-NEISO': {
         # Daily feed, but updated every ~ 5min
@@ -149,6 +153,16 @@ def set_last_updated(conn, region, run_timestamp):
         print("Failed to execute set_last_updated query.")
         raise e
 
+def is_in_scheduled_downtime(region: str, e: Exception):
+    if 'scheduledDowntime' not in map_regions[region]:
+        return False
+    scheduled_downtime = map_regions[region]['scheduledDowntime']
+    current_local_time = datetime.now(tz=tz.gettz(map_regions[region]['timeZone'])).time()
+    if scheduled_downtime[0] <= current_local_time <= scheduled_downtime[1]:
+        print("Exception ignored during scheduled downtime:", str(e), file=sys.stderr)
+        return True
+    return False
+
 def fetch_new_data(region, target_datetime: datetime = None):
     fetchFn = map_regions[region]['fetchFn']
     l_result = []
@@ -170,7 +184,10 @@ def fetch_new_data(region, target_datetime: datetime = None):
             l_data = [l_data]
     except Exception as e:
         print("Failed to execute fetchFn. See stderr log for details.")
-        raise e
+        if not is_in_scheduled_downtime(region, e):
+            raise e
+        else:
+            l_data = []
     l_data.sort(key=lambda e: e['datetime'])
     for data in l_data:
         timestamp = arrow.get(data['datetime']).to(map_regions[region]['timeZone']).datetime
