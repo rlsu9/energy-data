@@ -6,8 +6,9 @@ import numpy as np
 import psycopg2
 from pathlib import Path
 from datetime import datetime
+from werkzeug.exceptions import NotFound, BadRequest
 
-from api.util import loadYamlData, get_psql_connection, psql_execute_list, psql_execute_scalar, PSqlExecuteException
+from api.util import loadYamlData, get_psql_connection, psql_execute_list, psql_execute_scalar
 
 
 def get_map_carbon_intensity_by_fuel_source(config_path: os.path) -> dict[str, float]:
@@ -28,7 +29,7 @@ def validate_region_exists(conn: psycopg2.extensions.connection, region: str) ->
         "SELECT EXISTS(SELECT 1 FROM EnergyMixture WHERE region = %s)",
         [region])
     if not region_exists:
-        raise PSqlExecuteException(f"Region {region} doesn't exist in database.")
+        raise NotFound(f"Region {region} doesn't exist in database.")
 
 def get_available_time_range(conn: psycopg2.extensions.connection, region: str) -> \
     Tuple[datetime, datetime]:
@@ -45,12 +46,13 @@ def get_available_time_range(conn: psycopg2.extensions.connection, region: str) 
 def validate_time_range(conn: psycopg2.extensions.connection, region: str, start: datetime, end: datetime) -> None:
     """Validate we have electricity data for the given time range."""
     if start > end:
-        raise PSqlExecuteException("end must be before start")
+        raise BadRequest("end must be before start")
     (available_start, available_end) = get_available_time_range(conn, region)
     if start > available_end:
-        raise PSqlExecuteException("Time range is too new. Data not yet available.")
+        # TODO: add argument error and return 400
+        raise BadRequest("Time range is too new. Data not yet available.")
     if end < available_start:
-        raise PSqlExecuteException("Time range is too old. No data available.")
+        raise BadRequest("Time range is too old. No data available.")
 
 def get_average_carbon_intensity(conn: psycopg2.extensions.connection, region: str, start: datetime, end: datetime)  -> list[dict]:
     cursor = conn.cursor()

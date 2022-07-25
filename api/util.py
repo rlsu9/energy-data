@@ -8,6 +8,7 @@ import traceback
 import psycopg2
 import dataclasses
 from flask import current_app
+from werkzeug.exceptions import HTTPException
 
 def loadYamlData(filepath):
     with open(filepath, 'r') as f:
@@ -31,8 +32,17 @@ def json_serialize(self, o: object) -> str:
         return o.value
     raise TypeError("Type %s is not serializable" % type(o))
 
-class PSqlExecuteException(Exception):
-    pass
+class DocstringDefaultException(HTTPException):
+    """Subclass exception uses docstring as default message."""
+    def __init__(self, message=None, *args: object, **kwargs):
+        super().__init__(message or self.__doc__, *args, **kwargs)
+
+
+class PSqlExecuteException(DocstringDefaultException):
+    """Unknown database exception"""
+    def __init__(self, message=None, *args: object, **kwargs):
+        super().__init__(message, *args, **kwargs)
+        self.code = 500
 
 def get_psql_connection(host='/var/run/postgresql/', database="electricity-data") -> psycopg2.extensions.connection:
     """Get a new postgresql connection."""

@@ -6,7 +6,6 @@ from webargs import fields
 from webargs.flaskparser import use_kwargs
 from flask import current_app
 
-from api.util import PSqlExecuteException
 from api.helpers.carbon_intensity import get_carbon_intensity_list
 from api.resources.balancing_authority import convert_watttime_ba_abbrev_to_region, lookup_watttime_balancing_authority
 
@@ -33,13 +32,7 @@ class CarbonIntensity(Resource):
             return orig_request | watttime_lookup_result, error_status_code
 
         region = convert_watttime_ba_abbrev_to_region(watttime_lookup_result['watttime_abbrev'])
-        try:
-            l_carbon_intensity = get_carbon_intensity_list(region, start, end)
-        except PSqlExecuteException as e:
-            return orig_request | watttime_lookup_result | {
-                'region': region,
-                'error': str(e)
-            }, 500
+        l_carbon_intensity = get_carbon_intensity_list(region, start, end)
 
         return orig_request | watttime_lookup_result | {
             'region': region,

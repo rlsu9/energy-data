@@ -1,16 +1,30 @@
 #!/usr/bin/env python3
 
 import time
-from flask import Flask, g
+import traceback
+from flask import Flask, g, current_app, jsonify
 from flask_restful import Api
 import webargs
 import secrets
 import json
 import logging
-from varname import nameof
+from werkzeug.exceptions import UnprocessableEntity, HTTPException
 
-from api.util import json_serialize, PSqlExecuteException
+from api.util import DocstringDefaultException, json_serialize
 json.JSONEncoder.default = json_serialize
+
+class CustomApi(Api):
+    def handle_error(self, e: Exception):
+        handled_exceptions = [UnprocessableEntity]
+        if any([isinstance(e, handled_ex) for handled_ex in handled_exceptions]):
+            return super().handle_error(e)
+
+        # Skip re-thrown wrapped exceptions
+        if not isinstance(e, DocstringDefaultException):
+            current_app.logger.error("%s: %s", type(e), e)
+            current_app.logger.error(traceback.format_exc())
+        status_code = e.code if isinstance(e, HTTPException) else 500
+        return jsonify({'error': str(e)}), status_code
 
 def create_app():
     app = Flask(__name__)
@@ -25,14 +39,15 @@ def create_app():
     from api.resources.carbon_intensity import CarbonIntensity
     from api.resources.carbon_aware_scheduler import CarbonAwareScheduler
 
+    # Alternatively, use this and `from varname import nameof`.
     errors_custom_responses = {
-        nameof(PSqlExecuteException): {
-            'message': 'An unknown database exception has occurred',
-            'status': 500
-        }
+        # nameof("PSqlExecuteException"): {
+        #     'message': 'An unknown database exception has occurred',
+        #     'status': 500
+        # }
     }
 
-    api = Api(app, errors=errors_custom_responses)
+    api = CustomApi(app, errors=errors_custom_responses)
     api.add_resource(BalancingAuthority, '/balancing-authority/')
     api.add_resource(BalancingAuthorityList, '/balancing-authority/list')
     api.add_resource(CarbonIntensity, '/carbon-intensity/')
