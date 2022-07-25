@@ -7,7 +7,6 @@ import yaml
 import traceback
 import psycopg2
 import dataclasses
-import logging
 from flask import current_app
 
 def loadYamlData(filepath):
@@ -41,8 +40,7 @@ def get_psql_connection(host='/var/run/postgresql/', database="electricity-data"
         conn = psycopg2.connect(host=host, database=database, user="restapi_ro")
         return conn
     except Exception as e:
-        logging.error(f"get_psql_connection: {e}")
-        current_app.logger.fatal(traceback.format_exc())
+        current_app.logger.error(f"get_psql_connection: {e}", traceback.format_exc())
         raise PSqlExecuteException("Failed to connect to database.")
 
 def psql_execute_scalar(cursor: psycopg2.extensions.cursor, query: str, vars: Sequence[Any] = []) -> Any|None:
@@ -51,8 +49,8 @@ def psql_execute_scalar(cursor: psycopg2.extensions.cursor, query: str, vars: Se
         cursor.execute(query, vars)
         result = cursor.fetchone()
     except Exception as e:
-        logging.error(f'psql_execute_scalar("{query}", {vars}): {e}')
-        current_app.logger.fatal(traceback.format_exc())
+        current_app.logger.error(f'psql_execute_scalar("{query}", {vars}): {e}')
+        current_app.logger.error(traceback.format_exc())
         raise PSqlExecuteException("Failed to execute SQL query.")
     return result[0] if result is not None else None
 
@@ -62,8 +60,8 @@ def psql_execute_list(cursor: psycopg2.extensions.cursor, query: str, vars: Sequ
         cursor.execute(query, vars)
         result = cursor.fetchall()
     except Exception as e:
-        logging.error(f'psql_execute_scalar("{query}", {vars}): {e}')
-        current_app.logger.fatal(traceback.format_exc())
+        current_app.logger.error(f'psql_execute_scalar("{query}", {vars}): {e}')
+        current_app.logger.error(traceback.format_exc())
         raise PSqlExecuteException("Failed to execute SQL query.")
     return result
 
