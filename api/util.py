@@ -83,3 +83,10 @@ def psql_execute_list(cursor: psycopg2.extensions.cursor, query: str, vars: Sequ
 def get_all_enum_values(enum_type):
     """Get all values of a particular Enum type."""
     return [e.value for e in enum_type]
+
+def round_down(dt: datetime, round_to: timedelta)-> datetime:
+    """Round down the given datetime to the specified interval."""
+    # datetime.min has tzinfo=None
+    total_seconds = (dt.replace(tzinfo=None) - datetime.min).total_seconds()
+    remainder_seconds = total_seconds % round_to.total_seconds()
+    return dt - timedelta(seconds=remainder_seconds)
