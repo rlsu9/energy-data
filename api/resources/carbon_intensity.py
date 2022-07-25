@@ -27,10 +27,7 @@ class CarbonIntensity(Resource):
         } }
         current_app.logger.info("CarbonIntensity.get(%f, %f, %s, %s)" % (latitude, longitude, start, end))
 
-        watttime_lookup_result, error_status_code = lookup_watttime_balancing_authority(latitude, longitude)
-        if error_status_code:
-            return orig_request | watttime_lookup_result, error_status_code
-
+        watttime_lookup_result = lookup_watttime_balancing_authority(latitude, longitude)
         region = convert_watttime_ba_abbrev_to_region(watttime_lookup_result['watttime_abbrev'])
         l_carbon_intensity = get_carbon_intensity_list(region, start, end)
 

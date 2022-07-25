@@ -37,12 +37,17 @@ class DocstringDefaultException(HTTPException):
     def __init__(self, message=None, *args: object, **kwargs):
         super().__init__(message or self.__doc__, *args, **kwargs)
 
-
 class PSqlExecuteException(DocstringDefaultException):
     """Unknown database exception"""
     def __init__(self, message=None, *args: object, **kwargs):
         super().__init__(message, *args, **kwargs)
         self.code = 500
+
+class CustomHTTPException(HTTPException):
+    def __init__(self, description: str = None, code: int = None) -> None:
+        super().__init__(description)
+        if code:
+            self.code = code
 
 def get_psql_connection(host='/var/run/postgresql/', database="electricity-data") -> psycopg2.extensions.connection:
     """Get a new postgresql connection."""

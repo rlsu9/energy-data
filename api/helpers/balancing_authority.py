@@ -3,8 +3,9 @@
 import os
 from pathlib import Path
 from flask import current_app
+from werkzeug.exceptions import InternalServerError
 
-from api.util import loadYamlData, get_psql_connection, psql_execute_list
+from api.util import CustomHTTPException, loadYamlData, get_psql_connection, psql_execute_list
 from api.external.watttime.ba_from_loc import get_ba_from_loc
 
 YAML_CONFIG = 'balancing_authority.yaml'
@@ -42,9 +43,10 @@ def lookup_watttime_balancing_authority(latitude: float, longitude: float) -> tu
     watttime_json = watttime_response.json()
 
     if not watttime_response.ok:
-        error = watttime_json['error'] if 'error' in watttime_json else 'Unknown error from WattTime API'
-        current_app.logger.warning('WattTime error: %s' % error)
-        return { 'error': error }, watttime_response.status_code
+        error = watttime_json['error'] if 'error' in watttime_json else 'Unknown'
+        error = 'WattTime error: %s' % error
+        current_app.logger.warning(error)
+        raise CustomHTTPException(error, watttime_response.status_code)
 
     try:
         watttime_abbrev = watttime_json['abbrev']
@@ -53,15 +55,13 @@ def lookup_watttime_balancing_authority(latitude: float, longitude: float) -> tu
     except Exception as e:
         current_app.logger.error('Response: %s' % watttime_json)
         current_app.logger.error(f"Failed to parse watttime response: {e}")
-        return {
-            'error': 'Failed to parse WattTime API response'
-        }, 500
+        raise InternalServerError('Failed to parse WattTime API response')
 
     return {
         'watttime_abbrev': watttime_abbrev,
         'watttime_name': watttime_name,
         'watttime_id': watttime_id,
-    }, None
+    }
 
 def get_all_balancing_authorities():
     """Return a list of all balancing authorities for which we have collect data."""
