@@ -1,16 +1,13 @@
 #!/usr/bin/env python3
 
 from dataclasses import dataclass
-from enum import Enum
 import os
 from pathlib import Path
 from typing import Tuple
+from flask import current_app
+from werkzeug.exceptions import NotFound
 
 from api.util import loadYamlData
-from flask import current_app
-
-class CloudLocationLookupException(Exception):
-    pass
 
 @dataclass
 class CloudRegion:
@@ -55,6 +52,12 @@ class CloudLocationManager:
     def get_all_cloud_providers(self) -> list[str]:
         return sorted(self.all_public_clouds.keys())
 
+    def get_all_cloud_regions(self) -> list[CloudRegion]:
+        all_cloud_regions: list[CloudRegion] = []
+        for public_cloud in self.all_public_clouds.values():
+            all_cloud_regions += public_cloud.regions
+        return all_cloud_regions
+
     def get_cloud_region_codes(self, cloud_provider: str) -> list[str]:
         current_app.logger.debug('get_cloud_region_codes(%s)' % cloud_provider)
         if cloud_provider not in self.all_public_clouds:
@@ -63,8 +66,8 @@ class CloudLocationManager:
 
     def get_gps_coordinate(self, cloud_provider: str, region_code: str) -> Tuple[float, float]:
         if cloud_provider not in self.all_public_clouds:
-            raise CloudLocationLookupException('Unknown cloud provider "%s".' % cloud_provider)
+            raise NotFound('Unknown cloud provider "%s".' % cloud_provider)
         for region in self.all_public_clouds[cloud_provider].regions:
             if region.code == region_code:
                 return region.gps
-        raise CloudLocationLookupException('Unknown region "%s" for provider "%s".' % (region_code, cloud_provider))
+        raise NotFound('Unknown region "%s" for provider "%s".' % (region_code, cloud_provider))
