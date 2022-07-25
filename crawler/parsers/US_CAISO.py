@@ -3,6 +3,7 @@
 # Source: https://github.com/electricitymap/electricitymap-contrib/blob/master/parsers/US_CA.py
 
 from datetime import datetime, timedelta
+import io
 import sys
 import arrow
 import pandas
@@ -23,7 +24,12 @@ def fetch_production(zone_key='US-CAISO', session=None, target_datetime=None,
 
     # Get the production from the CSV
     url = f'http://www.caiso.com/outlook/SP/History/{target_date}/fuelsource.csv'
-    csv = pandas.read_csv(url)
+    response = requests.get(url)
+    response.raise_for_status()
+    # NOTE: temporary check, as CAISO seems to return 404 HTML page with a 200 status code
+    if '404 - Page Not Found' in response.text:
+        raise ValueError('404 response with a success status code')
+    csv = pandas.read_csv(io.StringIO(response.text))
     csv.columns = csv.columns.str.lower()
     latest_index = len(csv) - 1
     production_map = {
