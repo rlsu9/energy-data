@@ -3,7 +3,7 @@
 from dataclasses import field
 from enum import Enum
 from datetime import datetime, timedelta, timezone
-from typing import Optional
+from typing import Optional, Tuple
 from marshmallow_dataclass import dataclass
 from marshmallow import validate, validates_schema, ValidationError
 
@@ -20,7 +20,7 @@ class ScheduleType(Enum):
 @dataclass
 class WorkloadSchedule:
     type: ScheduleType = field_enum(ScheduleType)
-    start_time: datetime = field_with_validation(validate.Range(min=datetime.now(timezone.utc)))
+    start_time: Optional[datetime] = optional_field_with_validation(validate.Range(min=datetime.now(timezone.utc)))
     interval: Optional[timedelta] = field(metadata=metadata_timedelta, default=None)
 
     @validates_schema
