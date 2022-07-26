@@ -78,6 +78,7 @@ class CarbonAwareScheduler(Resource):
             candidate_iso_regions.append(iso_region)
         l_region_scores = []
         l_region_names = []
+        d_region_warnings = dict()
         for i in range(len(candidate_cloud_regions)):
             cloud_region = candidate_cloud_regions[i]
             iso_region = candidate_iso_regions[i]
@@ -85,12 +86,16 @@ class CarbonAwareScheduler(Resource):
                 l_region_scores.append(calculate_workload_scores(workload, cloud_region, iso_region))
                 l_region_names.append(str(cloud_region))
             except Exception as e:
-                current_app.logger.warning(f'Failed to calculate score for region {cloud_region}: {e}')
+                d_region_warnings[str(cloud_region)] = str(e)
         index_best_region, l_weighted_score = g_optimizer.compare_candidates(l_region_scores, True)
         selected_region = l_region_names[index_best_region]
 
+        d_weighted_scores = { l_region_names[i]: l_weighted_score[i] for i in range(len(l_region_names)) }
+        d_raw_scores = { l_region_names[i]: l_region_scores[i] for i in range(len(l_region_names)) }
         return orig_request | watttime_lookup_result | {
             'requested-region': str(args.preferred_cloud_location),
             'selected-region': selected_region,
-            'scores': { l_region_names[i]: l_weighted_score[i] for i in range(len(l_region_names)) }
+            'weighted-scores': d_weighted_scores,
+            'raw-scores': d_raw_scores,
+            'warnings': d_region_warnings,
         }
