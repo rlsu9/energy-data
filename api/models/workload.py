@@ -46,6 +46,9 @@ class CloudLocation:
     cloud_provider: str = field_with_validation(validate.OneOf(g_cloud_manager.get_all_cloud_providers()))
     region_code: str = field_default() #field_with_validation(validate.OneOf(g_cloud_manager.get_cloud_region_codes(cloud_provider)))
 
+    def __str__(self) -> str:
+        return f'{self.cloud_provider}:{self.region_code}'
+
     @validates_schema
     def validate_schema(self, data, **kwargs):
         # cloud_provider has been validated by its field-specific validation function
