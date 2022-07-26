@@ -140,7 +140,10 @@ def get_carbon_intensity_interval(timestamps: list[datetime]) -> timedelta:
     """Deduce the interval from a series of timestamps returned from the database."""
     if len(timestamps) == 0:
         raise ValueError("Invalid argument: empty list.")
-    values, counts = np.unique(timestamps, return_counts=True)
+    if len(timestamps) == 1:
+        return timedelta(hours=1)
+    timestamp_deltas = np.diff(timestamps)
+    values, counts = np.unique(timestamp_deltas, return_counts=True)
     return values[np.argmax(counts)]
 
 def calculate_total_carbon_emissions(start: datetime, end: datetime, power: float,
