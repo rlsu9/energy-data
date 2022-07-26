@@ -158,8 +158,8 @@ def calculate_total_carbon_emissions(start: datetime, end: datetime, power: floa
         Returns:
             Total carbon emissions in kgCO2.
     """
-    if (start < end):
-        raise BadRequest("start time is less than end time")
+    if (start > end):
+        raise BadRequest("start time is later than end time")
 
     l_timestamps = sorted(carbon_intensity_by_timestamp.keys())
     l_carbon_intensity = [carbon_intensity_by_timestamp[timestamp] for timestamp in l_timestamps]
