@@ -92,7 +92,7 @@ class CarbonAwareScheduler(Resource):
 
         d_weighted_scores = { l_region_names[i]: l_weighted_score[i] for i in range(len(l_region_names)) }
         d_raw_scores = { l_region_names[i]: l_region_scores[i] for i in range(len(l_region_names)) }
-        return orig_request | watttime_lookup_result | {
+        return orig_request | {
             'requested-region': str(args.preferred_cloud_location),
             'selected-region': selected_region,
             'weighted-scores': d_weighted_scores,
