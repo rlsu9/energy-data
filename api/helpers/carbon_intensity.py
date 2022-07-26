@@ -58,9 +58,14 @@ def validate_time_range(conn: psycopg2.extensions.connection,
 def get_average_carbon_intensity(conn: psycopg2.extensions.connection,
         region: str, start: datetime, end: datetime)  -> list[dict]:
     cursor = conn.cursor()
+    # in case start/end lie in between two timestamps, find the timestamp <= start and >= end.
     records: list[tuple[datetime, float]] = psql_execute_list(cursor,
         """SELECT datetime, carbonintensity FROM CarbonIntensity
-            WHERE region = %s AND %s <= datetime AND datetime <= %s
+            WHERE region = %s
+                AND datetime >= (SELECT MAX(datetime) FROM EnergyMixture
+                    WHERE datetime <= %s)
+                AND datetime <= (SELECT MIN(datetime) FROM EnergyMixture
+                    WHERE datetime >= %s)
             ORDER BY datetime;""",
         [region, start, end])
     l_carbon_intensity = []
