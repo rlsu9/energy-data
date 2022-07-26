@@ -7,7 +7,7 @@ import psycopg2
 from pathlib import Path
 from datetime import datetime, timedelta
 from werkzeug.exceptions import NotFound, BadRequest
-from bisect import bisect_left
+from bisect import bisect
 
 from api.util import loadYamlData, get_psql_connection, psql_execute_list, psql_execute_scalar, round_down
 
@@ -176,8 +176,8 @@ def calculate_total_carbon_emissions(start: datetime, end: datetime, power: floa
         conversion_factor = timedelta(hours=1).total_seconds() * 1000 * 1000
         return (end - start).total_seconds() * power * carbon_intensity / conversion_factor
 
-    index_start = bisect_left(l_timestamps, start)
-    index_end = bisect_left(l_timestamps, end)
+    index_start = bisect(l_timestamps, start) - 1
+    index_end = bisect(l_timestamps, end) - 1
     if index_start == index_end:
         carbon_intensity = l_carbon_intensity[index_start]
         return _calculate_carbon_emission_in_interval(start, end, carbon_intensity)

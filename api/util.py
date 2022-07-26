@@ -89,4 +89,5 @@ def round_down(dt: datetime, round_to: timedelta)-> datetime:
     # datetime.min has tzinfo=None
     total_seconds = (dt.replace(tzinfo=None) - datetime.min).total_seconds()
     remainder_seconds = total_seconds % round_to.total_seconds()
+    dt = dt.replace(microsecond=0)
     return dt - timedelta(seconds=remainder_seconds)
