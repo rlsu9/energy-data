@@ -44,18 +44,19 @@ def get_available_time_range(conn: psycopg2.extensions.connection, region: str) 
         , [region])
     return (timestamp_min, timestamp_max)
 
-def validate_time_range(conn: psycopg2.extensions.connection, region: str, start: datetime, end: datetime) -> None:
+def validate_time_range(conn: psycopg2.extensions.connection,
+        region: str, start: datetime, end: datetime) -> None:
     """Validate we have electricity data for the given time range."""
     if start > end:
         raise BadRequest("end must be before start")
     (available_start, available_end) = get_available_time_range(conn, region)
     if start > available_end:
-        # TODO: add argument error and return 400
         raise BadRequest("Time range is too new. Data not yet available.")
     if end < available_start:
         raise BadRequest("Time range is too old. No data available.")
 
-def get_average_carbon_intensity(conn: psycopg2.extensions.connection, region: str, start: datetime, end: datetime)  -> list[dict]:
+def get_average_carbon_intensity(conn: psycopg2.extensions.connection,
+        region: str, start: datetime, end: datetime)  -> list[dict]:
     cursor = conn.cursor()
     records: list[tuple[datetime, float]] = psql_execute_list(cursor,
         """SELECT datetime, carbonintensity FROM CarbonIntensity
@@ -70,7 +71,8 @@ def get_average_carbon_intensity(conn: psycopg2.extensions.connection, region: s
         })
     return l_carbon_intensity
 
-def get_power_by_timemstamp_and_fuel_source(conn: psycopg2.extensions.connection, region: str, start: datetime, end: datetime) -> dict[datetime, dict[str, float]]:
+def get_power_by_timemstamp_and_fuel_source(conn: psycopg2.extensions.connection,
+        region: str, start: datetime, end: datetime) -> dict[datetime, dict[str, float]]:
     cursor = conn.cursor()
     records: list[tuple[str, datetime, datetime]] = psql_execute_list(cursor,
         """SELECT datetime, category, power_mw FROM EnergyMixture
@@ -84,7 +86,8 @@ def get_power_by_timemstamp_and_fuel_source(conn: psycopg2.extensions.connection
         d_power_bytimestamp_and_fuel_source[timestamp][category] = power_mw
     return d_power_bytimestamp_and_fuel_source
 
-def calculate_average_carbon_intensity(power_by_timestamp_and_fuel_source: dict[datetime, dict[str, float]]) -> list[dict]:
+def calculate_average_carbon_intensity(
+        power_by_timestamp_and_fuel_source: dict[datetime, dict[str, float]]) -> list[dict]:
     l_carbon_intensity_by_timestamp = []
     for timestamp, power_by_fuel_source in power_by_timestamp_and_fuel_source.items():
         l_carbon_intensity = []
@@ -104,6 +107,15 @@ def calculate_average_carbon_intensity(power_by_timestamp_and_fuel_source: dict[
     return l_carbon_intensity_by_timestamp
 
 def get_carbon_intensity_list(region: str, start: datetime, end: datetime) -> list[dict]:
+    """Retrieve the carbon intensity time series data in the given time window.
+
+        Args:
+            region: the ISO region name.
+            start/end: the time window.
+
+        Returns:
+            A list of time series data.
+    """
     conn = get_psql_connection()
     validate_region_exists(conn, region)
     validate_time_range(conn, region, start, end)
