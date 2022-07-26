@@ -1,17 +1,17 @@
 #!/usr/bin/env python3
 
-from enum import Enum, auto
+from enum import Enum
 import numpy as np
 from werkzeug.exceptions import BadRequest
 
-class OptimizationFactor(Enum):
-    EnergyUsage = auto()
-    CarbonIntensity = auto()
-    ElectricityPrice = auto()
-    DataCenterPUE = auto()
-    EnergyEfficiency = auto()
-    WanNetworkUsage = auto()
-    LanNetworkUsage = auto()
+class OptimizationFactor(str, Enum):
+    EnergyUsage = 'energy-usage'
+    CarbonIntensity = 'carbon-intensity'
+    ElectricityPrice = 'electricity-price'
+    DataCenterPUE = 'datacenter-pue'
+    EnergyEfficiency = 'energy-efficiency'
+    WanNetworkUsage = 'wan-network-usage'
+    LanNetworkUsage = 'lan-network-usage'
 
 
 class OptimizationEngine:
