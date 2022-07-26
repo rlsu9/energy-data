@@ -8,6 +8,7 @@ import traceback
 import psycopg2
 import dataclasses
 from flask import current_app
+from flask.json import JSONEncoder
 from werkzeug.exceptions import HTTPException
 
 def loadYamlData(filepath):
@@ -20,17 +21,18 @@ def loadYamlData(filepath):
             current_app.logger.fatal(traceback.format_exc())
             return None
 
-def json_serialize(self, o: object) -> str:
-    """This defines serilization for object types that `json` cannot handle by default."""
-    if isinstance(o, (datetime, date)):
-        return o.isoformat()
-    if isinstance(o, timedelta):
-        return o.total_seconds()
-    if dataclasses.is_dataclass(o):
-        return dataclasses.asdict(o)
-    if isinstance(o, Enum):
-        return o.value
-    raise TypeError("Type %s is not serializable" % type(o))
+class CustomJSONEncoder(JSONEncoder):
+    def default(self, o: object) -> str:
+        """This defines serilization for object types that `json` cannot handle by default."""
+        if isinstance(o, (datetime, date)):
+            return o.isoformat()
+        if isinstance(o, timedelta):
+            return o.total_seconds()
+        if dataclasses.is_dataclass(o):
+            return dataclasses.asdict(o)
+        if isinstance(o, Enum):
+            return o.value
+        raise TypeError("Type %s is not serializable" % type(o))
 
 class DocstringDefaultException(HTTPException):
     """Subclass exception uses docstring as default message."""

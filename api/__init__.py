@@ -6,12 +6,10 @@ from flask import Flask, g, current_app, jsonify
 from flask_restful import Api
 import webargs
 import secrets
-import json
 import logging
 from werkzeug.exceptions import UnprocessableEntity, HTTPException
 
-from api.util import DocstringDefaultException, json_serialize
-json.JSONEncoder.default = json_serialize
+from api.util import DocstringDefaultException, CustomJSONEncoder
 
 class CustomApi(Api):
     def handle_error(self, e: Exception):
@@ -29,6 +27,9 @@ class CustomApi(Api):
 def create_app():
     app = Flask(__name__)
     app.config['SECRET_KEY'] = secrets.token_hex()
+    app.config['RESTFUL_JSON'] = {
+        'cls': CustomJSONEncoder
+    }
     if __name__ != '__main__':
         # Source: https://trstringer.com/logging-flask-gunicorn-the-manageable-way/
         gunicorn_logger = logging.getLogger('gunicorn.error')
