@@ -16,6 +16,9 @@ class CloudRegion:
     name: str
     gps: Tuple[float, float]
 
+    def __str__(self) -> str:
+        return f'{self.provider}:{self.code}'
+
 @dataclass
 class PublicCloud:
     provider: str
@@ -64,7 +67,10 @@ class CloudLocationManager:
             return []
         return [region.code for region in self.all_public_clouds[cloud_provider].regions]
 
-    def get_gps_coordinate(self, cloud_provider: str, region_code: str) -> Tuple[float, float]:
+    def get_gps_coordinate(self, cloud_region: CloudRegion = None, cloud_provider: str = None, region_code: str = None) -> Tuple[float, float]:
+        if not cloud_provider and not region_code and cloud_region:
+            cloud_provider = cloud_region.provider
+            region_code = cloud_region.code
         if cloud_provider not in self.all_public_clouds:
             raise NotFound('Unknown cloud provider "%s".' % cloud_provider)
         for region in self.all_public_clouds[cloud_provider].regions:

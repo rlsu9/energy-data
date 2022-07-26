@@ -5,10 +5,11 @@ from typing import Tuple
 import numpy as np
 import psycopg2
 from pathlib import Path
-from datetime import datetime
+from datetime import datetime, timedelta
 from werkzeug.exceptions import NotFound, BadRequest
+from bisect import bisect_left
 
-from api.util import loadYamlData, get_psql_connection, psql_execute_list, psql_execute_scalar
+from api.util import loadYamlData, get_psql_connection, psql_execute_list, psql_execute_scalar, round_down
 
 
 def get_map_carbon_intensity_by_fuel_source(config_path: os.path) -> dict[str, float]:
@@ -102,10 +103,85 @@ def calculate_average_carbon_intensity(power_by_timestamp_and_fuel_source: dict[
         })
     return l_carbon_intensity_by_timestamp
 
-def get_carbon_intensity_list(region: str, start: datetime, end: datetime) -> float:
+def get_carbon_intensity_list(region: str, start: datetime, end: datetime) -> list[dict]:
     conn = get_psql_connection()
     validate_region_exists(conn, region)
     validate_time_range(conn, region, start, end)
     return get_average_carbon_intensity(conn, region, start, end)
     # power_by_fuel_source = get_power_by_timemstamp_and_fuel_source(conn, region, start, end)
     # return calculate_average_carbon_intensity(power_by_fuel_source)
+
+def convert_carbon_intensity_list_to_dict(l_carbon_intensity: list[dict])-> dict[datetime, float]:
+    d_carbon_intensity_by_timestamp: dict[datetime, float] = {}
+    for d in l_carbon_intensity:
+        timestamp = d['timestamp']
+        carbon_intensity = d['carbon_intensity']
+        d_carbon_intensity_by_timestamp[timestamp] = carbon_intensity
+    return d_carbon_intensity_by_timestamp
+
+def get_carbon_intensity_interval(timestamps: list[datetime]) -> timedelta:
+    """Deduce the interval from a series of timestamps returned from the database."""
+    if len(timestamps) == 0:
+        raise ValueError("Invalid argument: empty list.")
+    values, counts = np.unique(timestamps, return_counts=True)
+    return values[np.argmax(counts)]
+
+def calculate_total_carbon_emissions(start: datetime, end: datetime, power: float,
+        carbon_intensity_by_timestamp: dict[datetime, float]) -> float:
+    """Calculate the total carbon emission by multiplying energy with carbon intensity.
+
+        Args:
+            start/end: start and end time of a workload.
+            power: average power in watt.
+            carbon_intensity_by_timestamp: a timeseries carbon intensity data in gCO2/kWh.
+        
+        Returns:
+            Total carbon emissions in kgCO2.
+    """
+    if (start < end):
+        raise BadRequest("start time is less than end time")
+
+    l_timestamps = sorted(carbon_intensity_by_timestamp.keys())
+    l_carbon_intensity = [carbon_intensity_by_timestamp[timestamp] for timestamp in l_timestamps]
+    average_interval = get_carbon_intensity_interval(l_timestamps)
+    # round down start/end as carbon intensity data starts at mostly aligned intervals
+    end_rounded = round_down(end, average_interval)
+
+    if start < min(l_timestamps) or end_rounded > max(l_timestamps):
+        raise NotFound("Missing carbon intensity data for the given time interval.")
+
+    def _calculate_carbon_emission_in_interval(start: datetime, end: datetime, carbon_intensity: float) -> float:
+        """Calculate carbon emission in a small interval with fixed carbon intensity."""
+        # This converts s * W * gCO2/kWh to h * kW * kgCO2/kWh (or kgCO2)
+        conversion_factor = timedelta(hours=1).total_seconds() * 1000 * 1000
+        return (end - start).total_seconds() * power * carbon_intensity / conversion_factor
+
+    index_start = bisect_left(l_timestamps, start)
+    index_end = bisect_left(l_timestamps, end)
+    if index_start == index_end:
+        carbon_intensity = l_carbon_intensity[index_start]
+        return _calculate_carbon_emission_in_interval(start, end, carbon_intensity)
+
+    total_carbon_emissions = 0.
+    # Partial starting interval
+    total_carbon_emissions += _calculate_carbon_emission_in_interval(
+        start,
+        l_timestamps[index_start + 1],
+        l_carbon_intensity[index_start])
+
+    # Whole intervals in the middle
+    index_interval = index_start + 1
+    while index_interval < index_end:
+        total_carbon_emissions += _calculate_carbon_emission_in_interval(
+            l_timestamps[index_interval],
+            l_timestamps[index_interval + 1],
+            l_carbon_intensity[index_interval])
+        index_interval += 1
+
+    # Partial ending interval
+    total_carbon_emissions += _calculate_carbon_emission_in_interval(
+        l_timestamps[index_end],
+        end,
+        l_carbon_intensity[index_end])
+
+    return total_carbon_emissions

@@ -4,6 +4,7 @@ from enum import Enum, auto
 import numpy as np
 
 class OptimizationFactor(Enum):
+    EnergyUsage = auto()
     CarbonIntensity = auto()
     ElectricityPrice = auto()
     DataCenterPUE = auto()
