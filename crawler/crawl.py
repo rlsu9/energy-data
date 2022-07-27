@@ -208,7 +208,12 @@ def upload_new_data(conn, region, timestamp, d_power_mw_by_category):
     cur = conn.cursor()
     try:
         psycopg2.extras.execute_values(cur,
-            """INSERT INTO EnergyMixture (datetime, category, power_mw, region) VALUES %s ON CONFLICT DO NOTHING""",
+            """INSERT INTO EnergyMixture (datetime, category, power_mw, region)
+                VALUES %s
+                ON CONFLICT ON CONSTRAINT energymixture_unique_datetime_category_region
+                DO UPDATE SET Power_MW = EXCLUDED.Power_MW
+                    WHERE EnergyMixture.Power_MW = 'NaN'
+            """,
             rows)
         conn.commit()
     except Exception as e:
