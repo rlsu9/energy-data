@@ -2,8 +2,7 @@
 
 from datetime import datetime, timezone
 from flask_restful import Resource
-from webargs import fields
-from webargs.flaskparser import use_args, use_kwargs
+from webargs.flaskparser import use_args
 import marshmallow_dataclass
 from flask import current_app
 
@@ -49,22 +48,12 @@ def calculate_workload_scores(workload: Workload, cloud_region: CloudRegion, iso
         d_scores[factor] = score
     return d_scores
 
-carbon_aware_scheduler_args = {
-    'start': fields.DateTime(format="iso", required=True),
-    'end': fields.DateTime(format="iso", required=True),
-}
-
 class CarbonAwareScheduler(Resource):
-    @use_kwargs(carbon_aware_scheduler_args, location='query')
     @use_args(marshmallow_dataclass.class_schema(Workload)())
-    def get(self, args: Workload, start: datetime, end: datetime):
+    def get(self, args: Workload):
         workload = args
-        orig_request = { 'request': {
-            'start': start,
-            'end': end,
-            'workload': workload
-        } }
-        current_app.logger.info("CarbonAwareScheduler.get(%s, %s, %s)" % (start, end, workload))
+        orig_request = { 'request': workload}
+        current_app.logger.info("CarbonAwareScheduler.get(%s)" % workload)
         if workload.schedule.start_time is None:
             workload.schedule.start_time = datetime.now(timezone.utc)
 
