@@ -50,4 +50,4 @@ class OptimizationEngine:
         for candidate_index in range(len(scores)):
             weighted_score = self._calculate_weighted_score(scores[candidate_index])
             l_weighted_scores.append(weighted_score)
-        return np.argmax(l_weighted_scores), l_weighted_scores if return_scores else None
+        return np.argmin(l_weighted_scores), l_weighted_scores if return_scores else None
