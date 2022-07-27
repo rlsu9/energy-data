@@ -133,25 +133,24 @@ def getdbconn(host='/var/run/postgresql/', database="electricity-data"):
         raise e
 
 def get_last_updated(conn, region):
-    cur = conn.cursor()
-    try:
-        cur.execute("""SELECT LastUpdated FROM LastUpdated WHERE Region = %s""", [region])
-        result = cur.fetchone()
-    except Exception as e:
-        print("Failed to execute get_last_updated query.")
-        raise e
+    with conn, conn.cursor() as cur:
+        try:
+            cur.execute("""SELECT LastUpdated FROM LastUpdated WHERE Region = %s""", [region])
+            result = cur.fetchone()
+        except psycopg2.Error as e:
+            print("Failed to execute get_last_updated query.")
+            raise e
     return result[0] if result is not None else datetime.min
 
 def set_last_updated(conn, region, run_timestamp):
-    cur = conn.cursor()
-    try:
-        cur.execute("""INSERT INTO LastUpdated (Region, LastUpdated) VALUES (%s, %s)
-                        ON CONFLICT (Region) DO UPDATE SET LastUpdated = EXCLUDED.LastUpdated""",
-                        [region, run_timestamp])
-        conn.commit()
-    except Exception as e:
-        print("Failed to execute set_last_updated query.")
-        raise e
+    with conn, conn.cursor() as cur:
+        try:
+            cur.execute("""INSERT INTO LastUpdated (Region, LastUpdated) VALUES (%s, %s)
+                            ON CONFLICT (Region) DO UPDATE SET LastUpdated = EXCLUDED.LastUpdated""",
+                            [region, run_timestamp])
+        except psycopg2.Error as e:
+            print("Failed to execute set_last_updated query.")
+            raise e
 
 def is_in_scheduled_downtime(region: str, e: Exception):
     if 'scheduledDowntime' not in map_regions[region]:
@@ -205,20 +204,19 @@ def upload_new_data(conn, region, timestamp, d_power_mw_by_category):
         power_mw = d_power_mw_by_category[category]
         row = (timestamp, category, power_mw, region)
         rows.append(row)
-    cur = conn.cursor()
-    try:
-        psycopg2.extras.execute_values(cur,
-            """INSERT INTO EnergyMixture (datetime, category, power_mw, region)
-                VALUES %s
-                ON CONFLICT ON CONSTRAINT energymixture_unique_datetime_category_region
-                DO UPDATE SET Power_MW = EXCLUDED.Power_MW
-                    WHERE EnergyMixture.Power_MW = 'NaN'
-            """,
-            rows)
-        conn.commit()
-    except Exception as e:
-        print("Failed to upload new data")
-        raise e
+    with conn, conn.cursor() as cur:
+        try:
+            psycopg2.extras.execute_values(cur,
+                """INSERT INTO EnergyMixture (datetime, category, power_mw, region)
+                    VALUES %s
+                    ON CONFLICT ON CONSTRAINT energymixture_unique_datetime_category_region
+                    DO UPDATE SET Power_MW = EXCLUDED.Power_MW
+                        WHERE EnergyMixture.Power_MW = 'NaN'
+                """,
+                rows)
+        except psycopg2.Error as e:
+            print("Failed to upload new data")
+            raise e
     return len(rows)
 
 def fetchandupdate(conn, region, run_timestamp):
@@ -291,6 +289,7 @@ def crawlall():
                     e,
                     file=sys.stderr)
             print(traceback.format_exc(), file=sys.stderr)
+    conn.close()
 
 if __name__ == '__main__':
     crawlall()
