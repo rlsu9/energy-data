@@ -161,12 +161,13 @@ def calculate_total_carbon_emissions(start: datetime, end: datetime, power: floa
     if (start > end):
         raise BadRequest("start time is later than end time")
 
+    # Convert dict to lists for easier indexing and searching
     l_timestamps = sorted(carbon_intensity_by_timestamp.keys())
     l_carbon_intensity = [carbon_intensity_by_timestamp[timestamp] for timestamp in l_timestamps]
-    average_interval = get_carbon_intensity_interval(l_timestamps)
-    # round down start/end as carbon intensity data starts at mostly aligned intervals
-    end_rounded = round_down(end, average_interval)
 
+    # Check if we have carbon intensity data for the requested range
+    # round down as carbon intensity data starts at mostly aligned intervals
+    end_rounded = round_down(end, get_carbon_intensity_interval(l_timestamps))
     if start < min(l_timestamps) or end_rounded > max(l_timestamps):
         raise NotFound("Missing carbon intensity data for the given time interval.")
 
@@ -176,13 +177,19 @@ def calculate_total_carbon_emissions(start: datetime, end: datetime, power: floa
         conversion_factor = timedelta(hours=1).total_seconds() * 1000 * 1000
         return (end - start).total_seconds() * power * carbon_intensity / conversion_factor
 
-    index_start = bisect(l_timestamps, start) - 1
-    index_end = bisect(l_timestamps, end) - 1
-    if index_start == index_end:
+    def _find_timestamp_index(timestamp: datetime) -> int:
+        """Find the timestamp index in carbon intensity timestamp list, or the closest one to the left."""
+        return bisect(l_timestamps, timestamp) - 1
+
+    index_start = _find_timestamp_index(start)
+    index_end = _find_timestamp_index(end)
+    if index_start == index_end:    # start and end lie in one interval
         carbon_intensity = l_carbon_intensity[index_start]
         return _calculate_carbon_emission_in_interval(start, end, carbon_intensity)
 
+    # Calculate total carbon emissions with unaligned interval
     total_carbon_emissions = 0.
+
     # Partial starting interval
     total_carbon_emissions += _calculate_carbon_emission_in_interval(
         start,
