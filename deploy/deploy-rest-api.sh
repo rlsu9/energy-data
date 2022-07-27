@@ -12,15 +12,12 @@ echo "Deploying Flask REST API to: \"$PROD_DIR\""
 echo "Copying files to deployment folder  ..."
 rsync -auhvzP --delete \
     --exclude '__pycache__' \
-    --exclude '.envrc' \
+    --exclude '.*' \
     --filter='+ /external/' \
     --filter='+ /external/watttime/' \
     --filter='- /external/watttime/data' \
     --filter='- /external/*' \
-    --filter='+ /resources/' \
-    --filter='+ /__init__.py' \
-    --filter='+ /util.py' \
-    --filter='- /*' \
+    --filter='- /tests/*' \
     ./api/ "$PROD_DIR/api"
 rsync -auhvzP \
     --exclude '__pycache__' \
