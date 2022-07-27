@@ -55,6 +55,7 @@ def get_psql_connection(host='/var/run/postgresql/', database="electricity-data"
     """Get a new postgresql connection."""
     try:
         conn = psycopg2.connect(host=host, database=database, user="restapi_ro")
+        conn.autocommit = True
         return conn
     except Exception as e:
         current_app.logger.error(f"get_psql_connection: {e}", traceback.format_exc())
@@ -65,7 +66,7 @@ def psql_execute_scalar(cursor: psycopg2.extensions.cursor, query: str, vars: Se
     try:
         cursor.execute(query, vars)
         result = cursor.fetchone()
-    except Exception as e:
+    except psycopg2.Error as e:
         current_app.logger.error(f'psql_execute_scalar("{query}", {vars}): {e}')
         current_app.logger.error(traceback.format_exc())
         raise PSqlExecuteException("Failed to execute SQL query.")
@@ -76,7 +77,7 @@ def psql_execute_list(cursor: psycopg2.extensions.cursor, query: str, vars: Unio
     try:
         cursor.execute(query, vars)
         result = cursor.fetchall()
-    except Exception as e:
+    except psycopg2.Error as e:
         current_app.logger.error(f'psql_execute_scalar("{query}", {vars}): {e}')
         current_app.logger.error(traceback.format_exc())
         raise PSqlExecuteException("Failed to execute SQL query.")
