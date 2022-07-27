@@ -1,4 +1,4 @@
--- This creates a read-only user for crawler.
+-- This creates a read-write user for crawler.
 -- Run with user postgres in the same database, e.g. `sudo su postgres` and then `psql -d electricity-data`.
 
 CREATE USER crawler_rw;
