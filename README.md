@@ -17,7 +17,7 @@ We are starting with US ISOs, which currently include:
 - [SPP](./crawler/parsers/US_SPP.py), which only has current data for the past two hours, so we pull every hour.
 - [PR](./crawler/parsers/US_PREPA.py) (**disabled**), which only has current data, but is stale and always shows 03/24/2022, so it's disabled for now.
 - [HI](./crawler/parsers/US_HI.py) (**disabled**), which has daily historic data, but stopped after 04/13/2022, so it's disabled for now.
-- [ERCOT](./crawler/parsers/US_ERCOT.py), which uses the new data source from EIA, and has historic data. We plan to migrate other sources to EIA as well to standardize the data sources.
+- `ERCOT` (~~[US_ERCOT.py](./crawler/parsers/US_ERCOT.py)~~) and `PACW` which uses the new data source from EIA, and has historic data. ~~We plan to migrate other sources to EIA as well to standardize the data sources.~~ (EIA data sources had some temporary issue since June 2022 and hasn't been fixed in July 2022.)
 
 You can find the exact list at the top of the main crawler file [crawl.py](./crawler/crawl.py).
 
@@ -35,10 +35,14 @@ This is work in progress.
 
 We implement a REST API using [Flask](https://flask.palletsprojects.com/) and [Flask-RESTful](https://flask-restful.readthedocs.io/).
 The code is located in [api](./api/) and calls to external APIs are implemented in [api/external](./api/external/).
-The Flask app is deployed using NGINX + gunicorn, which are detailed in the deployment script below. You can also run locally using `gunicorn` directly by executing `gunicorn api:app` in repo root.
+The Flask app is deployed using `nginx` + `gunicorn`, which are detailed in the deployment script below. You can also run locally using `gunicorn` directly by executing `gunicorn api:create_app()` in repo root, or via [VSCode launch script](./.vscode/launch.json).
 
 Currently we support:
-- Look up balancing authority based on GPS coordinates (via WattTime API).
+- [Look up balancing authority](./api/resources/balancing_authority.py) based on GPS coordinates (via WattTime API).
+- [Look up carbon intensity](./api/resources/carbon_intensity.py) based on GPS coordinates and time range.
+- (prototype) [Carbon-aware multi-region scheduler](./api/resources/carbon_aware_scheduler.py) that assigns workload based on its [profile](./api/models/workload.py) and an [optimization algorithm](./api/models/optimization_engine.py).
+
+The full list is defined in [api module](./api/__init__.py).
 
 ## Deployment
 Deployment scripts are in [deploy](./deploy).
@@ -50,4 +54,4 @@ Currently, we run:
 - [Main crawler](./deploy/run-crawler.sh) once every minute.
 
 ### REST API
-The REST API deployment script ([deploy-rest-api.sh](./deploy/deploy-rest-api.sh)) copies the api code to a "production" folder and reloads supervisor, which has been set up to monitor and control the flask app via gunicorn. NGINX acts as a proxy to gunicorn. The entire setup process is documented in [scripts/setup/install-flask-runtime.sh](./scripts/setup/install-flask-runtime.sh).
+The REST API deployment script ([deploy-rest-api.sh](./deploy/deploy-rest-api.sh)) copies the api code to a "production" folder and reloads `supervisor`, which has been set up to monitor and control the `flask` app via `gunicorn`. `nginx` acts as a reverse proxy to `gunicorn`. The entire setup process is documented in [scripts/setup/install-flask-runtime.sh](./scripts/setup/install-flask-runtime.sh).
