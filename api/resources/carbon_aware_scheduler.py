@@ -52,7 +52,7 @@ class CarbonAwareScheduler(Resource):
     @use_args(marshmallow_dataclass.class_schema(Workload)())
     def get(self, args: Workload):
         workload = args
-        orig_request = { 'request': workload}
+        orig_request = { 'request': workload }
         current_app.logger.info("CarbonAwareScheduler.get(%s)" % workload)
         if workload.schedule.start_time is None:
             workload.schedule.start_time = datetime.now(timezone.utc)
@@ -83,9 +83,12 @@ class CarbonAwareScheduler(Resource):
 
         d_weighted_scores = { l_region_names[i]: l_weighted_score[i] for i in range(len(l_region_names)) }
         d_raw_scores = { l_region_names[i]: l_region_scores[i] for i in range(len(l_region_names)) }
+        d_cloud_region_to_iso = { str(candidate_cloud_regions[i]): candidate_iso_regions[i] \
+                                    for i in range(len(candidate_cloud_regions)) }
         return orig_request | {
             'requested-region': str(args.preferred_cloud_location),
             'selected-region': selected_region,
+            'iso': d_cloud_region_to_iso,
             'weighted-scores': d_weighted_scores,
             'raw-scores': d_raw_scores,
             'warnings': d_region_warnings,
