@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from flask_restful import Resource
 from webargs.flaskparser import use_args
 import marshmallow_dataclass
@@ -57,7 +57,9 @@ class CarbonAwareScheduler(Resource):
         if workload.schedule.start_time is None:
             workload.schedule.start_time = datetime.now(timezone.utc)
 
-        # TODO: disamguite cloud region and ISO region
+        # TODO: use prediction data instead of historic data
+        workload.schedule.start_time -= timedelta(days=1)
+
         candidate_cloud_regions = get_alternative_regions(args.preferred_cloud_location, True)
         candidate_iso_regions = []
         for candidate_cloud_region in candidate_cloud_regions:
