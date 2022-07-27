@@ -61,13 +61,13 @@ def get_average_carbon_intensity(conn: psycopg2.extensions.connection,
     # in case start/end lie in between two timestamps, find the timestamp <= start and >= end.
     records: list[tuple[datetime, float]] = psql_execute_list(cursor,
         """SELECT datetime, carbonintensity FROM CarbonIntensity
-            WHERE region = %s
+            WHERE region = %(region)s
                 AND datetime >= (SELECT MAX(datetime) FROM EnergyMixture
-                    WHERE datetime <= %s)
+                    WHERE datetime <= %(start)s AND region = %(region)s)
                 AND datetime <= (SELECT MIN(datetime) FROM EnergyMixture
-                    WHERE datetime >= %s)
+                    WHERE datetime >= %(end)s AND region = %(region)s)
             ORDER BY datetime;""",
-        [region, start, end])
+        dict(region=region, start=start, end=end))
     l_carbon_intensity = []
     for (timestamp, carbon_intensity) in records:
         l_carbon_intensity.append({
