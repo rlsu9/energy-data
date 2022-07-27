@@ -14,8 +14,9 @@ from api.models.optimization_engine import OptimizationEngine, OptimizationFacto
 
 g_cloud_manager = CloudLocationManager()
 OPTIMIZATION_FACTORS_AND_WEIGHTS = [
-    (OptimizationFactor.CarbonIntensity, 1),
-    (OptimizationFactor.WanNetworkUsage, 1),
+    (OptimizationFactor.EnergyUsage, 1000),
+    (OptimizationFactor.CarbonIntensity, 1000),
+    (OptimizationFactor.WanNetworkUsage, 0.001),
 ]
 g_optimizer = OptimizationEngine([t[0] for t in OPTIMIZATION_FACTORS_AND_WEIGHTS],
                                 [t[1] for t in OPTIMIZATION_FACTORS_AND_WEIGHTS])
@@ -45,6 +46,7 @@ def calculate_workload_scores(workload: Workload, cloud_region: CloudRegion, iso
                 score = workload.dataset.input_size_gb + workload.dataset.output_size_gb
             case _: # Other factors ignored
                 score = 0
+                continue
         d_scores[factor] = score
     return d_scores
 
