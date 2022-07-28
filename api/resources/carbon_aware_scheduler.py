@@ -27,6 +27,7 @@ def get_alternative_regions(cloud_region: CloudRegion, include_self = False) -> 
 
 def calculate_workload_scores(workload: Workload, cloud_region: CloudRegion, iso_region: str) -> dict[OptimizationFactor, float]:
     d_scores = {}
+    d_misc = {}
     for factor in OptimizationFactor:
         match factor:
             case OptimizationFactor.EnergyUsage:
@@ -35,11 +36,17 @@ def calculate_workload_scores(workload: Workload, cloud_region: CloudRegion, iso
             case OptimizationFactor.CarbonIntensity:
                 # score = energy usage (kWh) * grid carbon intensity (kgCO2/kWh)
                 running_intervals = workload.get_running_intervals_in_24h()
+                max_delay = workload.schedule.max_delay
                 score = 0
+                d_misc['optimal_delay_time'] = []
                 for (start, end) in running_intervals:
-                    l_carbon_intensity = get_carbon_intensity_list(iso_region, start, end)
+                    l_carbon_intensity = get_carbon_intensity_list(iso_region, start, end + max_delay)
                     carbon_intensity_by_timestamp = convert_carbon_intensity_list_to_dict(l_carbon_intensity)
-                    score += calculate_total_carbon_emissions(start, end, DEFAULT_CPU_POWER_PER_CORE, carbon_intensity_by_timestamp)
+                    total_carbon_emissions, optimal_delay_time = calculate_total_carbon_emissions(
+                        start, end, DEFAULT_CPU_POWER_PER_CORE, carbon_intensity_by_timestamp, max_delay)
+                    # TODO: pass optimal_start_time to scheduler
+                    score += total_carbon_emissions
+                    d_misc['optimal_delay_time'].append(optimal_delay_time)
             case OptimizationFactor.WanNetworkUsage:
                 # score = input + output data size (GB)
                 # TODO: add WAN demand as weight
@@ -48,7 +55,7 @@ def calculate_workload_scores(workload: Workload, cloud_region: CloudRegion, iso
                 score = 0
                 continue
         d_scores[factor] = score
-    return d_scores
+    return d_scores, d_misc
 
 class CarbonAwareScheduler(Resource):
     @use_args(marshmallow_dataclass.class_schema(Workload)())
@@ -72,11 +79,15 @@ class CarbonAwareScheduler(Resource):
         l_region_scores = []
         l_region_names = []
         d_region_warnings = dict()
+        d_region_delay = dict()
         for i in range(len(candidate_cloud_regions)):
             cloud_region = candidate_cloud_regions[i]
             iso_region = candidate_iso_regions[i]
             try:
-                l_region_scores.append(calculate_workload_scores(workload, cloud_region, iso_region))
+                workload_scores, d_misc = calculate_workload_scores(workload, cloud_region, iso_region)
+                # if all([delay > timedelta() for delay in d_misc['optimal_delay_time']]):
+                d_region_delay[str(cloud_region)] = d_misc['optimal_delay_time']
+                l_region_scores.append(workload_scores)
                 l_region_names.append(str(cloud_region))
             except Exception as e:
                 d_region_warnings[str(cloud_region)] = str(e)
@@ -94,4 +105,5 @@ class CarbonAwareScheduler(Resource):
             'weighted-scores': d_weighted_scores,
             'raw-scores': d_raw_scores,
             'warnings': d_region_warnings,
+            'start_delay': d_region_delay,
         }
