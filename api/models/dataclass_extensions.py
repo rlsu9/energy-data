@@ -5,11 +5,18 @@ from marshmallow import validate
 
 from api.util import get_all_enum_values
 
-metadata_timedelta = dict(
+metadata_timedelta_nonzero = dict(
     validate = lambda dt: dt.total_seconds() > 0,
     precision = 'seconds',
     serialization_type = float
 )
+
+metadata_timedelta = dict(
+    validate = lambda dt: dt.total_seconds() >= 0,
+    precision = 'seconds',
+    serialization_type = float
+)
+
 validate_number_is_nonnegative = validate.Range(min=0, min_inclusive=True)
 
 def field_default():

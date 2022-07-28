@@ -22,7 +22,8 @@ class ScheduleType(Enum):
 class WorkloadSchedule:
     type: ScheduleType = field_enum(ScheduleType)
     start_time: Optional[datetime] = optional_field_with_validation(validate.Range(min=datetime.now(timezone.utc)))
-    interval: Optional[timedelta] = field(metadata=metadata_timedelta, default=None)
+    interval: Optional[timedelta] = field(metadata=metadata_timedelta_nonzero, default=None)
+    max_delay: Optional[timedelta] = field(metadata=metadata_timedelta, default=timedelta())
 
     @validates_schema
     def validate_schema(self, data, **kwargs):
@@ -64,7 +65,7 @@ DEFAULT_CPU_POWER_PER_CORE = 240 / 48 # in watt
 @dataclass
 class Workload:
     preferred_cloud_location: CloudLocation
-    runtime: timedelta = field(metadata=metadata_timedelta)
+    runtime: timedelta = field(metadata=metadata_timedelta_nonzero)
     schedule: WorkloadSchedule
     dataset: Dataset
 
