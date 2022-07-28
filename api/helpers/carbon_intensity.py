@@ -229,8 +229,10 @@ def calculate_total_carbon_emissions(start: datetime, end: datetime, power: floa
     l_delay = [delay]
     cumulative_carbon_emission_delta = 0.
     l_cumulative_carbon_emission_delta = [cumulative_carbon_emission_delta]
-    while delay <= max_delay:
+    while delay < max_delay:
         step_size = _min_distance_to_next_interval(start + delay, end + delay)
+        if delay + step_size > max_delay:
+            step_size = max_delay - delay
         # Carbon intensity values are to the left of the current timestamp, i.e. last window
         carbon_intensity_left = l_carbon_intensity[_find_timestamp_index(start + l_delay[-1])]
         carbon_intensity_right = l_carbon_intensity[_find_timestamp_index(end +  + l_delay[-1])]
