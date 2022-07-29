@@ -3,7 +3,7 @@
 cd "$(dirname "$0")"
 
 conda_envs=(
-    py39
+    crawler
     flask
 )
 
