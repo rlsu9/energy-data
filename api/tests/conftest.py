@@ -5,6 +5,7 @@
 from typing import Tuple
 import pytest
 from api import create_app
+from api.util import CustomJSONEncoder
 
 @pytest.fixture()
 def app():
@@ -12,6 +13,7 @@ def app():
     app.config.update({
         "TESTING": True,
     })
+    app.json_encoder = CustomJSONEncoder
     yield app
 
 @pytest.fixture()
