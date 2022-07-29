@@ -21,7 +21,7 @@ class ScheduleType(Enum):
 @dataclass
 class WorkloadSchedule:
     type: ScheduleType = field_enum(ScheduleType)
-    start_time: Optional[datetime] = optional_field_with_validation(validate.Range(min=datetime.now(timezone.utc)))
+    start_time: Optional[datetime] = field(default=None)
     interval: Optional[timedelta] = field(metadata=metadata_timedelta_nonzero, default=None)
     max_delay: Optional[timedelta] = field(metadata=metadata_timedelta, default=timedelta())
 
