@@ -7,6 +7,15 @@ set -e
 
 source $HOME/anaconda3/bin/activate
 
-for conda_env in py39 flask; do
-    conda create --name $conda_env --file ./conf/conda/conda.env.$conda_env.txt
-done
+# py39 env
+conda create -n py39 python=3.9
+conda activate py39
+conda install ipython numpy arrow psycopg2 requests pandas
+conda deactivate
+
+# flask env
+conda create -n flask python
+conda activate flask
+conda install ipython numpy flask arrow psycopg2 requests gunicorn pytest
+conda install -c conda-forge flask-restful pyyaml tzwhere webargs marshmallow "marshmallow-dataclass[enum,union]"
+conda deactivate
