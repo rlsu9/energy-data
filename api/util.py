@@ -72,7 +72,7 @@ def psql_execute_scalar(cursor: psycopg2.extensions.cursor, query: str, vars: Se
         raise PSqlExecuteException("Failed to execute SQL query.")
     return result[0] if result is not None else None
 
-def psql_execute_list(cursor: psycopg2.extensions.cursor, query: str, vars: Union[Sequence[Any], dict[str, str]]) -> list[tuple]:
+def psql_execute_list(cursor: psycopg2.extensions.cursor, query: str, vars: Union[Sequence[Any], dict[str, str]] = None) -> list[tuple]:
     """Execute the psql query and return all rows as a list of tuples."""
     try:
         cursor.execute(query, vars)
