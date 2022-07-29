@@ -12,7 +12,24 @@ import datetime
 import pandas as pd
 import requests
 import urllib3
+from urllib3.util.ssl_ import create_urllib3_context
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
+class CustomHTTPAdapter(requests.adapters.HTTPAdapter):
+    """
+    A TransportAdapter that get around DH_KEY_TOO_SMALL in Requests.
+    """
+    CIPHERS = "HIGH:!DH:!aNULL"
+
+    def init_poolmanager(self, *args, **kwargs):
+        context = create_urllib3_context(ciphers=CustomHTTPAdapter.CIPHERS)
+        kwargs['ssl_context'] = context
+        return super(CustomHTTPAdapter, self).init_poolmanager(*args, **kwargs)
+
+    def proxy_manager_for(self, *args, **kwargs):
+        context = create_urllib3_context(ciphers=CustomHTTPAdapter.CIPHERS)
+        kwargs['ssl_context'] = context
+        return super(CustomHTTPAdapter, self).proxy_manager_for(*args, **kwargs)
 
 HISTORIC_GENERATION_BASE_URL = 'https://marketplace.spp.org/file-browser-api/download/generation-mix-historical?path=%2F'
 
@@ -39,6 +56,7 @@ def get_data(url, session=None):
     """Returns a pandas dataframe."""
 
     s=session or requests.Session()
+    s.mount("https://marketplace.spp.org", CustomHTTPAdapter())
     req = s.get(url, verify=False)
     df = pd.read_csv(StringIO(req.text))
 
