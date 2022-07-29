@@ -7,10 +7,11 @@ set -e
 
 source $HOME/anaconda3/bin/activate
 
-# py39 env
-conda create -n py39 python=3.9
-conda activate py39
-conda install ipython numpy arrow psycopg2 requests pandas
+# crawler env
+conda create -n crawler python
+conda activate crawler
+conda install numpy pandas arrow psycopg2 requests beautifulsoup4
+conda install -c conda-forge demjson3
 conda deactivate
 
 # flask env
