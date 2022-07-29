@@ -21,7 +21,7 @@ OPTIMIZATION_FACTORS_AND_WEIGHTS = [
 g_optimizer = OptimizationEngine([t[0] for t in OPTIMIZATION_FACTORS_AND_WEIGHTS],
                                 [t[1] for t in OPTIMIZATION_FACTORS_AND_WEIGHTS])
 
-def get_alternative_regions(cloud_region: CloudRegion, include_self = False) -> list[CloudRegion]:
+def get_alternative_regions(cloud_region: CloudRegion = None, include_self = False) -> list[CloudRegion]:
     # NOTE: returns all possible regions for now, but can add filter/preference later.
     return g_cloud_manager.get_all_cloud_regions()
 

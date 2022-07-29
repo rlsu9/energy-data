@@ -64,7 +64,7 @@ DEFAULT_CPU_POWER_PER_CORE = 240 / 48 # in watt
 
 @dataclass
 class Workload:
-    preferred_cloud_location: CloudLocation
+    preferred_cloud_location: Optional[CloudLocation]
     runtime: timedelta = field(metadata=metadata_timedelta_nonzero)
     schedule: WorkloadSchedule
     dataset: Dataset
