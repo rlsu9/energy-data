@@ -15,7 +15,8 @@ import parsers.US_SPP
 import parsers.US_EIA
 from dateutil import tz
 import arrow
-import psycopg2, psycopg2.extras
+import psycopg2
+import psycopg2.extras
 import argparse
 
 map_regions = {
