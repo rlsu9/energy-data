@@ -7,7 +7,7 @@ from webargs.flaskparser import use_kwargs
 from flask import current_app
 
 from api.helpers.carbon_intensity import get_carbon_intensity_list
-from api.resources.balancing_authority import convert_watttime_ba_abbrev_to_region, lookup_watttime_balancing_authority
+from api.routes.balancing_authority import convert_watttime_ba_abbrev_to_region, lookup_watttime_balancing_authority
 
 carbon_intensity_args = {
     'latitude': fields.Float(required=True, validate=lambda x: abs(x) <= 90.),

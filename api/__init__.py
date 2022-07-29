@@ -36,9 +36,9 @@ def create_app():
         app.logger.handlers = gunicorn_logger.handlers
         app.logger.setLevel(gunicorn_logger.level)
 
-    from api.resources.balancing_authority import BalancingAuthority, BalancingAuthorityList
-    from api.resources.carbon_intensity import CarbonIntensity
-    from api.resources.carbon_aware_scheduler import CarbonAwareScheduler
+    from api.routes.balancing_authority import BalancingAuthority, BalancingAuthorityList
+    from api.routes.carbon_intensity import CarbonIntensity
+    from api.routes.carbon_aware_scheduler import CarbonAwareScheduler
 
     # Alternatively, use this and `from varname import nameof`.
     errors_custom_responses = {

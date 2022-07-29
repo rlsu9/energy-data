@@ -7,7 +7,7 @@ import marshmallow_dataclass
 from flask import current_app
 
 from api.helpers.carbon_intensity import convert_carbon_intensity_list_to_dict, calculate_total_carbon_emissions, get_carbon_intensity_list
-from api.resources.balancing_authority import convert_watttime_ba_abbrev_to_region, lookup_watttime_balancing_authority
+from api.routes.balancing_authority import convert_watttime_ba_abbrev_to_region, lookup_watttime_balancing_authority
 from api.models.cloud_location import CloudLocationManager, CloudRegion
 from api.models.workload import DEFAULT_CPU_POWER_PER_CORE, Workload
 from api.models.optimization_engine import OptimizationEngine, OptimizationFactor
