@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 from dataclasses import field
+from datetime import datetime, time
 from marshmallow import validate
 
 from api.util import get_all_enum_values
@@ -18,6 +19,9 @@ metadata_timedelta = dict(
 )
 
 validate_number_is_nonnegative = validate.Range(min=0, min_inclusive=True)
+def validate_is_timezone_aware(d: datetime|time):
+    # Source: https://docs.python.org/3/library/datetime.html#determining-if-an-object-is-aware-or-naive
+    return d.tzinfo is not None and d.tzinfo.utcoffset(d) is not None
 
 def field_default():
     return field(metadata=dict())
