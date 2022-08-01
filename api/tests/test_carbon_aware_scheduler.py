@@ -4,6 +4,7 @@ from datetime import timedelta
 
 from api.tests.util import logger, assert_response_ok
 
+
 class TestCarbonAwareScheduler:
     def test_onetime_no_delay(self, client):
         request_payload = {
@@ -19,7 +20,7 @@ class TestCarbonAwareScheduler:
                 "output_size_gb": 0
             }
         }
-        # PACW is the most clean one due to hydro, and currently the other scores are the same across regions
+        # PACW is the cleanest one due to hydro, and currently the other scores are the same across regions
         expected_selected_region = 'AWS:us-west-2'
         expected_cloud_regions_and_isos = [
             ('AWS:us-west-1', 'US-CAISO'),

@@ -3,7 +3,8 @@
 import pytest
 from api.tests.util import logger, assert_response_ok
 
-class TestBalancingAuthority_Get:
+
+class TestBalancingAuthority:
     def test_balancing_authority_list(self, client):
         response = client.get('/balancing-authority/list')
         assert_response_ok(response)
