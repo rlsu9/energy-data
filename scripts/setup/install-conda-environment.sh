@@ -5,7 +5,7 @@ cd "$(dirname "$0")"
 set -e
 # set -x
 
-source $HOME/anaconda3/bin/activate
+source "$HOME/anaconda3/bin/activate"
 
 # crawler env
 conda create -n crawler python

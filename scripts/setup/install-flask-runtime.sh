@@ -23,7 +23,7 @@ setup_nginx_site()
     sudo cp conf/nginx/$nginx_site_name $nginx_sites_dir
     sudo sed -i "s/<hostname>/$(hostname)/" $nginx_sites_dir/$nginx_site_name
     echo >&2 "Disabling default nginx site ..."
-    {set +e; sudo unlink /etc/nginx/sites-enabled/default}
+    { set +e; sudo unlink /etc/nginx/sites-enabled/default }
     echo >&2 "Reloading nginx ..."
     sudo nginx -s reload
     echo >&2 "Done"
