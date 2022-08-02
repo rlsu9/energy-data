@@ -12,7 +12,7 @@ echo "Deploying cralwer to: \"$ROOTDIR\""
 echo "Copying files to deployment folder  ..."
 rsync -auhvzP --delete \
     --exclude '__pycache__' \
-    --exclude '.envrc' \
+    --exclude '.*' \
     --filter='+ /crawler/' \
     --filter='+ /deploy/' \
     --filter='+ /scripts/' \
