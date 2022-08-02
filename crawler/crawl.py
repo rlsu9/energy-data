@@ -165,7 +165,7 @@ def is_in_scheduled_downtime(region: str, e: Exception):
     scheduled_downtime = map_regions[region]['scheduledDowntime']
     current_local_time = datetime.now(tz=map_regions[region]['timeZone']).time()
     if scheduled_downtime[0] <= current_local_time <= scheduled_downtime[1]:
-        print("Exception ignored during scheduled downtime:", str(e), file=sys.stderr)
+        print("Exception ignored during scheduled downtime:", str(e))
         return True
     return False
 
