@@ -215,20 +215,31 @@ def upload_new_data(conn, region, timestamp, d_power_mw_by_category):
         rows.append(row)
     with conn, conn.cursor() as cur:
         try:
-            psycopg2.extras.execute_values(
+            result = psycopg2.extras.execute_values(
                 cur,
-                """INSERT INTO EnergyMixture (datetime, category, power_mw, region)
-                    VALUES %s
-                    ON CONFLICT ON CONSTRAINT energymixture_unique_datetime_category_region
-                    DO UPDATE SET Power_MW = EXCLUDED.Power_MW
-                        WHERE EnergyMixture.Power_MW = 'NaN'
+                """WITH t AS (
+                        INSERT INTO EnergyMixture (datetime, category, power_mw, region)
+                        VALUES %s
+                        ON CONFLICT ON CONSTRAINT energymixture_unique_datetime_category_region
+                        DO UPDATE SET Power_MW = EXCLUDED.Power_MW
+                            WHERE EnergyMixture.Power_MW = 'NaN'
+                        RETURNING xmax
+                    )
+                    SELECT COUNT(*) AS count_all,
+                           SUM(CASE WHEN xmax = 0 THEN 1 ELSE 0 END) AS count_insert,
+                           SUM(CASE WHEN xmax::text::int > 0 THEN 1 ELSE 0 END) AS count_update
+                    FROM t;
                 """,
-                rows
+                rows,
+                fetch=True
             )
         except psycopg2.Error as e:
             print("Failed to upload new data")
             raise e
-    return len(rows)
+    (count_all, count_insert, count_update) = result[0]
+    if count_insert is None: count_insert = 0
+    if count_update is None: count_update = 0
+    return (count_insert, count_update)
 
 
 def fetch_and_update(conn, region, run_timestamp):
@@ -251,10 +262,16 @@ def fetch_and_update(conn, region, run_timestamp):
     if args.dry_run:
         print('Dry run mode on. Not updating database ...')
     else:
-        total_rows_uploaded = 0
+        total_rows_inserted = 0
+        total_rows_updated = 0
         for (timestamp, d_power_mw_by_category) in l_result:
-            total_rows_uploaded += upload_new_data(conn, region, timestamp, d_power_mw_by_category)
-        print(f'Uploaded {total_rows_uploaded} rows.')
+            (count_insert, count_update) = upload_new_data(conn, region, timestamp, d_power_mw_by_category)
+            total_rows_inserted += count_insert
+            total_rows_updated += count_update
+        if total_rows_updated > 0:
+            print(f'Uploaded {total_rows_inserted}+{total_rows_updated} rows.')
+        else:
+            print(f'Uploaded {total_rows_inserted} rows.')
         if not args.backfill:
             set_last_updated(conn, region, run_timestamp)
 
