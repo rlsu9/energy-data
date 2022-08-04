@@ -5,7 +5,7 @@
 # Source: https://www.postgresql.org/download/linux/ubuntu/
 
 # Create the file repository configuration:
-sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
+sudo sh -c 'echo "deb [arch=amd64] http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
 
 # Import the repository signing key:
 wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
@@ -40,3 +40,7 @@ sudo systemctl status postgresql | grep "active" > /dev/null
 # Change password
 echo 'Use "\password username" command to change password in the prompt below'
 sudo -u postgres psql
+
+# Create database
+sudo -u postgres createdb electricity-data
+sudo -u postgres createuser -s "$USER"
