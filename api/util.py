@@ -107,3 +107,8 @@ def round_down(dt: datetime, round_to: timedelta) -> datetime:
     remainder_seconds = total_seconds % round_to.total_seconds()
     dt = dt.replace(microsecond=0)
     return dt - timedelta(seconds=remainder_seconds)
+
+
+def xor(*args):
+    """Logical XOR of boolean values."""
+    return sum(map(bool, args)) % 2 == 1

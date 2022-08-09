@@ -4,7 +4,7 @@ from datetime import date, datetime, timedelta
 from dateutil import tz
 import arrow
 
-from api.util import round_down
+from api.util import round_down, xor
 
 
 def test_round_down_timestamp_no_timezone():
@@ -33,3 +33,19 @@ def test_round_down_timestamp_now_to_today():
     round_to = timedelta(days=1)
     expected = arrow.get(date.today()).datetime
     assert abs(round_down(original, round_to) - expected) < timedelta(seconds=1)
+
+
+def test_logical_xor_two_operands():
+    assert xor(True, False) is True
+    assert xor(False, True) is True
+    assert xor(True, True) is False
+    assert xor(False, False) is False
+
+
+def test_logical_xor_multiple_operands():
+    assert xor(True, False, True) is False
+    assert xor(True, True, True) is True
+    assert xor(True, False, False) is True
+    assert xor(False, True, False) is True
+    assert xor(True, False, True, False) is False
+    assert xor(True, False, True, False, True, False) is True
