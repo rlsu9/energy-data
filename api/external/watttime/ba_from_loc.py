@@ -4,10 +4,12 @@
 
 import requests
 import argparse
+
 if __package__:
-    from . util import get_watttime_token
+    from .util import get_watttime_token
 else:
     from util import get_watttime_token
+
 
 # Get the balancing authority based on GPS location
 def get_ba_from_loc(latitude: float, longitude: float):
@@ -16,12 +18,13 @@ def get_ba_from_loc(latitude: float, longitude: float):
     params = {'latitude': latitude, 'longitude': longitude}
     return requests.get(region_url, headers=headers, params=params)
 
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--loc', '-l', type=str, help='GPS coordinate')
     args = parser.parse_args()
 
-    loc = (32.8800604,-117.2362075) # UCSD
+    loc = (32.8800604, -117.2362075)  # UCSD
     if args.loc:
         loc_array = args.loc.split(',')
         assert len(loc_array) == 2, "Invalid GPS coordinate"

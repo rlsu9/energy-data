@@ -5,5 +5,5 @@
 import requests
 
 list_url = 'https://api.electricitymap.org/v3/zones'
-rsp=requests.get(list_url)
+rsp = requests.get(list_url)
 print(rsp.text)

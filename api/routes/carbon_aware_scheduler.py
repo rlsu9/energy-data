@@ -2,11 +2,13 @@
 
 from datetime import datetime, timedelta, timezone
 from flask_restful import Resource
+from typing import Any
 from webargs.flaskparser import use_args
 import marshmallow_dataclass
 from flask import current_app
 
-from api.helpers.carbon_intensity import convert_carbon_intensity_list_to_dict, calculate_total_carbon_emissions, get_carbon_intensity_list
+from api.helpers.carbon_intensity import convert_carbon_intensity_list_to_dict, calculate_total_carbon_emissions, \
+    get_carbon_intensity_list
 from api.routes.balancing_authority import convert_watttime_ba_abbrev_to_region, lookup_watttime_balancing_authority
 from api.models.cloud_location import CloudLocationManager, CloudRegion
 from api.models.workload import DEFAULT_CPU_POWER_PER_CORE, Workload
@@ -19,13 +21,16 @@ OPTIMIZATION_FACTORS_AND_WEIGHTS = [
     (OptimizationFactor.WanNetworkUsage, 0.001),
 ]
 g_optimizer = OptimizationEngine([t[0] for t in OPTIMIZATION_FACTORS_AND_WEIGHTS],
-                                [t[1] for t in OPTIMIZATION_FACTORS_AND_WEIGHTS])
+                                 [t[1] for t in OPTIMIZATION_FACTORS_AND_WEIGHTS])
 
-def get_alternative_regions(cloud_region: CloudRegion = None, include_self = False) -> list[CloudRegion]:
+
+def get_alternative_regions(cloud_region: CloudRegion = None, include_self=False) -> list[CloudRegion]:
     # NOTE: returns all possible regions for now, but can add filter/preference later.
     return g_cloud_manager.get_all_cloud_regions()
 
-def calculate_workload_scores(workload: Workload, cloud_region: CloudRegion, iso_region: str) -> dict[OptimizationFactor, float]:
+
+def calculate_workload_scores(workload: Workload, cloud_region: CloudRegion, iso_region: str) ->\
+        tuple[dict[OptimizationFactor, float], dict[str, Any]]:
     d_scores = {}
     d_misc = {}
     for factor in OptimizationFactor:
@@ -51,17 +56,18 @@ def calculate_workload_scores(workload: Workload, cloud_region: CloudRegion, iso
                 # score = input + output data size (GB)
                 # TODO: add WAN demand as weight
                 score = workload.dataset.input_size_gb + workload.dataset.output_size_gb
-            case _: # Other factors ignored
+            case _:  # Other factors ignored
                 score = 0
                 continue
         d_scores[factor] = score
     return d_scores, d_misc
 
+
 class CarbonAwareScheduler(Resource):
     @use_args(marshmallow_dataclass.class_schema(Workload)())
     def get(self, args: Workload):
         workload = args
-        orig_request = { 'request': workload }
+        orig_request = {'request': workload}
         current_app.logger.info("CarbonAwareScheduler.get(%s)" % workload)
         if workload.schedule.start_time is None:
             workload.schedule.start_time = datetime.now(timezone.utc)
@@ -94,10 +100,10 @@ class CarbonAwareScheduler(Resource):
         index_best_region, l_weighted_score = g_optimizer.compare_candidates(l_region_scores, True)
         selected_region = l_region_names[index_best_region]
 
-        d_weighted_scores = { l_region_names[i]: l_weighted_score[i] for i in range(len(l_region_names)) }
-        d_raw_scores = { l_region_names[i]: l_region_scores[i] for i in range(len(l_region_names)) }
-        d_cloud_region_to_iso = { str(candidate_cloud_regions[i]): candidate_iso_regions[i] \
-                                    for i in range(len(candidate_cloud_regions)) }
+        d_weighted_scores = {l_region_names[i]: l_weighted_score[i] for i in range(len(l_region_names))}
+        d_raw_scores = {l_region_names[i]: l_region_scores[i] for i in range(len(l_region_names))}
+        d_cloud_region_to_iso = {str(candidate_cloud_regions[i]): candidate_iso_regions[i]
+                                 for i in range(len(candidate_cloud_regions))}
         return orig_request | {
             'requested-region': str(args.preferred_cloud_location),
             'selected-region': selected_region,

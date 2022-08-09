@@ -3,7 +3,11 @@
 # Source: https://www.watttime.org/api-documentation/#register-new-user
 
 import requests
-from util import get_username_password
+if __package__:
+    from . util import get_username_password
+else:
+    from util import get_username_password
+
 
 # Register an account
 def register():
@@ -18,7 +22,8 @@ def register():
         'org': ''
     }
     return requests.post(register_url, json=params)
-    return (response.json(), response.status_code)
+    # return response.json(), response.status_code
+
 
 if __name__ == '__main__':
     response = register()

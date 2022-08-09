@@ -16,15 +16,16 @@ carbon_intensity_args = {
     'end': fields.DateTime(format="iso", required=True),
 }
 
+
 class CarbonIntensity(Resource):
     @use_kwargs(carbon_intensity_args, location='query')
     def get(self, latitude: float, longitude: float, start: datetime, end: datetime):
-        orig_request = { 'request': {
+        orig_request = {'request': {
             'latitude': latitude,
             'longitude': longitude,
             'start': start,
             'end': end,
-        } }
+        }}
         current_app.logger.info("CarbonIntensity.get(%f, %f, %s, %s)" % (latitude, longitude, start, end))
 
         watttime_lookup_result = lookup_watttime_balancing_authority(latitude, longitude)

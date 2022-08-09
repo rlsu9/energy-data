@@ -1,8 +1,11 @@
 #!/usr/bin/env python3
 
 from enum import Enum
+from typing import Optional
+
 import numpy as np
 from werkzeug.exceptions import BadRequest
+
 
 class OptimizationFactor(str, Enum):
     EnergyUsage = 'energy-usage'
@@ -16,8 +19,10 @@ class OptimizationFactor(str, Enum):
 
 class OptimizationEngine:
     """A simple optimization engine that takes weights of factors and compute the best candidates."""
+
     def __init__(self, factors: list[OptimizationFactor], weights: list[float]) -> None:
-        if len(factors) != len(weights): raise ValueError("Length of factors and weight must be the same.")
+        if len(factors) != len(weights):
+            raise ValueError("Length of factors and weight must be the same.")
 
         self.factors = factors
         self.weights = weights
@@ -34,7 +39,8 @@ class OptimizationEngine:
             total_weighted_score += score * weight
         return total_weighted_score / len(self.factors)
 
-    def compare_candidates(self, scores: list[dict[OptimizationFactor, float]], return_scores = False) -> int:
+    def compare_candidates(self, scores: list[dict[OptimizationFactor, float]], return_scores=False) -> \
+            tuple[int, Optional[list[float]]]:
         """Compares the candidate based on their scores in each factor and return the best candidate.
 
         Args:

@@ -11,7 +11,7 @@ We're starting with US electricity data from various ISOs, e.g. CAISO, MISO, PJM
 ### Data sources
 We are starting with US ISOs, which currently include:
 - [MISO](./crawler/parsers/US_MISO.py), which only has current data and is updated every five minutes.
-- [CAISO](./crawler/parsers/US_CISO.py), [NEISO](./crawler/parsers/US_NEISO.py) and [NY](./crawler/parsers/US_NY.py), which has data for past few days, so we pull last day's full data daily.
+- [CAISO](./crawler/parsers/US_CAISO.py), [NEISO](./crawler/parsers/US_NEISO.py) and [NY](./crawler/parsers/US_NY.py), which has data for past few days, so we pull last day's full data daily.
 - [PJM](./crawler/parsers/US_PJM.py), which only has current day data publicly available on their website, updated every hour.
 - [BPA](./crawler/parsers/US_BPA.py), which has the data for past two days, so we pull daily.
 - [SPP](./crawler/parsers/US_SPP.py), which only has current data for the past two hours, so we pull every hour.
@@ -34,13 +34,13 @@ TODOs:
 This is work in progress.
 
 We implement a REST API using [Flask](https://flask.palletsprojects.com/) and [Flask-RESTful](https://flask-restful.readthedocs.io/).
-The code is located in [api](./api/) and calls to external APIs are implemented in [api/external](./api/external/).
+The code is located in [api](./api) and calls to external APIs are implemented in [api/external](./api/external).
 The Flask app is deployed using `nginx` + `gunicorn`, which are detailed in the deployment script below. You can also run locally using `gunicorn` directly by executing `gunicorn api:create_app()` in repo root, or via [VSCode launch script](./.vscode/launch.json).
 
-Currently we support:
-- [Look up balancing authority](./api/resources/balancing_authority.py) based on GPS coordinates (via WattTime API).
-- [Look up carbon intensity](./api/resources/carbon_intensity.py) based on GPS coordinates and time range.
-- (prototype) [Carbon-aware multi-region scheduler](./api/resources/carbon_aware_scheduler.py) that assigns workload based on its [profile](./api/models/workload.py) and an [optimization algorithm](./api/models/optimization_engine.py).
+Currently, we support:
+- [Look up balancing authority](./api/routes/balancing_authority.py) based on GPS coordinates (via WattTime API).
+- [Look up carbon intensity](./api/routes/carbon_intensity.py) based on GPS coordinates and time range.
+- (prototype) [Carbon-aware multi-region scheduler](./api/routes/carbon_aware_scheduler.py) that assigns workload based on its [profile](./api/models/workload.py) and an [optimization algorithm](./api/models/optimization_engine.py).
 
 The full list is defined in [api module](./api/__init__.py).
 

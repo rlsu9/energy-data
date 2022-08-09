@@ -4,16 +4,19 @@
 
 import requests
 import argparse
+
 if __package__:
-    from . util import get_watttime_token
+    from .util import get_watttime_token
 else:
     from util import get_watttime_token
+
 
 def get_accessible_regions(all_regions: bool):
     list_url = 'https://api2.watttime.org/v2/ba-access'
     headers = {'Authorization': 'Bearer {}'.format(get_watttime_token())}
     params = {'all': str(all_regions).lower()}
     return requests.get(list_url, headers=headers, params=params)
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()

@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 
-import os
 import configparser
-from urllib import response
+import os
+
 import requests
 from requests.auth import HTTPBasicAuth
 
 CONFIG_FILE = "watttime.ini"
+
 
 def get_username_password():
     parser = configparser.ConfigParser()
@@ -14,7 +15,8 @@ def get_username_password():
     parser.read(config_filepath)
     username = parser['auth']['username']
     password = parser['auth']['password']
-    return (username, password)
+    return username, password
+
 
 # Source: https://www.watttime.org/api-documentation/#login-amp-obtain-token
 
@@ -25,4 +27,3 @@ def get_watttime_token():
     assert response.ok, "Failed to get token (%d): %s" % (response.status_code, response.text)
     token = response.json()['token']
     return token
-

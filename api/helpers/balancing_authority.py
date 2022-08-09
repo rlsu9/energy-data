@@ -2,18 +2,20 @@
 
 import os
 from pathlib import Path
+from typing import Any
 from flask import current_app
 from werkzeug.exceptions import InternalServerError
 
-from api.util import CustomHTTPException, loadYamlData, get_psql_connection, psql_execute_list
+from api.util import CustomHTTPException, load_yaml_data, get_psql_connection, psql_execute_list
 from api.external.watttime.ba_from_loc import get_ba_from_loc
 
 YAML_CONFIG = 'balancing_authority.yaml'
 
-def get_mapping_wattime_ba_to_region(config_path: os.path):
-    '''Load the region-to-WattTime-BA mapping from config and inverse it to provide direct lookup table'''
+
+def get_mapping_watttime_ba_to_region(config_path: os.path):
+    """Load the region-to-WattTime-BA mapping from config and inverse it to provide direct lookup table"""
     # Load region-to-WattTime-BA mapping from yaml config
-    yaml_data = loadYamlData(config_path)
+    yaml_data = load_yaml_data(config_path)
     region_to_watttime_ba_map_name = 'map_region_to_watttime_ba'
     assert yaml_data is not None and region_to_watttime_ba_map_name in yaml_data, \
         f'Failed to load {region_to_watttime_ba_map_name}'
@@ -22,11 +24,15 @@ def get_mapping_wattime_ba_to_region(config_path: os.path):
     lookup_table = {}
     for region, l_watttime_ba in reverse_mapping.items():
         for watttime_ba in l_watttime_ba:
-            assert watttime_ba not in lookup_table, "Duplicate ba in region-to-WattTime-BA mapping table: %s" % watttime_ba
+            assert watttime_ba not in lookup_table, \
+                f"Duplicate ba in region-to-WattTime-BA mapping table: {watttime_ba}"
             lookup_table[watttime_ba] = region
     return lookup_table
 
-MAPPING_WATTTIME_BA_TO_REGION = get_mapping_wattime_ba_to_region(os.path.join(Path(__file__).parent.absolute(), YAML_CONFIG))
+
+MAPPING_WATTTIME_BA_TO_REGION = get_mapping_watttime_ba_to_region(
+    os.path.join(Path(__file__).parent.absolute(), YAML_CONFIG))
+
 
 def convert_watttime_ba_abbrev_to_region(watttime_abbrev) -> str:
     if watttime_abbrev in MAPPING_WATTTIME_BA_TO_REGION:
@@ -35,7 +41,8 @@ def convert_watttime_ba_abbrev_to_region(watttime_abbrev) -> str:
         current_app.logger.warning('Unknown watttime abbrev "%s"' % watttime_abbrev)
         return 'unknown:' + watttime_abbrev
 
-def lookup_watttime_balancing_authority(latitude: float, longitude: float) -> tuple[dict, int]:
+
+def lookup_watttime_balancing_authority(latitude: float, longitude: float) -> dict[str, Any]:
     """
         Lookup the balancing authority from WattTime API, and returns:
         1) parsed information, or error message, and optionally 2) error status code."""
@@ -62,6 +69,7 @@ def lookup_watttime_balancing_authority(latitude: float, longitude: float) -> tu
         'watttime_name': watttime_name,
         'watttime_id': watttime_id,
     }
+
 
 def get_all_balancing_authorities():
     """Return a list of all balancing authorities for which we have collect data."""

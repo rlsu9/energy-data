@@ -12,7 +12,7 @@ from flask.json import JSONEncoder
 from werkzeug.exceptions import HTTPException
 
 
-def loadYamlData(filepath):
+def load_yaml_data(filepath):
     with open(filepath, 'r') as f:
         try:
             return yaml.safe_load(f)
@@ -24,8 +24,8 @@ def loadYamlData(filepath):
 
 
 class CustomJSONEncoder(JSONEncoder):
-    def default(self, o: object) -> str:
-        """This defines serilization for object types that `json` cannot handle by default."""
+    def default(self, o: object) -> Any:
+        """This defines serialization for object types that `json` cannot handle by default."""
         if isinstance(o, (datetime, date)):
             return o.isoformat()
         if isinstance(o, timedelta):
@@ -70,26 +70,26 @@ def get_psql_connection(host='/var/run/postgresql/', database="electricity-data"
         raise PSqlExecuteException("Failed to connect to database.")
 
 
-def psql_execute_scalar(cursor: psycopg2.extensions.cursor, query: str, vars: Sequence[Any] = []) -> Any | None:
+def psql_execute_scalar(cursor: psycopg2.extensions.cursor, query: str, args: Sequence[Any] = None) -> Any | None:
     """Execute the psql query and return the first column of first row."""
     try:
-        cursor.execute(query, vars)
+        cursor.execute(query, args)
         result = cursor.fetchone()
     except psycopg2.Error as e:
-        current_app.logger.error(f'psql_execute_scalar("{query}", {vars}): {e}')
+        current_app.logger.error(f'psql_execute_scalar("{query}", {args}): {e}')
         current_app.logger.error(traceback.format_exc())
         raise PSqlExecuteException("Failed to execute SQL query.")
     return result[0] if result is not None else None
 
 
 def psql_execute_list(cursor: psycopg2.extensions.cursor, query: str,
-                      vars: Union[Sequence[Any], dict[str, str]] = None) -> list[tuple]:
+                      args: Union[Sequence[Any], dict[str, str]] = None) -> list[tuple]:
     """Execute the psql query and return all rows as a list of tuples."""
     try:
-        cursor.execute(query, vars)
+        cursor.execute(query, args)
         result = cursor.fetchall()
     except psycopg2.Error as e:
-        current_app.logger.error(f'psql_execute_scalar("{query}", {vars}): {e}')
+        current_app.logger.error(f'psql_execute_scalar("{query}", {args}): {e}')
         current_app.logger.error(traceback.format_exc())
         raise PSqlExecuteException("Failed to execute SQL query.")
     return result

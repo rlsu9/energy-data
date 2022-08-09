@@ -11,6 +11,7 @@ from werkzeug.exceptions import UnprocessableEntity, HTTPException
 
 from api.util import DocstringDefaultException, CustomJSONEncoder
 
+
 class CustomApi(Api):
     def handle_error(self, e: Exception):
         handled_exceptions = [UnprocessableEntity]
@@ -23,6 +24,7 @@ class CustomApi(Api):
             current_app.logger.error(traceback.format_exc())
         status_code = e.code if isinstance(e, HTTPException) else 500
         return jsonify({'error': str(e)}), status_code
+
 
 def create_app():
     app = Flask(__name__)

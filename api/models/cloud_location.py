@@ -7,7 +7,8 @@ from typing import Tuple
 from flask import current_app
 from werkzeug.exceptions import NotFound
 
-from api.util import loadYamlData
+from api.util import load_yaml_data
+
 
 @dataclass
 class CloudRegion:
@@ -19,17 +20,19 @@ class CloudRegion:
     def __str__(self) -> str:
         return f'{self.provider}:{self.code}'
 
+
 @dataclass
 class PublicCloud:
     provider: str
     regions: list[CloudRegion]
+
 
 class CloudLocationManager:
     all_public_clouds: dict[str, PublicCloud] = {}
 
     def __init__(self) -> None:
         config_path = os.path.join(Path(__file__).parent.absolute(), 'cloud_location.yaml')
-        yaml_data = loadYamlData(config_path)
+        yaml_data = load_yaml_data(config_path)
         public_cloud_list_name = 'public_clouds'
         assert yaml_data is not None and public_cloud_list_name in yaml_data, \
             f'Failed to load {public_cloud_list_name}'
@@ -67,7 +70,8 @@ class CloudLocationManager:
             return []
         return [region.code for region in self.all_public_clouds[cloud_provider].regions]
 
-    def get_gps_coordinate(self, cloud_region: CloudRegion = None, cloud_provider: str = None, region_code: str = None) -> Tuple[float, float]:
+    def get_gps_coordinate(self, cloud_region: CloudRegion = None, cloud_provider: str = None,
+                           region_code: str = None) -> Tuple[float, float]:
         if not cloud_provider and not region_code and cloud_region:
             cloud_provider = cloud_region.provider
             region_code = cloud_region.code
