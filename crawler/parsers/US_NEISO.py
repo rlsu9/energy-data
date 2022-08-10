@@ -70,7 +70,7 @@ def production_data_processer(raw_data, logger) -> list:
     Separates datetime key and converts to a datetime object.
     """
 
-    other_keys = {'BeginDateMs', 'Renewables', 'BeginDate', 'Other'}
+    other_keys = {'BeginDateMs', 'Renewables', 'BeginDate', 'Other', 'NetImports'}
     known_keys = generation_mapping.keys() | other_keys
 
     unmapped = set()
@@ -81,7 +81,7 @@ def production_data_processer(raw_data, logger) -> list:
         unknown_keys = current_keys - known_keys
         unmapped = unmapped | unknown_keys
 
-        keys_to_remove = {'BeginDateMs', 'Renewables'} | unknown_keys
+        keys_to_remove = {'BeginDateMs', 'Renewables', 'NetImports'} | unknown_keys
         for k in keys_to_remove:
             datapoint.pop(k, None)
 
