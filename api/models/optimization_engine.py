@@ -9,7 +9,7 @@ from werkzeug.exceptions import BadRequest
 
 class OptimizationFactor(str, Enum):
     EnergyUsage = 'energy-usage'
-    CarbonIntensity = 'carbon-intensity'
+    CarbonEmission = 'carbon-emission'
     ElectricityPrice = 'electricity-price'
     DataCenterPUE = 'datacenter-pue'
     EnergyEfficiency = 'energy-efficiency'

@@ -17,7 +17,7 @@ from api.models.optimization_engine import OptimizationEngine, OptimizationFacto
 g_cloud_manager = CloudLocationManager()
 OPTIMIZATION_FACTORS_AND_WEIGHTS = [
     (OptimizationFactor.EnergyUsage, 1000),
-    (OptimizationFactor.CarbonIntensity, 1000),
+    (OptimizationFactor.CarbonEmission, 1000),
     (OptimizationFactor.WanNetworkUsage, 0.001),
 ]
 g_optimizer = OptimizationEngine([t[0] for t in OPTIMIZATION_FACTORS_AND_WEIGHTS],
@@ -38,7 +38,7 @@ def calculate_workload_scores(workload: Workload, cloud_region: CloudRegion, iso
             case OptimizationFactor.EnergyUsage:
                 # score = per-core power (kW) * cpu usage (h)
                 score = workload.get_energy_usage_24h()
-            case OptimizationFactor.CarbonIntensity:
+            case OptimizationFactor.CarbonEmission:
                 # score = energy usage (kWh) * grid carbon intensity (kgCO2/kWh)
                 running_intervals = workload.get_running_intervals_in_24h()
                 max_delay = workload.schedule.max_delay
