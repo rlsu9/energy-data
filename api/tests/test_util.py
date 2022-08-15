@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 
-from datetime import date, datetime, timedelta
+from datetime import date, datetime, timedelta, time
 from dateutil import tz
 import arrow
 
-from api.util import round_down, xor
+from api.util import round_down, xor, timedelta_to_time
 
 
 def test_round_down_timestamp_no_timezone():
@@ -49,3 +49,11 @@ def test_logical_xor_multiple_operands():
     assert xor(False, True, False) is True
     assert xor(True, False, True, False) is False
     assert xor(True, False, True, False, True, False) is True
+
+
+def test_timedelta_to_time():
+    assert timedelta_to_time(timedelta(minutes=1)) == time(minute=1)
+    assert timedelta_to_time(timedelta(minutes=1*60)) == time(hour=1)
+    assert timedelta_to_time(timedelta(minutes=2*60)) == time(hour=2)
+    assert timedelta_to_time(timedelta(minutes=14*60)) == time(hour=14)
+    assert timedelta_to_time(timedelta(minutes=24*60 - 1)) == time(hour=23, minute=59)

@@ -2,7 +2,7 @@
 
 from enum import Enum
 from typing import Any, Sequence, Union
-from datetime import datetime, date, timedelta
+from datetime import datetime, date, timedelta, time
 import yaml
 import traceback
 import psycopg2
@@ -112,3 +112,9 @@ def round_down(dt: datetime, round_to: timedelta) -> datetime:
 def xor(*args):
     """Logical XOR of boolean values."""
     return sum(map(bool, args)) % 2 == 1
+
+
+def timedelta_to_time(dt: timedelta) -> time:
+    if dt >= timedelta(days=1):
+        raise ValueError("time cannot be greater than or equal to a day.")
+    return (datetime.min + dt).time()
