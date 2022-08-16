@@ -9,6 +9,8 @@ import numpy as np
 class OptimizationFactor(str, Enum):
     EnergyUsage = 'energy-usage'
     CarbonEmission = 'carbon-emission'
+    CarbonEmissionFromCompute = 'carbon-emission-from-compute'
+    CarbonEmissionFromMigration = 'carbon-emission-from-migration'
     ElectricityPrice = 'electricity-price'
     DataCenterPUE = 'datacenter-pue'
     EnergyEfficiency = 'energy-efficiency'

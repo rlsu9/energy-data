@@ -66,7 +66,10 @@ class CloudLocation:
 
 
 # Average of Xeon Platinum 8275CL, which has 48 HTs and a TDP of 240W
-DEFAULT_CPU_POWER_PER_CORE = 240 / 48  # in watt
+DEFAULT_CPU_TDP = 240
+DEFAULT_CPU_POWER_PER_CORE = DEFAULT_CPU_TDP / 48  # in watt
+# Storage system consumes roughly 20% of total DC energy, based on Borroso book.
+DEFAULT_STORAGE_POWER = DEFAULT_CPU_TDP * 0.2
 
 
 @dataclass

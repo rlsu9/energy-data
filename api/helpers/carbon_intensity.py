@@ -163,7 +163,7 @@ def get_carbon_intensity_interval(timestamps: list[datetime]) -> timedelta:
 
 def calculate_total_carbon_emissions(start: datetime, end: datetime, power: float,
                                      carbon_intensity_by_timestamp: dict[datetime, float],
-                                     max_delay: timedelta) -> Tuple[float, timedelta]:
+                                     max_delay: timedelta = timedelta()) -> Tuple[float, timedelta]:
     """Calculate the total carbon emission by multiplying energy with carbon intensity.
 
         Args:
