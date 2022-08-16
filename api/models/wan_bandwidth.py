@@ -30,7 +30,7 @@ class SimpleWANBandwidth:
             index = bisect.bisect(self.available_bandwidth.timestamps, timestamp) - 1
             if index < 0 or index >= len(self.available_bandwidth.timestamps):
                 raise ValueError("timestamp out of range in WAN bandwidth data")
-        return self.available_bandwidth.values[index]
+        return self.available_bandwidth.values[index] / self.concurrent_transfers
 
 
 def load_wan_bandwidth_model():
