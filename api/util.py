@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+from copy import deepcopy
 from enum import Enum, IntEnum
 from typing import Any, Sequence, Union
 from datetime import datetime, date, timedelta, time
@@ -154,21 +155,56 @@ POWER_BASE = 2
 BITS_PER_BYTE = 8
 
 
-class Size:
-    def __init__(self, value=1., unit=SizeUnit.Bytes):
+class ValueWithUnit:
+    def __init__(self, value=1., unit=UnitPrefix.Base):
         self.value = value
         self.unit = unit
 
-    def bytes(self):
+    def __eq__(self, other):
+        return type(self) == type(other) and self.absolute_value() == other.absolute_value()
+
+    def __lt__(self, other):
+        if type(self) != type(other):
+            raise ValueError("Incompatible type for comparison")
+        return self.absolute_value() < other.absolute_value()
+
+    def _add_or_sub(self, other, sign=1):
+        if type(self) != type(other):
+            raise ValueError("Incompatible type for subtraction")
+        smaller_unit = min(self.unit, other.unit)
+        copy = deepcopy(self)
+        if copy.unit > smaller_unit:
+            unit_diff = copy.unit - other.unit
+            copy.unit = smaller_unit
+            copy.value *= pow(POWER_BASE, unit_diff)
+            copy.value += sign * other.value
+        else:
+            unit_diff = other.unit - copy.unit
+            copy.value += sign * other.value * pow(POWER_BASE, unit_diff)
+        return copy
+
+    def __add__(self, other):
+        return self._add_or_sub(other, 1)
+
+    def __sub__(self, other):
+        return self._add_or_sub(other, -1)
+
+    def absolute_value(self):
         return self.value * pow(POWER_BASE, self.unit.value)
 
-    def gigabytes(self):
-        return self.value * pow(POWER_BASE, self.unit.value - SizeUnit.GB.value)
+    def giga_value(self):
+        return self.value * pow(POWER_BASE, self.unit.value - UnitPrefix.Giga.value)
 
-    def __eq__(self, other):
-        if not isinstance(other, Size):
-            return False
-        return self.gigabytes() == other.gigabytes()
+
+class Size(ValueWithUnit):
+    def __init__(self, value=1., unit: SizeUnit = SizeUnit.Bytes):
+        super().__init__(value, UnitPrefix(unit))
+
+    def bytes(self):
+        return super().absolute_value()
+
+    def gigabytes(self):
+        return super().giga_value()
 
     def __truediv__(self, other):
         if isinstance(other, timedelta):
@@ -178,24 +214,18 @@ class Size:
         elif isinstance(other, Rate):
             value = BITS_PER_BYTE * self.value / other.value
             unit = self.unit.value - other.unit.value
-            return timedelta(seconds=value*pow(POWER_BASE, unit))
+            return timedelta(seconds=value * pow(POWER_BASE, unit))
 
 
-class Rate:
-    def __init__(self, value=1., unit=RateUnit.bps):
-        self.value = value
-        self.unit = unit
+class Rate(ValueWithUnit):
+    def __init__(self, value=1., unit: RateUnit = RateUnit.bps):
+        super().__init__(value, UnitPrefix(unit))
 
     def bps(self):
-        return self.value * pow(POWER_BASE, self.unit.value)
+        return super().absolute_value()
 
     def gbps(self):
-        return self.value * pow(POWER_BASE, self.unit.value - RateUnit.Gbps.value)
-
-    def __eq__(self, other):
-        if not isinstance(other, Rate):
-            return False
-        return self.gbps() == other.gbps()
+        return super().giga_value()
 
     def __mul__(self, other) -> Size:
         if not isinstance(other, timedelta):
