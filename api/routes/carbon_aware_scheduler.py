@@ -134,6 +134,8 @@ class CarbonAwareScheduler(Resource):
                 raise e
             except Exception as e:
                 d_region_warnings[str(cloud_region)] = str(e)
+                current_app.logger.error(f'Exception when calculating score for region {cloud_region}: {e}')
+                current_app.logger.error(traceback.format_exc())
         index_best_region, l_weighted_score = g_optimizer.compare_candidates(l_region_scores, True)
         if index_best_region == -1:
             return {
