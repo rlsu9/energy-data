@@ -6,7 +6,7 @@ from api.tests.util import logger, assert_response_ok
 
 
 class TestCarbonAwareScheduler:
-    def test_onetime_no_delay(self, client):
+    def test_onetime_no_delay_zero_dataset(self, client):
         request_payload = {
             "runtime": timedelta(hours=1).total_seconds(),
             "schedule": {
@@ -16,7 +16,7 @@ class TestCarbonAwareScheduler:
                 "max_delay": timedelta(hours=0).total_seconds()
             },
             "dataset": {
-                "input_size_gb": 256,
+                "input_size_gb": 0,
                 "output_size_gb": 0
             }
         }
