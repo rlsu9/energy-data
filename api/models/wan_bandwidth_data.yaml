@@ -1,6 +1,7 @@
 # Data from TrafficShaper fig 5a.
 total_traffic_every_5min:
   - 9112515
+  - 9112515
   - 9335941
   - 9609225
   - 9698878
@@ -285,4 +286,5 @@ total_traffic_every_5min:
   - 9683258
   - 10010908
   - 9875195
+  - 9794221
   - 9794221

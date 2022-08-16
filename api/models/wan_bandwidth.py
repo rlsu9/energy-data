@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
+import bisect
 import os
+from datetime import datetime, time, timedelta
 from pathlib import Path
 from typing import Union
-from datetime import datetime, time, timedelta
 
 from api.models.timeseries import TimeSeriesData
 from api.util import xor, load_yaml_data, timedelta_to_time
@@ -23,9 +24,12 @@ class SimpleWANBandwidth:
         if not xor(index >= 0, timestamp is not None):
             raise ValueError("One of index and timestamp is required")
         if timestamp is not None:
-            index = self.available_bandwidth.timestamps.index(timestamp)
-            if index < 0:
-                raise ValueError("timestamp not found")
+            # index:                        0 ..  1 ..  2 ...
+            # interval starting at minute:  0 ..  5 .. 10 ...
+            # bisect_right() picks the right side, then minus 1 to go left, e.g. 3min -> 0, 5min -> 1
+            index = bisect.bisect(self.available_bandwidth.timestamps, timestamp) - 1
+            if index < 0 or index >= len(self.available_bandwidth.timestamps):
+                raise ValueError("timestamp out of range in WAN bandwidth data")
         return self.available_bandwidth.values[index]
 
 
@@ -36,8 +40,13 @@ def load_wan_bandwidth_model():
     assert yaml_data is not None and traffic_data_5min_list_name in yaml_data, \
         f'Failed to load {traffic_data_5min_list_name}'
     l_traffic_data_5min = yaml_data[traffic_data_5min_list_name]
-    l_times = [timedelta_to_time(timedelta(minutes=5 * i)) for i in range(len(l_traffic_data_5min))]
+
+    data_interval = timedelta(minutes=5)
+    assert len(l_traffic_data_5min) == round(timedelta(days=1) / data_interval)
+
+    l_times = [timedelta_to_time(data_interval * i) for i in range(len(l_traffic_data_5min))]
     max_usage = max(l_traffic_data_5min)
     l_available_bandwidth = [max_usage - usage for usage in l_traffic_data_5min]
     available_bandwidth = TimeSeriesData(l_times, l_available_bandwidth)
+
     return SimpleWANBandwidth(available_bandwidth)
