@@ -42,11 +42,13 @@ def load_wan_bandwidth_model():
     l_traffic_data_5min = [Rate(x, RateUnit.Mbps) for x in yaml_data[traffic_data_5min_list_name]]
 
     data_interval = timedelta(minutes=5)
+    normalized_peak_bandwidth = Rate(100, RateUnit.Gbps)
     assert len(l_traffic_data_5min) == round(timedelta(days=1) / data_interval)
 
     l_times = [timedelta_to_time(data_interval * i) for i in range(len(l_traffic_data_5min))]
     max_usage = max(l_traffic_data_5min)
-    l_available_bandwidth = [max_usage - usage for usage in l_traffic_data_5min]
+    normalization_factor = normalized_peak_bandwidth / max_usage
+    l_available_bandwidth = [(max_usage - usage) * normalization_factor for usage in l_traffic_data_5min]
     available_bandwidth = TimeSeriesData(l_times, l_available_bandwidth)
 
     return SimpleWANBandwidth(available_bandwidth)
