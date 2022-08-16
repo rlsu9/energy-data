@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from enum import Enum
+from enum import Enum, IntEnum
 from typing import Any, Sequence, Union
 from datetime import datetime, date, timedelta, time
 import yaml
@@ -119,3 +119,87 @@ def timedelta_to_time(dt: timedelta) -> time:
     if dt >= timedelta(days=1):
         raise ValueError("time cannot be greater than or equal to a day.")
     return (datetime.min + dt).time()
+
+
+class UnitPrefix(IntEnum):
+    Base = 0
+    Kilo = 10
+    Mega = 20
+    Giga = 30
+    Tera = 40
+
+    # def __sub__(self, other):
+    #     if isinstance(other, UnitPrefix):
+    #         return self.value - other.value
+    #     raise ValueError("Incompatible type for subtraction")
+
+
+class SizeUnit(IntEnum):
+    Bytes = UnitPrefix.Base
+    KB = UnitPrefix.Kilo
+    MB = UnitPrefix.Mega
+    GB = UnitPrefix.Giga
+    TB = UnitPrefix.Tera
+
+
+class RateUnit(IntEnum):
+    bps = UnitPrefix.Base
+    Kbps = UnitPrefix.Kilo
+    Mbps = UnitPrefix.Mega
+    Gbps = UnitPrefix.Giga
+    Tbps = UnitPrefix.Tera
+
+
+POWER_BASE = 2
+BITS_PER_BYTE = 8
+
+
+class Size:
+    def __init__(self, value=1., unit=SizeUnit.Bytes):
+        self.value = value
+        self.unit = unit
+
+    def bytes(self):
+        return self.value * pow(POWER_BASE, self.unit.value)
+
+    def gigabytes(self):
+        return self.value * pow(POWER_BASE, self.unit.value - SizeUnit.GB.value)
+
+    def __eq__(self, other):
+        if not isinstance(other, Size):
+            return False
+        return self.gigabytes() == other.gigabytes()
+
+    def __truediv__(self, other):
+        if isinstance(other, timedelta):
+            value = BITS_PER_BYTE * self.value / other.total_seconds()
+            unit = RateUnit(self.unit.value)
+            return Rate(value, unit)
+        elif isinstance(other, Rate):
+            value = BITS_PER_BYTE * self.value / other.value
+            unit = self.unit.value - other.unit.value
+            return timedelta(seconds=value*pow(POWER_BASE, unit))
+
+
+class Rate:
+    def __init__(self, value=1., unit=RateUnit.bps):
+        self.value = value
+        self.unit = unit
+
+    def bps(self):
+        return self.value * pow(POWER_BASE, self.unit.value)
+
+    def gbps(self):
+        return self.value * pow(POWER_BASE, self.unit.value - RateUnit.Gbps.value)
+
+    def __eq__(self, other):
+        if not isinstance(other, Rate):
+            return False
+        return self.gbps() == other.gbps()
+
+    def __mul__(self, other) -> Size:
+        if not isinstance(other, timedelta):
+            raise ValueError("Can only bandwidth multiply with timedelta")
+        value = self.value * other.total_seconds() / BITS_PER_BYTE
+        unit = SizeUnit(self.unit.value)
+        return Size(value, unit)

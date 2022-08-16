@@ -4,7 +4,7 @@ from datetime import date, datetime, timedelta, time
 from dateutil import tz
 import arrow
 
-from api.util import round_down, xor, timedelta_to_time
+from api.util import round_down, xor, timedelta_to_time, Size, SizeUnit, RateUnit, Rate
 
 
 def test_round_down_timestamp_no_timezone():
@@ -57,3 +57,20 @@ def test_timedelta_to_time():
     assert timedelta_to_time(timedelta(minutes=2*60)) == time(hour=2)
     assert timedelta_to_time(timedelta(minutes=14*60)) == time(hour=14)
     assert timedelta_to_time(timedelta(minutes=24*60 - 1)) == time(hour=23, minute=59)
+
+
+def test_unit_conversion():
+    # Unit conversions
+    assert Size(1, SizeUnit.GB) == Size(1024, SizeUnit.MB)
+    assert Size(1, SizeUnit.GB) == Size(1024*1024*1024, SizeUnit.Bytes)
+    assert Size(1, SizeUnit.TB) == Size(1024 * 1024 * 1024 * 1024, SizeUnit.Bytes)
+    # assert Size(1, SizeUnit.GB) + Size(1024, SizeUnit.MB) == Size(2, SizeUnit.GB)
+    assert Rate(100, RateUnit.Gbps) == Rate(100*1024, RateUnit.Mbps)
+    # Multiplications
+    actual = Rate(1, RateUnit.Gbps) * timedelta(seconds=8)
+    expected = Size(1, SizeUnit.GB)
+    assert actual == expected
+    assert Rate(100, RateUnit.Gbps) * timedelta(seconds=1) == Size(12.5, SizeUnit.GB)
+    # Divisions
+    assert Size(1, SizeUnit.GB) / timedelta(seconds=1) == Rate(8, RateUnit.Gbps)
+    assert Size(1, SizeUnit.GB) / Rate(1, RateUnit.Gbps) == timedelta(seconds=8)
