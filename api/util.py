@@ -66,7 +66,8 @@ def get_psql_connection(host='/var/run/postgresql/', database="electricity-data"
         conn.autocommit = True
         return conn
     except Exception as e:
-        current_app.logger.error(f"get_psql_connection: {e}", traceback.format_exc())
+        current_app.logger.fatal(f"get_psql_connection: {e}")
+        current_app.logger.fatal(traceback.format_exc())
         raise PSqlExecuteException("Failed to connect to database.")
 
 
