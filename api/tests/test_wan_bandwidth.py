@@ -22,16 +22,17 @@ def test_wan_bandwidth_lookup_by_timestamp():
             time(minute=4, second=59),
         ],
         [
+            time(minute=5, second=0),
             time(minute=5, second=1),
-            time(minute=10, second=0),
+            time(minute=9, second=59),
         ],
         [
             time(minute=15, second=45),
             time(minute=15, second=1),
         ],
         [
+            time(hour=2, minute=30, second=0),
             time(hour=2, minute=33, second=57),
-            time(hour=2, minute=35, second=0),
         ],
         [
             time(hour=23, minute=55, second=1),
