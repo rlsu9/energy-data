@@ -13,6 +13,7 @@ from api.routes.balancing_authority import convert_watttime_ba_abbrev_to_region,
 from api.models.cloud_location import CloudLocationManager, CloudRegion
 from api.models.workload import DEFAULT_CPU_POWER_PER_CORE, Workload
 from api.models.optimization_engine import OptimizationEngine, OptimizationFactor
+from api.util import PSqlExecuteException
 
 g_cloud_manager = CloudLocationManager()
 OPTIMIZATION_FACTORS_AND_WEIGHTS = [
@@ -95,9 +96,16 @@ class CarbonAwareScheduler(Resource):
                 d_region_delay[str(cloud_region)] = d_misc['optimal_delay_time']
                 l_region_scores.append(workload_scores)
                 l_region_names.append(str(cloud_region))
+            except PSqlExecuteException as e:
+                raise e
             except Exception as e:
                 d_region_warnings[str(cloud_region)] = str(e)
         index_best_region, l_weighted_score = g_optimizer.compare_candidates(l_region_scores, True)
+        if index_best_region == -1:
+            return {
+                'error': 'No viable candidate',
+                'details': d_region_warnings
+            }, 400
         selected_region = l_region_names[index_best_region]
 
         d_weighted_scores = {l_region_names[i]: l_weighted_score[i] for i in range(len(l_region_names))}

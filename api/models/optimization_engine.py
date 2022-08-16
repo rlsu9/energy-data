@@ -4,7 +4,6 @@ from enum import Enum
 from typing import Optional
 
 import numpy as np
-from werkzeug.exceptions import BadRequest
 
 
 class OptimizationFactor(str, Enum):
@@ -51,7 +50,7 @@ class OptimizationEngine:
             The index of the best candidate, and optionally the weighted score per candidate
         """
         if len(scores) == 0:
-            raise BadRequest('No viable candidate.')
+            return -1, None
         l_weighted_scores = []
         for candidate_index in range(len(scores)):
             weighted_score = self._calculate_weighted_score(scores[candidate_index])
