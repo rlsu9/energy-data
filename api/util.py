@@ -168,6 +168,24 @@ class ValueWithUnit:
             raise ValueError("Incompatible type for comparison")
         return self.absolute_value() < other.absolute_value()
 
+    def __le__(self, other):
+        if type(self) != type(other):
+            raise ValueError("Incompatible type for comparison")
+        return self.absolute_value() <= other.absolute_value()
+
+    def __gt__(self, other):
+        if type(self) != type(other):
+            raise ValueError("Incompatible type for comparison")
+        return self.absolute_value() > other.absolute_value()
+
+    def __ge__(self, other):
+        if type(self) != type(other):
+            raise ValueError("Incompatible type for comparison")
+        return self.absolute_value() >= other.absolute_value()
+
+    def __hash__(self):
+        return hash(self.absolute_value())
+
     def _add_or_sub(self, other, sign=1):
         if type(self) != type(other):
             raise ValueError("Incompatible type for subtraction")
@@ -188,6 +206,29 @@ class ValueWithUnit:
 
     def __sub__(self, other):
         return self._add_or_sub(other, -1)
+
+    def __mul__(self, other):
+        # Serial multiplication yields a value of the same type
+        if isinstance(other, (int, float)):
+            copy = deepcopy(self)
+            copy.value *= other
+            return copy
+        raise ValueError("Incompatible type for multiplication")
+
+    def __truediv__(self, other):
+        # Serial division yields a value of the same type
+        if isinstance(other, (int, float)):
+            if other == 0:
+                raise ValueError("Cannot divide by zero")
+            copy = deepcopy(self)
+            copy.value /= other
+            return copy
+        # Same type division yields a singular value
+        if type(self) != type(other) or not isinstance(other, ValueWithUnit):
+            raise ValueError("Incompatible type for division")
+        if other.value == 0:
+            raise ValueError("Cannot divide by zero")
+        return self.value / other.value * pow(POWER_BASE, self.unit - other.unit)
 
     def absolute_value(self):
         return self.value * pow(POWER_BASE, self.unit.value)
@@ -215,6 +256,8 @@ class Size(ValueWithUnit):
             value = BITS_PER_BYTE * self.value / other.value
             unit = self.unit.value - other.unit.value
             return timedelta(seconds=value * pow(POWER_BASE, unit))
+        else:
+            return super().__truediv__(other)
 
 
 class Rate(ValueWithUnit):
@@ -227,7 +270,9 @@ class Rate(ValueWithUnit):
     def gbps(self):
         return super().giga_value()
 
-    def __mul__(self, other) -> Size:
+    def __mul__(self, other):
+        if isinstance(other, (int, float)):
+            return super().__mul__(other)
         if not isinstance(other, timedelta):
             raise ValueError("Can only bandwidth multiply with timedelta")
         value = self.value * other.total_seconds() / BITS_PER_BYTE

@@ -69,13 +69,20 @@ def test_unit_conversion():
     assert Rate(100, RateUnit.Gbps) == Rate(100 * 1024, RateUnit.Mbps)
 
 
-def test_unit_mul_div():
+def test_unit_mul_div_cross_unit():
     # Multiplication
     assert Rate(1, RateUnit.Gbps) * timedelta(seconds=8) == Size(1, SizeUnit.GB)
     assert Rate(100, RateUnit.Gbps) * timedelta(seconds=1) == Size(12.5, SizeUnit.GB)
     # Divisions
     assert Size(1, SizeUnit.GB) / timedelta(seconds=1) == Rate(8, RateUnit.Gbps)
     assert Size(1, SizeUnit.GB) / Rate(1, RateUnit.Gbps) == timedelta(seconds=8)
+
+
+def test_unit_mul_div_serial():
+    assert Size(2, SizeUnit.MB) / 2 == Size(1, SizeUnit.MB)
+    assert Size(2, SizeUnit.MB) * 2 == Size(4, SizeUnit.MB)
+    assert Rate(128, RateUnit.Mbps) * 8 == Rate(1, RateUnit.Gbps)
+    assert Rate(1, RateUnit.Gbps) / 8 == Rate(128, RateUnit.Mbps)
 
 
 def test_unit_comparison():
