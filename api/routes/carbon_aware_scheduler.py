@@ -49,13 +49,16 @@ def calculate_workload_scores(workload: Workload, cloud_region: CloudRegion, iso
                 running_intervals = workload.get_running_intervals_in_24h()
                 max_delay = workload.schedule.max_delay
                 score = 0
-                d_misc['optimal_delay_time'] = []
+                d_misc['start_delay'] = []
+                d_misc['migration_emission'] = []
+                d_misc['migration_duration'] = []
                 # 24 hour / 5 min = 288 slots
                 for (start, end) in running_intervals:
                     l_carbon_intensity = get_carbon_intensity_list(iso_region, start, end + max_delay)
                     carbon_intensity_by_timestamp = convert_carbon_intensity_list_to_dict(l_carbon_intensity)
                     total_compute_carbon_emissions, optimal_delay_time = calculate_total_carbon_emissions(
                         start, end, DEFAULT_CPU_POWER_PER_CORE, carbon_intensity_by_timestamp, max_delay)
+                    d_misc['start_delay'].append(optimal_delay_time)
                     # Migration emission
                     # migration carbon emission = min[t](carbon intensity * migration power * migration duration)
                     #   constraint(t):  t(migration out) <= t(execution start) < t(execution end) <= t(migration back)
@@ -82,11 +85,11 @@ def calculate_workload_scores(workload: Workload, cloud_region: CloudRegion, iso
                         carbon_intensity_by_timestamp
                     )
                     total_migration_carbon_emission = pre_run_migration_carbon_emission + post_run_migration_carbon_emission
-                    # TODO: pass optimal_start_time to scheduler
+                    d_misc['migration_emission'].append((pre_run_migration_carbon_emission, post_run_migration_carbon_emission))
+                    d_misc['migration_duration'].append((pre_run_migration_duration, post_run_migration_duration))
                     d_scores[OptimizationFactor.CarbonEmissionFromCompute] = total_compute_carbon_emissions
                     d_scores[OptimizationFactor.CarbonEmissionFromMigration] = total_migration_carbon_emission
                     score += (total_compute_carbon_emissions + total_migration_carbon_emission)
-                    d_misc['optimal_delay_time'].append(optimal_delay_time)
             case OptimizationFactor.WanNetworkUsage:
                 # score = input + output data size (GB)
                 # TODO: add WAN demand as weight
@@ -120,14 +123,14 @@ class CarbonAwareScheduler(Resource):
         l_region_scores = []
         l_region_names = []
         d_region_warnings = dict()
-        d_region_delay = dict()
+        d_misc_details = dict()
         for i in range(len(candidate_cloud_regions)):
             cloud_region = candidate_cloud_regions[i]
             iso_region = candidate_iso_regions[i]
             try:
                 workload_scores, d_misc = calculate_workload_scores(workload, cloud_region, iso_region)
-                # if all([delay > timedelta() for delay in d_misc['optimal_delay_time']]):
-                d_region_delay[str(cloud_region)] = d_misc['optimal_delay_time']
+                # if all([delay > timedelta() for delay in d_misc['start_delay']]):
+                d_misc_details[str(cloud_region)] = d_misc
                 l_region_scores.append(workload_scores)
                 l_region_names.append(str(cloud_region))
             except PSqlExecuteException as e:
@@ -155,5 +158,5 @@ class CarbonAwareScheduler(Resource):
             'weighted-scores': d_weighted_scores,
             'raw-scores': d_raw_scores,
             'warnings': d_region_warnings,
-            'start_delay': d_region_delay,
+            'details': d_misc_details,
         }

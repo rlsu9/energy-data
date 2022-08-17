@@ -48,5 +48,7 @@ class TestCarbonAwareScheduler:
 
         assert 'warning' not in response_json or not response_json['warning']
 
-        for cloud_region, l_start_delay in response_json['start_delay'].items():
-            assert all([start_delay == 0 for start_delay in l_start_delay])
+        for cloud_region, details in response_json['details'].items():
+            assert all([start_delay == 0 for start_delay in details['start_delay']])
+            assert all([migration_duration == [0, 0] for migration_duration in details['migration_duration']])
+            assert all([migration_emission == [0, 0] for migration_emission in details['migration_emission']])
