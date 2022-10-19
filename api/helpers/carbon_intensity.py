@@ -68,10 +68,16 @@ def get_average_carbon_intensity(conn: psycopg2.extensions.connection,
     records: list[tuple[datetime, float]] = psql_execute_list(cursor,
                                                               """SELECT datetime, carbonintensity FROM CarbonIntensity
             WHERE region = %(region)s
-                AND datetime >= (SELECT MAX(datetime) FROM EnergyMixture
-                    WHERE datetime <= %(start)s AND region = %(region)s)
-                AND datetime <= (SELECT MIN(datetime) FROM EnergyMixture
-                    WHERE datetime >= %(end)s AND region = %(region)s)
+                AND datetime >= (SELECT COALESCE(
+                    (SELECT MAX(datetime) FROM EnergyMixture
+                        WHERE datetime <= %(start)s AND region = %(region)s),
+                    (SELECT MIN(datetime) FROM EnergyMixture
+                        WHERE region = %(region)s)))
+                AND datetime <= (SELECT COALESCE(
+                    (SELECT MIN(datetime) FROM EnergyMixture
+                        WHERE datetime >= %(end)s AND region = %(region)s),
+                    (SELECT MAX(datetime) FROM EnergyMixture
+                        WHERE region = %(region)s)))
             ORDER BY datetime;""",
                                                               dict(region=region, start=start, end=end))
     l_carbon_intensity = []
