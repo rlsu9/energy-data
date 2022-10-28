@@ -198,7 +198,16 @@ def crawl_emissions_data(region: str, start_time: datetime):
 # prediction part
 
 
+fetch_prediction_count = 0
+
+
 def fetch_prediction(region: str, target_datetime: datetime) -> dict:
+    time.sleep(random.randint(1, 10))
+    global fetch_prediction_count
+    fetch_prediction_count += 1
+    if fetch_prediction_count % 288 == 0:
+        time.sleep(60)
+
     url_get_carbon_intensity = 'https://carbon-aware-api.azurewebsites.net/emissions/forecasts/batch'
     response = requests.post(url_get_carbon_intensity, json=[{
         'location': region,
@@ -287,21 +296,16 @@ def crawl_prediction_data(region: str, start_time: datetime):
     conn = get_db_connection()
     total_count = 0
     noresult_count = 0
-    prediction_count = 0
     date = start_time
     while True:
-        if noresult_count > 5:
-            break
         print(date.datetime)
         count_records = crawl_prediction_data_at(conn, region, date.datetime)
         total_count += count_records
-        prediction_count += 1
         date = date.shift(days=-1)
         if count_records == 0:
             noresult_count += 1
-        time.sleep(random.randint(1, 10))
-        if prediction_count % 60 == 0:
-            time.sleep(60)
+        if noresult_count > 5:
+            break
     print(f'region: {region}, total count: {total_count}')
     return
 
