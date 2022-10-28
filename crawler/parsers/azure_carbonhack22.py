@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
 
+# Run like this:
+# region=XXX && cd /c3lab-migration/energy-data/crawler/parsers && python -u azure_carbonhack22.py -R $region --fetch-prediction 1> >(tee azure.prediction.$region.log >&1) 2> >(tee azure.prediction.$region.err >&2)
+
 from dateutil import tz
 import requests
 import sys
