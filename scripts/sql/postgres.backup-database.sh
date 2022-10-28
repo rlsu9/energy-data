@@ -9,5 +9,5 @@ dbname="$1"
 dumpfile="$2"
 
 # set -x
-pg_dump $dbname | gzip -c > "$dumpfile"
+pg_dump -Fc $dbname | gzip -c > "$dumpfile"
 
