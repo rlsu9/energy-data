@@ -202,7 +202,7 @@ fetch_prediction_count = 0
 
 
 def fetch_prediction(region: str, target_datetime: datetime) -> dict:
-    time.sleep(random.randint(1, 10))
+    time.sleep(random.randint(0, 5))
     global fetch_prediction_count
     fetch_prediction_count += 1
     if fetch_prediction_count % 288 == 0:
