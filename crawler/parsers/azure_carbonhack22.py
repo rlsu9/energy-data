@@ -175,21 +175,18 @@ def crawl_emissions_data_at(conn, region: str, target_datetime: datetime) -> int
 def crawl_emissions_data(region: str):
     print(f'Crawling emissions data for region {region} ...')
     conn = get_db_connection()
-    # min_date = arrow.get(datetime(202, 10, 1), tz.UTC)
-    # max_date = arrow.get(datetime(2022, 10, 1), tz.UTC)
     total_count = 0
     noresult_count = 0
-    for region in azure_regions:
-        date = arrow.get(arrow.now().date())
-        while True:
-            if noresult_count > 5:
-                break
-            count_records = crawl_emissions_data_at(conn, region, date.datetime)
-            total_count += count_records
-            date = date.shift(days=-WINDOW_SIZE_IN_DAYS)
-            if count_records == 0:
-                noresult_count += 1
-        print(f'region: {region}, total count: {total_count}')
+    date = arrow.get(arrow.now().date())
+    while True:
+        if noresult_count > 5:
+            break
+        count_records = crawl_emissions_data_at(conn, region, date.datetime)
+        total_count += count_records
+        date = date.shift(days=-WINDOW_SIZE_IN_DAYS)
+        if count_records == 0:
+            noresult_count += 1
+    print(f'region: {region}, total count: {total_count}')
     return
 
 
