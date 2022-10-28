@@ -10,6 +10,8 @@ import traceback
 import argparse
 import arrow
 import psycopg2, psycopg2.extras
+import time
+import random
 from datetime import datetime, timedelta
 
 WINDOW_SIZE_IN_DAYS = 30
@@ -280,6 +282,7 @@ def crawl_prediction_data(region: str, start_time: datetime):
     conn = get_db_connection()
     total_count = 0
     noresult_count = 0
+    prediction_count = 0
     date = start_time
     while True:
         if noresult_count > 5:
@@ -287,9 +290,13 @@ def crawl_prediction_data(region: str, start_time: datetime):
         print(date.datetime)
         count_records = crawl_prediction_data_at(conn, region, date.datetime)
         total_count += count_records
+        prediction_count += 1
         date = date.shift(minutes=-5)
         if count_records == 0:
             noresult_count += 1
+        time.sleep(random.randint(1, 10))
+        if prediction_count % 60 == 0:
+            time.sleep(60)
     print(f'region: {region}, total count: {total_count}')
     return
 
