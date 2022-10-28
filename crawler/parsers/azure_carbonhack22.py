@@ -175,12 +175,12 @@ def crawl_emissions_data_at(conn, region: str, target_datetime: datetime) -> int
         print(traceback.format_exc(), file=sys.stderr)
         return 0
 
-def crawl_emissions_data(region: str):
+def crawl_emissions_data(region: str, start_time: datetime):
     print(f'Crawling emissions data for region {region} ...')
     conn = get_db_connection()
     total_count = 0
     noresult_count = 0
-    date = arrow.get(arrow.now().date())
+    date = start_time
     while True:
         if noresult_count > 5:
             break
@@ -275,12 +275,12 @@ def crawl_prediction_data_at(conn, region: str, target_datetime: datetime) -> in
         print(traceback.format_exc(), file=sys.stderr)
         return 0
 
-def crawl_prediction_data(region: str):
+def crawl_prediction_data(region: str, start_time: datetime):
     print(f'Crawling prediction data for region {region} ...')
     conn = get_db_connection()
     total_count = 0
     noresult_count = 0
-    date = arrow.get(arrow.now().date())
+    date = start_time
     while True:
         if noresult_count > 5:
             break
@@ -296,17 +296,22 @@ def crawl_prediction_data(region: str):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('-R', '--regions', nargs='+', choices=azure_regions, help='Select a subset of regions')
+    parser.add_argument('--start-time', help='The start time')
     parser.add_argument('--fetch-emissions', action='store_true', help='Fetch emissions data')
     parser.add_argument('--fetch-prediction', action='store_true', help='Fetch prediction data')
     args = parser.parse_args()
 
     regions_to_crawl = args.regions if args.regions else azure_regions
     print(f'Regions to crawl: {regions_to_crawl}')
+    start_time = arrow.get(arrow.now().date())
+    if args.start_time:
+        start_time = arrow.get(args.start_time)
+        print(f'Start time: {args.start_time}')
     for region in regions_to_crawl:
         if args.fetch_emissions:
-            crawl_emissions_data(region)
+            crawl_emissions_data(region, start_time)
         if args.fetch_prediction:
-            crawl_prediction_data(region)
+            crawl_prediction_data(region, start_time)
 
 if __name__ == "__main__":
     main()
