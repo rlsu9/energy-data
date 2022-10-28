@@ -258,6 +258,11 @@ def crawl_prediction_data_at(conn, region: str, target_datetime: datetime) -> in
     print(f'region: {region}, date: {target_datetime.strftime("%Y/%m/%d %H:%M:%S")}')
 
     try:
+        count_inserted = get_prediction_data_count(conn, region, target_datetime)
+        if count_inserted > 0:
+            print(f'Prediction data already exists. Skipping...')
+            return count_inserted
+
         prediction_data, generatedAt = fetch_prediction(region, target_datetime)
         print(f'Retrieved {len(prediction_data)} rows.')
         if len(prediction_data) == 0:
