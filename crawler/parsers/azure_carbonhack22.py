@@ -301,7 +301,7 @@ def crawl_prediction_data(region: str, start_time: datetime):
         print(date.datetime)
         count_records = crawl_prediction_data_at(conn, region, date.datetime)
         total_count += count_records
-        date = date.shift(hours=-1)
+        date = date.shift(minutes=-15)
         if count_records == 0:
             noresult_count += 1
         if noresult_count > 5:
