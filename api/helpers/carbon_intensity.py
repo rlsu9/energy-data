@@ -147,6 +147,28 @@ def get_carbon_intensity_list(region: str, start: datetime, end: datetime) -> li
     # return calculate_average_carbon_intensity(power_by_fuel_source)
 
 
+def get_power_by_fuel_type(region: str, start: datetime, end: datetime) -> list[dict]:
+    """Retrieves the raw power (in MW) broken down by timestamp and fuel type."""
+    conn = get_psql_connection()
+    validate_region_exists(conn, region)
+    validate_time_range(conn, region, start, end)
+    d_timestamp_fuel_power = get_power_by_timestamp_and_fuel_source(conn, region, start, end)
+    result = []
+    for timestamp in d_timestamp_fuel_power:
+        l_fuel_mix = []
+        for fuel in d_timestamp_fuel_power[timestamp]:
+            power_mw = d_timestamp_fuel_power[timestamp][fuel]
+            l_fuel_mix.append({
+                'type': fuel,
+                'power_mw': power_mw
+            })
+        result.append({
+            'timestamp': timestamp,
+            'values': l_fuel_mix
+        })
+    return result
+
+
 def convert_carbon_intensity_list_to_dict(l_carbon_intensity: list[dict]) -> dict[datetime, float]:
     d_carbon_intensity_by_timestamp: dict[datetime, float] = {}
     for d in l_carbon_intensity:

@@ -41,6 +41,7 @@ def create_app():
     from api.routes.balancing_authority import BalancingAuthority, BalancingAuthorityList
     from api.routes.carbon_intensity import CarbonIntensity
     from api.routes.carbon_aware_scheduler import CarbonAwareScheduler
+    from api.routes.energy_mixture import EnergyMixture
 
     # Alternatively, use this and `from varname import nameof`.
     errors_custom_responses = {
@@ -55,6 +56,7 @@ def create_app():
     api.add_resource(BalancingAuthorityList, '/balancing-authority/list')
     api.add_resource(CarbonIntensity, '/carbon-intensity/')
     api.add_resource(CarbonAwareScheduler, '/carbon-aware-scheduler/')
+    api.add_resource(EnergyMixture, '/energy-mixture/')
 
     # Source: https://github.com/marshmallow-code/webargs/issues/181#issuecomment-621159812
     @webargs.flaskparser.parser.error_handler
