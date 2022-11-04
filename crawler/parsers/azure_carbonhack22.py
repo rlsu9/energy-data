@@ -296,6 +296,7 @@ def crawl_prediction_data(region: str, start_time: arrow.Arrow):
     conn = get_db_connection()
     total_count = 0
     noresult_count = 0
+    noresult_whole_day_count = 0
     date = start_time
     while True:
         print(date.datetime)
@@ -307,7 +308,13 @@ def crawl_prediction_data(region: str, start_time: arrow.Arrow):
         else:
             noresult_count = 0
         if noresult_count > 5:
-            break
+            date = arrow.get(date.date())
+            noresult_whole_day_count += 1
+            if noresult_whole_day_count > 14:
+                break
+            else:
+                noresult_count = 0
+                continue
     print(f'region: {region}, total count: {total_count}')
     return
 
