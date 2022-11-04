@@ -291,7 +291,7 @@ def crawl_prediction_data_at(conn, region: str, target_datetime: datetime) -> in
         print(traceback.format_exc(), file=sys.stderr)
         return 0
 
-def crawl_prediction_data(region: str, start_time: datetime):
+def crawl_prediction_data(region: str, start_time: arrow.Arrow):
     print(f'Crawling prediction data for region {region} ...')
     conn = get_db_connection()
     total_count = 0
