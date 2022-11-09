@@ -105,6 +105,8 @@ def get_power_in_mwh(value_str: str, value_units: str) -> float:
     }
     if value_units not in m_conversion_factor:
         raise ValueError('Power unit %s not recognized.' % value_units)
+    if value_str is None:
+        return 0
     return float(value_str) * m_conversion_factor[value_units]
 
 def parse_eia_response(response, eia_respondent: str) -> dict:
