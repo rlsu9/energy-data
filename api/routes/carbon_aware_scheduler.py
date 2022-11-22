@@ -107,11 +107,10 @@ class CarbonAwareScheduler(Resource):
         workload = args
         orig_request = {'request': workload}
         current_app.logger.info("CarbonAwareScheduler.get(%s)" % workload)
-        if workload.schedule.start_time is None:
-            workload.schedule.start_time = datetime.now(timezone.utc)
 
         # TODO: use prediction data instead of historic data
-        workload.schedule.start_time -= timedelta(days=1)
+        if workload.schedule.start_time is None:
+            workload.schedule.start_time = datetime.now(timezone.utc) + timedelta(days=-1)
 
         candidate_cloud_regions = get_alternative_regions(args.preferred_cloud_location, True)
         candidate_iso_regions = []
