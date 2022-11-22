@@ -15,6 +15,7 @@ class CloudRegion:
     provider: str
     code: str
     name: str
+    iso: str
     gps: Tuple[float, float]
 
     def __str__(self) -> str:
@@ -44,10 +45,11 @@ class CloudLocationManager:
             for raw_cloud_region in l_raw_cloud_regions:
                 region_code = raw_cloud_region['code']
                 region_name = raw_cloud_region['name']
+                region_iso = raw_cloud_region['iso']
                 region_gps = tuple([float(coordinate) for coordinate in raw_cloud_region['gps']])
                 assert len(region_gps) == 2 and abs(region_gps[0]) <= 90 and abs(region_gps[1]) <= 180, \
                     f"Invalid GPS coordinate {region_gps} for {cloud_provider}:{region_code}"
-                new_cloud_region = CloudRegion(cloud_provider, region_code, region_name, region_gps)
+                new_cloud_region = CloudRegion(cloud_provider, region_code, region_name, region_iso, region_gps)
                 l_cloud_regions.append(new_cloud_region)
             new_public_cloud = PublicCloud(cloud_provider, l_cloud_regions)
             self.all_public_clouds[cloud_provider] = new_public_cloud
