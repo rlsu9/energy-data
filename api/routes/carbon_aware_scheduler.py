@@ -60,6 +60,8 @@ def calculate_workload_scores(workload: Workload, cloud_region: CloudRegion, iso
                     total_compute_carbon_emissions, optimal_delay_time = calculate_total_carbon_emissions(
                         start, end, DEFAULT_CPU_POWER_PER_CORE, carbon_intensity_by_timestamp, max_delay)
                     d_misc['start_delay'].append(optimal_delay_time)
+                    # Note: temporarily disabled
+                    """
                     # Migration emission
                     # migration carbon emission = min[t](carbon intensity * migration power * migration duration)
                     #   constraint(t):  t(migration out) <= t(execution start) < t(execution end) <= t(migration back)
@@ -88,6 +90,8 @@ def calculate_workload_scores(workload: Workload, cloud_region: CloudRegion, iso
                     total_migration_carbon_emission = pre_run_migration_carbon_emission + post_run_migration_carbon_emission
                     d_misc['migration_emission'].append((pre_run_migration_carbon_emission, post_run_migration_carbon_emission))
                     d_misc['migration_duration'].append((pre_run_migration_duration, post_run_migration_duration))
+                    """
+                    total_migration_carbon_emission = 0
                     d_scores[OptimizationFactor.CarbonEmissionFromCompute] = total_compute_carbon_emissions
                     d_scores[OptimizationFactor.CarbonEmissionFromMigration] = total_migration_carbon_emission
                     score += (total_compute_carbon_emissions + total_migration_carbon_emission)
