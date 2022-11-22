@@ -60,11 +60,14 @@ class CloudLocationManager:
     def get_all_cloud_providers(self) -> list[str]:
         return sorted(self.all_public_clouds.keys())
 
-    def get_all_cloud_regions(self) -> list[CloudRegion]:
-        all_cloud_regions: list[CloudRegion] = []
-        for public_cloud in self.all_public_clouds.values():
-            all_cloud_regions += public_cloud.regions
-        return all_cloud_regions
+    def get_all_cloud_regions(self, cloud_provider: str = None) -> list[CloudRegion]:
+        if cloud_provider:
+            return self.all_public_clouds[cloud_provider].regions
+        else:
+            all_cloud_regions: list[CloudRegion] = []
+            for public_cloud in self.all_public_clouds.values():
+                all_cloud_regions += public_cloud.regions
+            return all_cloud_regions
 
     def get_cloud_region_codes(self, cloud_provider: str) -> list[str]:
         current_app.logger.debug('get_cloud_region_codes(%s)' % cloud_provider)

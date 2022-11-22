@@ -30,7 +30,8 @@ g_wan_bandwidth = load_wan_bandwidth_model()
 
 def get_alternative_regions(cloud_region: CloudRegion = None, include_self=False) -> list[CloudRegion]:
     # NOTE: returns all possible regions for now, but can add filter/preference later.
-    return g_cloud_manager.get_all_cloud_regions()
+    # TODO: add support for Azure regions
+    return g_cloud_manager.get_all_cloud_regions('AWS')
 
 
 def calculate_workload_scores(workload: Workload, cloud_region: CloudRegion, iso_region: str) ->\
