@@ -115,10 +115,13 @@ class CarbonAwareScheduler(Resource):
         candidate_cloud_regions = get_alternative_regions(args.preferred_cloud_location, True)
         candidate_iso_regions = []
         for candidate_cloud_region in candidate_cloud_regions:
-            (latitude, longitude) = g_cloud_manager.get_gps_coordinate(candidate_cloud_region)
-            watttime_lookup_result = lookup_watttime_balancing_authority(latitude, longitude)
-            iso_region = convert_watttime_ba_abbrev_to_region(watttime_lookup_result['watttime_abbrev'])
-            candidate_iso_regions.append(iso_region)
+            if candidate_cloud_region.iso:
+                candidate_iso_regions.append(candidate_cloud_region.iso)
+            else:
+                (latitude, longitude) = g_cloud_manager.get_gps_coordinate(candidate_cloud_region)
+                watttime_lookup_result = lookup_watttime_balancing_authority(latitude, longitude)
+                iso_region = convert_watttime_ba_abbrev_to_region(watttime_lookup_result['watttime_abbrev'])
+                candidate_iso_regions.append(iso_region)
         l_region_scores = []
         l_region_names = []
         d_region_warnings = dict()
