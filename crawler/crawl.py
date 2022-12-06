@@ -132,9 +132,8 @@ def get_db_connection(host='/var/run/postgresql/', database="electricity-data"):
     try:
         conn = psycopg2.connect(host=host, database=database, user="crawler_rw")
         return conn
-    except Exception as e:
-        print("Failed to connect to database.")
-        raise e
+    except Exception as ex:
+        raise ValueError("Failed to connect to database.") from ex
 
 
 def get_last_updated(conn, region):
@@ -142,9 +141,8 @@ def get_last_updated(conn, region):
         try:
             cur.execute("""SELECT LastUpdated FROM LastUpdated WHERE Region = %s""", [region])
             result = cur.fetchone()
-        except psycopg2.Error as e:
-            print("Failed to execute get_last_updated query.")
-            raise e
+        except psycopg2.Error as ex:
+            raise ValueError("Failed to execute get_last_updated query.") from ex
     return result[0] if result is not None else datetime.min
 
 
@@ -154,9 +152,8 @@ def set_last_updated(conn, region, run_timestamp):
             cur.execute("""INSERT INTO LastUpdated (Region, LastUpdated) VALUES (%s, %s)
                             ON CONFLICT (Region) DO UPDATE SET LastUpdated = EXCLUDED.LastUpdated""",
                         [region, run_timestamp])
-        except psycopg2.Error as e:
-            print("Failed to execute set_last_updated query.")
-            raise e
+        except psycopg2.Error as ex:
+            raise ValueError("Failed to execute set_last_updated query.") from ex
 
 
 def is_in_scheduled_downtime(region: str, e: Exception):
@@ -191,10 +188,10 @@ def fetch_new_data(region, target_datetime: datetime = None):
             l_data = [l_data]
     except Exception as e:
         print("Failed to execute fetchFn. See stderr log for details.")
-        if not is_in_scheduled_downtime(region, e):
-            raise e
-        else:
+        if is_in_scheduled_downtime(region, e):
             l_data = []
+        else:
+            raise
     l_data.sort(key=lambda o: o['datetime'])
     for data in l_data:
         timestamp = arrow.get(data['datetime']).to(map_regions[region]['timeZone']).datetime
@@ -233,9 +230,8 @@ def upload_new_data(conn, region, timestamp, d_power_mw_by_category):
                 rows,
                 fetch=True
             )
-        except psycopg2.Error as e:
-            print("Failed to upload new data")
-            raise e
+        except psycopg2.Error as ex:
+            raise ValueError ("Failed to upload new data") from ex
     (count_all, count_insert, count_update) = result[0]
     if count_insert is None: count_insert = 0
     if count_update is None: count_update = 0
@@ -317,9 +313,9 @@ def crawl_all_regions():
             continue
         try:
             crawl_region(conn, region)
-        except Exception as e:
+        except Exception as ex:
             print(datetime.now().isoformat(),
-                  f"Exception occurred while crawling region {region}: {e}",
+                  f"Exception occurred while crawling region {region}: {ex}",
                   file=sys.stderr)
             print(traceback.format_exc(), file=sys.stderr)
     conn.close()

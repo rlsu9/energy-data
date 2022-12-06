@@ -8,6 +8,7 @@ import arrow
 from collections import defaultdict
 import logging
 import requests
+from requests.exceptions import JSONDecodeError
 import time
 
 url = 'https://www.iso-ne.com/ws/wsclient'
@@ -58,10 +59,13 @@ def get_json_data(target_datetime, params, session=None):
     s = session or requests.Session()
 
     req = s.post(url, data=postdata)
-    json_data = req.json()
-    raw_data = json_data[0]['data']
+    try:
+        json_data = req.json()
+        raw_data = json_data[0]['data']
 
-    return raw_data
+        return raw_data
+    except JSONDecodeError as ex:
+        raise ValueError(f'Failed to parse response as JSON: "{req.text}"') from ex
 
 
 def production_data_processer(raw_data, logger) -> list:
