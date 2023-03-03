@@ -4,25 +4,25 @@ public_clouds:
   regions:
   - code: us-west-1
     name: US West (N. California)
-    iso: US-CAISO
+    iso: CAISO_NORTH
     gps:
     - 37.00578
     - -121.56828
   - code: us-west-2
     name: US West (Oregon)
-    iso: US-PACW
+    iso: PACW
     gps:
     - 45.84041
     - -119.28946
   - code: us-east-1
     name: US East (N. Virginia)
-    iso: US-PJM
+    iso: PJM_SOUTHWEST_OH
     gps:
     - 39.983334
     - -82.98333
   - code: us-east-2
     name: US East (Ohio)
-    iso: US-PJM
+    iso: PJM_DC
     gps:
     - 39.040283
     - -77.485165

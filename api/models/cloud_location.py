@@ -84,3 +84,11 @@ class CloudLocationManager:
             if region.code == region_code:
                 return region.gps
         raise NotFound('Unknown region "%s" for provider "%s".' % (region_code, cloud_provider))
+
+    def get_cloud_region( self, cloud_provider: str, region_code: str) -> CloudRegion:
+        if cloud_provider not in self.all_public_clouds:
+            raise NotFound('Unknown cloud provider "%s".' % cloud_provider)
+        for region in self.all_public_clouds[cloud_provider].regions:
+            if region.code == region_code:
+                return region
+        raise NotFound('Unknown region "%s" for provider "%s".' % (region_code, cloud_provider))

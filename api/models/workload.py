@@ -7,6 +7,7 @@ from typing import Optional, Tuple
 import numpy as np
 from marshmallow import validates_schema, ValidationError
 from marshmallow_dataclass import dataclass
+from api.helpers.carbon_intensity import CarbonDataSource
 
 from api.models.cloud_location import CloudLocationManager
 from api.models.dataclass_extensions import *
@@ -52,15 +53,6 @@ class CloudLocation:
     latitude: Optional[float] = optional_field_with_validation(validate.Range(-90, 90))
     longitude: Optional[float] = optional_field_with_validation(validate.Range(-180, 180))
 
-    @validates_schema
-    def validate_schema(self, data, **kwargs):
-        (provider, region) = data['id'].split(':', 1)
-        all_region_codes = g_cloud_manager.get_cloud_region_codes(provider)
-        if region in all_region_codes:
-            raise ValidationError({
-                'id': 'Must be different from pre-defined region names'
-            })
-
 
 # Average of Xeon Platinum 8275CL, which has 48 HTs and a TDP of 240W
 DEFAULT_CPU_TDP = 240
@@ -94,7 +86,12 @@ def _validate_locations(candidate_locations: list[CloudLocation]):
         existing_locations.add(cloud_location.id)
         [provider, region] = cloud_location.id.split(':', 1)
         if provider in ALL_CLOUD_PROVIDERS and region in g_cloud_manager.get_cloud_region_codes(provider):
-            # known location, no coordinates needed
+            # known location, no coordinates are needed
+            error_message_name_conflict = 'Location is in pre-defined list. Must leave coordinates empty or choose a different name'
+            if cloud_location.latitude:
+                errors[i]['latitude'] = error_message_name_conflict
+            if cloud_location.longitude:
+                errors[i]['longitude'] = error_message_name_conflict
             continue
         # Unknown location, coordinates are needed
         if not cloud_location.latitude or not cloud_location.longitude:
@@ -117,9 +114,13 @@ class Workload:
     runtime: timedelta = field(metadata=metadata_timedelta_nonzero)
     schedule: WorkloadSchedule
     dataset: Dataset
+
     original_location: Optional[str] = field(default=None)
     candidate_providers: Optional[list[str]] = field(default_factory=list)
     candidate_locations: Optional[list[CloudLocation]] = field(default_factory=list)
+
+    carbon_data_source: CarbonDataSource = field_enum(CarbonDataSource, CarbonDataSource.Azure)
+    use_prediction: bool = field(default=True)
 
     @validates_schema
     def validate_schema(self, data, **kwargs):

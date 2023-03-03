@@ -24,8 +24,10 @@ class BalancingAuthority(Resource):
         }}
 
         watttime_lookup_result = lookup_watttime_balancing_authority(latitude, longitude)
-        region = convert_watttime_ba_abbrev_to_region(watttime_lookup_result['watttime_abbrev'])
+        iso = watttime_lookup_result['watttime_abbrev']
+        region = convert_watttime_ba_abbrev_to_region(iso)
         return orig_request | watttime_lookup_result | {
+            'iso': iso,
             'region': region,
         }
 

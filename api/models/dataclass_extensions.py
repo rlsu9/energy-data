@@ -38,8 +38,8 @@ def optional_field_with_validation(validation_function):
     return field(metadata=dict(validate=validation_function), default=None)
 
 
-def field_enum(enum_type):
-    return field(metadata=dict(by_value=True, error=custom_validation_error_enum(enum_type)))
+def field_enum(enum_type, default_value = None):
+    return field(metadata=dict(by_value=True, error=custom_validation_error_enum(enum_type)), default=default_value)
 
 
 def custom_validation_error_enum(enum_type):

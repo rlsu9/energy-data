@@ -6,7 +6,7 @@ from webargs import fields
 from webargs.flaskparser import use_kwargs
 from flask import current_app
 
-from api.helpers.carbon_intensity import get_carbon_intensity_list
+from api.helpers.carbon_intensity_c3lab import get_carbon_intensity_list
 from api.routes.balancing_authority import convert_watttime_ba_abbrev_to_region, lookup_watttime_balancing_authority
 
 carbon_intensity_args = {
@@ -29,10 +29,12 @@ class CarbonIntensity(Resource):
         current_app.logger.info("CarbonIntensity.get(%f, %f, %s, %s)" % (latitude, longitude, start, end))
 
         watttime_lookup_result = lookup_watttime_balancing_authority(latitude, longitude)
-        region = convert_watttime_ba_abbrev_to_region(watttime_lookup_result['watttime_abbrev'])
-        l_carbon_intensity = get_carbon_intensity_list(region, start, end)
+        iso = watttime_lookup_result['watttime_abbrev']
+        region = convert_watttime_ba_abbrev_to_region(iso)
+        l_carbon_intensity = get_carbon_intensity_list(iso, start, end)
 
         return orig_request | watttime_lookup_result | {
             'region': region,
+            'iso': iso,
             'carbon_intensities': l_carbon_intensity,
         }
