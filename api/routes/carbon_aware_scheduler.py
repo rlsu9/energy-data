@@ -13,7 +13,7 @@ from api.helpers.carbon_intensity import convert_carbon_intensity_list_to_dict, 
 from api.models.cloud_location import CloudLocationManager, CloudRegion
 from api.models.optimization_engine import OptimizationEngine, OptimizationFactor
 from api.models.wan_bandwidth import load_wan_bandwidth_model
-from api.models.workload import DEFAULT_CPU_POWER_PER_CORE, Workload, DEFAULT_STORAGE_POWER
+from api.models.workload import DEFAULT_CPU_POWER_PER_CORE, CloudLocation, Workload
 from api.routes.balancing_authority import convert_watttime_ba_abbrev_to_region, lookup_watttime_balancing_authority
 from api.util import PSqlExecuteException, SizeUnit, Size, Rate
 
@@ -28,11 +28,28 @@ g_optimizer = OptimizationEngine([t[0] for t in OPTIMIZATION_FACTORS_AND_WEIGHTS
 g_wan_bandwidth = load_wan_bandwidth_model()
 
 
-def get_alternative_regions(cloud_region: CloudRegion = None, include_self=False) -> list[CloudRegion]:
-    # NOTE: returns all possible regions for now, but can add filter/preference later.
-    # TODO: add support for Azure regions
-    return g_cloud_manager.get_all_cloud_regions('AWS')
+def get_candidate_regions(candidate_providers: list[str], candidate_locations: list[CloudLocation]) \
+        -> list[CloudRegion]:
+    try:
+        if candidate_providers:
+            return g_cloud_manager.get_all_cloud_regions(candidate_providers)
+        candidate_regions = []
+        for location in candidate_locations:
+            (provider, region_name) = location.id.split(':', 1)
+            cloud_region = CloudRegion(provider, region_name, location.id, None, (location.latitude, location.longitude))
+            candidate_regions.append(cloud_region)
+        return candidate_regions
+    except Exception as ex:
+        raise ValueError(f'Failed to get candidate regions: {ex}') from ex
 
+
+def lookup_iso_region(gps: tuple[float, float]):
+    try:
+        (latitude, longitude) = gps
+        watttime_lookup_result = lookup_watttime_balancing_authority(latitude, longitude)
+        return convert_watttime_ba_abbrev_to_region(watttime_lookup_result['watttime_abbrev'])
+    except Exception as ex:
+        raise ValueError(f'Failed to lookup ISO region: {ex}') from ex
 
 def calculate_workload_scores(workload: Workload, cloud_region: CloudRegion, iso_region: str) ->\
         tuple[dict[OptimizationFactor, float], dict[str, Any]]:
@@ -117,51 +134,47 @@ class CarbonAwareScheduler(Resource):
         if workload.schedule.start_time is None:
             workload.schedule.start_time = datetime.now(timezone.utc) + timedelta(days=-1)
 
-        candidate_cloud_regions = get_alternative_regions(args.preferred_cloud_location, True)
-        candidate_iso_regions = []
+        # candidate_cloud_regions = get_alternative_regions(args.original_location, True)
+        candidate_cloud_regions = get_candidate_regions(args.candidate_providers, args.candidate_locations)
         for candidate_cloud_region in candidate_cloud_regions:
-            if candidate_cloud_region.iso:
-                candidate_iso_regions.append(candidate_cloud_region.iso)
-            else:
-                (latitude, longitude) = g_cloud_manager.get_gps_coordinate(candidate_cloud_region)
-                watttime_lookup_result = lookup_watttime_balancing_authority(latitude, longitude)
-                iso_region = convert_watttime_ba_abbrev_to_region(watttime_lookup_result['watttime_abbrev'])
-                candidate_iso_regions.append(iso_region)
+            if not candidate_cloud_region.iso:
+                candidate_cloud_region.iso = lookup_iso_region(candidate_cloud_region.gps)
         l_region_scores = []
-        l_region_names = []
         d_region_warnings = dict()
         d_misc_details = dict()
-        for i in range(len(candidate_cloud_regions)):
-            cloud_region = candidate_cloud_regions[i]
-            iso_region = candidate_iso_regions[i]
+        for cloud_region in candidate_cloud_regions:
             try:
-                workload_scores, d_misc = calculate_workload_scores(workload, cloud_region, iso_region)
+                workload_scores, d_misc = calculate_workload_scores(workload, cloud_region, cloud_region.iso)
                 # if all([delay > timedelta() for delay in d_misc['start_delay']]):
                 d_misc_details[str(cloud_region)] = d_misc
                 l_region_scores.append(workload_scores)
-                l_region_names.append(str(cloud_region))
-            except PSqlExecuteException as e:
-                raise e
+            # except PSqlExecuteException as e:
+            #     raise e
             except Exception as e:
                 d_region_warnings[str(cloud_region)] = str(e)
                 current_app.logger.error(f'Exception when calculating score for region {cloud_region}: {e}')
                 current_app.logger.error(traceback.format_exc())
+                l_region_scores.append({})
         index_best_region, l_weighted_score = g_optimizer.compare_candidates(l_region_scores, True)
         if index_best_region == -1:
             return {
                 'error': 'No viable candidate',
                 'details': d_region_warnings
             }, 400
-        selected_region = l_region_names[index_best_region]
+        selected_region = str(candidate_cloud_regions[index_best_region])
 
-        d_weighted_scores = {l_region_names[i]: l_weighted_score[i] for i in range(len(l_region_names))}
-        d_raw_scores = {l_region_names[i]: l_region_scores[i] for i in range(len(l_region_names))}
-        d_cloud_region_to_iso = {str(candidate_cloud_regions[i]): candidate_iso_regions[i]
-                                 for i in range(len(candidate_cloud_regions))}
+        d_weighted_scores = {}
+        d_raw_scores = {}
+        d_cloud_region_to_iso = {}
+        for i in range(len(candidate_cloud_regions)):
+            region_name = str(candidate_cloud_regions[i])
+            d_weighted_scores[region_name] = l_weighted_score[i]
+            d_raw_scores[region_name] = l_region_scores[i]
+            d_cloud_region_to_iso[region_name] = candidate_cloud_regions[i].iso
         return orig_request | {
-            'requested-region': str(args.preferred_cloud_location),
+            'original-region': str(args.original_location),
             'selected-region': selected_region,
-            'iso': d_cloud_region_to_iso,
+            'isos': d_cloud_region_to_iso,
             'weighted-scores': d_weighted_scores,
             'raw-scores': d_raw_scores,
             'warnings': d_region_warnings,

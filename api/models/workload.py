@@ -48,20 +48,17 @@ class Dataset:
 
 @dataclass
 class CloudLocation:
-    cloud_provider: str = field_with_validation(validate.OneOf(g_cloud_manager.get_all_cloud_providers()))
-    region_code: str = field_default()
-    # field_with_validation(validate.OneOf(g_cloud_manager.get_cloud_region_codes(cloud_provider)))
-
-    def __str__(self) -> str:
-        return f'{self.cloud_provider}:{self.region_code}'
+    id: str = field_with_validation(validate.Regexp(r'([^:]*):([^:]*)'))
+    latitude: Optional[float] = optional_field_with_validation(validate.Range(-90, 90))
+    longitude: Optional[float] = optional_field_with_validation(validate.Range(-180, 180))
 
     @validates_schema
     def validate_schema(self, data, **kwargs):
-        # cloud_provider has been validated by its field-specific validation function
-        all_region_codes = g_cloud_manager.get_cloud_region_codes(data['cloud_provider'])
-        if data['region_code'] not in all_region_codes:
+        (provider, region) = data['id'].split(':', 1)
+        all_region_codes = g_cloud_manager.get_cloud_region_codes(provider)
+        if region in all_region_codes:
             raise ValidationError({
-                'region_code': 'Must be one of: %s.' % ', '.join(all_region_codes)
+                'id': 'Must be different from pre-defined region names'
             })
 
 
@@ -72,12 +69,78 @@ DEFAULT_CPU_POWER_PER_CORE = DEFAULT_CPU_TDP / 48  # in watt
 DEFAULT_STORAGE_POWER = DEFAULT_CPU_TDP * 0.2
 
 
+ALL_CLOUD_PROVIDERS = g_cloud_manager.get_all_cloud_providers()
+
+def _validate_providers(candidate_providers: list[str]):
+    errors = dict()
+    existing_providers = set()
+    for i in range(len(candidate_providers)):
+        provider = candidate_providers[i]
+        if provider in existing_providers:
+            errors[i] = f'Duplicate cloud provider "{provider}"'
+        existing_providers.add(provider)
+        if provider not in ALL_CLOUD_PROVIDERS:
+            errors[i] = f'Unknown cloud provider "{provider}"'
+    return errors
+
+def _validate_locations(candidate_locations: list[CloudLocation]):
+    errors = dict()
+    existing_locations = set()
+    for i in range(len(candidate_locations)):
+        cloud_location = candidate_locations[i]
+        if cloud_location.id in existing_locations:
+            errors[i] = { 'id': f'Duplicate location "{cloud_location.id}"' }
+            continue
+        existing_locations.add(cloud_location.id)
+        [provider, region] = cloud_location.id.split(':', 1)
+        if provider in ALL_CLOUD_PROVIDERS and region in g_cloud_manager.get_cloud_region_codes(provider):
+            # known location, no coordinates needed
+            continue
+        # Unknown location, coordinates are needed
+        if not cloud_location.latitude or not cloud_location.longitude:
+            errors[i] = {}
+            if not cloud_location.latitude:
+                errors[i]['latitude'] = 'Must provide latitude for unknown location'
+            if not cloud_location.longitude:
+                errors[i]['longitude'] = 'Must provide longitude for unknown location'
+    return errors
+
+def _validate_location_is_defined(location: str, candidate_locations: list[CloudLocation]):
+    [provider, region] = location.split(':', 1)
+    if provider in ALL_CLOUD_PROVIDERS and region in g_cloud_manager.get_cloud_region_codes(provider):
+        return None
+    return location in [location.id for location in candidate_locations]
+
+
 @dataclass
 class Workload:
-    preferred_cloud_location: Optional[CloudLocation]
     runtime: timedelta = field(metadata=metadata_timedelta_nonzero)
     schedule: WorkloadSchedule
     dataset: Dataset
+    original_location: Optional[str] = field(default=None)
+    candidate_providers: Optional[list[str]] = field(default_factory=list)
+    candidate_locations: Optional[list[CloudLocation]] = field(default_factory=list)
+
+    @validates_schema
+    def validate_schema(self, data, **kwargs):
+        errors = dict()
+        if bool('candidate_providers' in data) == bool('candidate_locations' in data):
+            errors['candidate_providers'] = errors['candidate_locations'] = 'Must provide one of candidate_providers and candidate_locations'
+            raise ValidationError(errors)
+        if 'candidate_providers' in data:
+            sub_errors = _validate_providers(data['candidate_providers'])
+            if sub_errors:
+                errors['candidate_providers'] = sub_errors
+        else:
+            sub_errors = _validate_locations(data['candidate_locations'])
+            if sub_errors:
+                errors['candidate_locations'] = sub_errors
+        if 'original_location' in data:
+            sub_errors = _validate_location_is_defined(data['original_location'], data['candidate_locations'])
+            if sub_errors:
+                errors['original_location'] = sub_errors
+        if errors:
+            raise ValidationError(errors)
 
     def get_cputime_in_24h(self) -> timedelta:
         run_count = 0

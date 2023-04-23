@@ -35,7 +35,7 @@ def field_with_validation(validation_function):
 
 
 def optional_field_with_validation(validation_function):
-    return field(metadata=dict(validate=validation_function, default=None))
+    return field(metadata=dict(validate=validation_function), default=None)
 
 
 def field_enum(enum_type):
