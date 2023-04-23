@@ -43,7 +43,9 @@ def fetch_production(zone_key='US-CAISO', session=None, target_datetime=None,
         'Nuclear': 'nuclear',
         'Natural Gas': 'gas',
         'Large Hydro': 'hydro',
-        'Other': 'unknown'
+        'Batteries': 'battery',
+        'Imports': 'import',
+        'Other': 'unknown',
     }
     storage_map = {
         'Batteries': 'battery'
