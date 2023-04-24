@@ -44,7 +44,7 @@ class CloudLocationManager:
             for raw_cloud_region in l_raw_cloud_regions:
                 region_code = raw_cloud_region['code']
                 region_name = raw_cloud_region['name']
-                region_iso = raw_cloud_region['iso']
+                region_iso = raw_cloud_region['iso'] if 'iso' in raw_cloud_region else None
                 region_gps = tuple([float(coordinate) for coordinate in raw_cloud_region['gps']])
                 assert len(region_gps) == 2 and abs(region_gps[0]) <= 90 and abs(region_gps[1]) <= 180, \
                     f"Invalid GPS coordinate {region_gps} for {cloud_provider}:{region_code}"

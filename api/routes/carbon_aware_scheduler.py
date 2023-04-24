@@ -134,14 +134,13 @@ class CarbonAwareScheduler(Resource):
         current_app.logger.info("CarbonAwareScheduler.get(%s)" % workload)
 
         candidate_cloud_regions = get_candidate_regions(args.candidate_providers, args.candidate_locations)
-        for candidate_cloud_region in candidate_cloud_regions:
-            if not candidate_cloud_region.iso:
-                candidate_cloud_region.iso = lookup_iso_region(candidate_cloud_region.gps)
         l_region_scores = []
         d_region_warnings = dict()
         d_misc_details = dict()
         for cloud_region in candidate_cloud_regions:
             try:
+                if not cloud_region.iso:
+                    cloud_region.iso = lookup_iso_region(cloud_region.gps)
                 workload_scores, d_misc = calculate_workload_scores(workload, cloud_region.iso,
                                             args.carbon_data_source, args.use_prediction)
                 # if all([delay > timedelta() for delay in d_misc['start_delay']]):
