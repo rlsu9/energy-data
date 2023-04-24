@@ -84,7 +84,7 @@ public_clouds:
     - -6.2597
   - code: norwayeast
     name: norwayeast (NO)
-    iso: NO
+    iso: "NO"
     gps:
     - 59.913868
     - 10.752245
