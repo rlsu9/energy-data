@@ -3,7 +3,7 @@
 from enum import Enum
 from typing import Optional
 
-import numpy as np
+from api.util import dict_min_key
 
 
 class OptimizationFactor(str, Enum):
@@ -40,21 +40,21 @@ class OptimizationEngine:
             total_weighted_score += score * weight
         return total_weighted_score / len(self.factors)
 
-    def compare_candidates(self, scores: list[dict[OptimizationFactor, float]], return_scores=False) -> \
-            tuple[int, Optional[list[float]]]:
+    def compare_candidates(self, d_scores: dict[str, dict[OptimizationFactor, float]], return_scores=False) -> \
+            tuple[int, Optional[dict[str, float]]]:
         """Compares the candidate based on their scores in each factor and return the best candidate.
 
         Args:
-            scores: a list of dicts that contains scores key'd by factor.
+            scores: a map from candidate name to a dict; the latter contains scores key'd by factor.
             return_scores: whether to return the calculated score.
 
         Returns:
             The index of the best candidate, and optionally the weighted score per candidate
         """
-        if len(scores) == 0:
-            return -1, None
-        l_weighted_scores = []
-        for candidate_index in range(len(scores)):
-            weighted_score = self._calculate_weighted_score(scores[candidate_index])
-            l_weighted_scores.append(weighted_score)
-        return np.argmin(l_weighted_scores), l_weighted_scores if return_scores else None
+        if len(d_scores) == 0:
+            return None, None if return_scores else None
+        d_weighted_scores = dict()
+        for candidate, scores in d_scores.items():
+            weighted_score = self._calculate_weighted_score(scores)
+            d_weighted_scores[candidate] = weighted_score
+        return dict_min_key(d_weighted_scores, lambda p: p[1]), d_weighted_scores if return_scores else None

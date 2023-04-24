@@ -134,48 +134,42 @@ class CarbonAwareScheduler(Resource):
         current_app.logger.info("CarbonAwareScheduler.get(%s)" % workload)
 
         candidate_cloud_regions = get_candidate_regions(args.candidate_providers, args.candidate_locations)
-        l_region_scores = []
+        d_region_scores = {}
         d_region_warnings = dict()
         d_misc_details = dict()
         for cloud_region in candidate_cloud_regions:
+            region_name = str(cloud_region)
             try:
                 if not cloud_region.iso:
                     cloud_region.iso = lookup_iso_region(cloud_region.gps)
                 workload_scores, d_misc = calculate_workload_scores(workload, cloud_region.iso,
                                             args.carbon_data_source, args.use_prediction)
                 # if all([delay > timedelta() for delay in d_misc['start_delay']]):
-                d_misc_details[str(cloud_region)] = d_misc
-                l_region_scores.append(workload_scores)
+                d_misc_details[region_name] = d_misc
+                d_region_scores[region_name] = workload_scores
             # except PSqlExecuteException as e:
             #     raise e
             except Exception as e:
-                d_region_warnings[str(cloud_region)] = str(e)
+                d_region_warnings[region_name] = str(e)
                 current_app.logger.error(f'Exception when calculating score for region {cloud_region}: {e}')
                 current_app.logger.error(traceback.format_exc())
-                # TODO: skip these
-                l_region_scores.append({})
-        index_best_region, l_weighted_score = g_optimizer.compare_candidates(l_region_scores, True)
-        if index_best_region == -1:
+        best_region, d_weighted_scores = g_optimizer.compare_candidates(d_region_scores, True)
+        if best_region is None:
             return {
                 'error': 'No viable candidate',
                 'details': d_region_warnings
             }, 400
-        selected_region = str(candidate_cloud_regions[index_best_region])
 
-        d_weighted_scores = {}
-        d_raw_scores = {}
         d_cloud_region_to_iso = {}
         for i in range(len(candidate_cloud_regions)):
             region_name = str(candidate_cloud_regions[i])
-            d_weighted_scores[region_name] = l_weighted_score[i]
-            d_raw_scores[region_name] = l_region_scores[i]
             d_cloud_region_to_iso[region_name] = candidate_cloud_regions[i].iso
         return orig_request | {
             'original-region': str(args.original_location),
-            'selected-region': selected_region,
+            'selected-region': best_region,
             'isos': d_cloud_region_to_iso,
             'weighted-scores': d_weighted_scores,
-            'raw-scores': d_raw_scores,
+            'raw-scores': d_region_scores,
             'warnings': d_region_warnings,
             'details': d_misc_details,
         }

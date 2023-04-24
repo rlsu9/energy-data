@@ -278,3 +278,6 @@ class Rate(ValueWithUnit):
         value = self.value * other.total_seconds() / BITS_PER_BYTE
         unit = SizeUnit(self.unit.value)
         return Size(value, unit)
+
+def dict_min_key(d: dict, sort_key):
+    return min(d.items(), key=sort_key)[0]
