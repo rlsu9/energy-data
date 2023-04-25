@@ -5,16 +5,15 @@ import requests
 import arrow
 import pandas as pd
 
-from api.models.cloud_location import CloudLocationManager
+from api.helpers.balancing_authority import MAPPING_WATTTIME_BA_TO_AZURE_REGION
 
-def get_iso_to_azure_region_mapping():
-    azure_cloud_regions = CloudLocationManager().get_all_cloud_regions(['Azure'])
-    m_iso_to_azure_region = dict()
-    for cloud_region in azure_cloud_regions:
-        m_iso_to_azure_region[cloud_region.iso] = cloud_region.code
-    return m_iso_to_azure_region
+M_ISO_TO_AZURE_REGION = MAPPING_WATTTIME_BA_TO_AZURE_REGION
 
-M_ISO_TO_AZURE_REGION = get_iso_to_azure_region_mapping()
+def get_azure_region_from_iso(iso: str) -> str:
+    # Transform ISO region to azure region
+    if iso not in M_ISO_TO_AZURE_REGION:
+        raise ValueError(f'Unknown azure region for iso {iso}')
+    return M_ISO_TO_AZURE_REGION[iso]
 
 def fetch_emissions(region: str, start: datetime, end: datetime) -> pd.DataFrame:
     url_get_carbon_intensity = 'https://carbon-aware-api.azurewebsites.net/emissions/bylocations'
@@ -98,10 +97,7 @@ def get_carbon_intensity_list(iso: str, start: datetime, end: datetime,
         Returns:
             A list of time series data.
     """
-    # Transform ISO region to Azure region
-    if iso not in M_ISO_TO_AZURE_REGION:
-        raise ValueError(f'Unknown Azure region for iso {iso}')
-    region = M_ISO_TO_AZURE_REGION[iso]
+    region = get_azure_region_from_iso(iso)
     if use_prediction:
         return fetch_prediction(region, start, end)
     else:

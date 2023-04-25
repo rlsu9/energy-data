@@ -1,4 +1,4 @@
-map_region_to_watttime_ba:
+map_c3lab_region_to_watttime_ba:
   US-BPA:
   - BPA
   US-CAISO:
@@ -71,3 +71,79 @@ map_region_to_watttime_ba:
   - SPP_WESTNE
   US-PACW:
   - PACW
+map_azure_region_to_watttime_ba:
+  australiaeast:
+  - NEM_NSW
+  australiasoutheast:
+  - NEM_VIC
+  canadacentral:
+  - IESO_NORTH
+  - IESO_SOUTH
+  - IESO_WEST
+  canadaeast:
+  - HQ
+  centralus:
+  - MISO_BEAUMONT
+  - MISO_DETROIT
+  - MISO_EAU_CLAIRE
+  - MISO_GRAND_RAPIDS
+  - MISO_INDIANAPOLIS
+  - MISO_LAFAYETTE
+  - MISO_LOWER_MS_RIVER
+  - MISO_MADISON
+  - MISO_MASON_CITY
+  - MISO_MINNEAPOLIS
+  - MISO_NEW_ORLEANS
+  - MISO_N_DAKOTA
+  - MISO_SAINT_LOUIS
+  - MISO_SPRINGFIELD
+  - MISO_UPPER_PENINSULA
+  - MISO_WORTHINGTON
+  eastus:
+  - PJM_CHICAGO
+  - PJM_DC
+  - PJM_EASTERN_KY
+  - PJM_EASTERN_OH
+  - PJM_NJ
+  - PJM_ROANOKE
+  - PJM_SOUTHWEST_OH
+  - PJM_WESTERN_KY
+  francecentral:
+  - FR
+  germanywestcentral:
+  - DE
+  northeurope:
+  - IE
+  norwayeast:
+  - "NO"
+  southcentralus:
+  - ERCOT_AUSTIN
+  - ERCOT_COAST
+  - ERCOT_EASTTX
+  - ERCOT_HIDALGO
+  - ERCOT_NORTHCENTRAL
+  - ERCOT_PANHANDLE
+  - ERCOT_SANANTONIO
+  - ERCOT_SECOAST
+  - ERCOT_SOUTHTX
+  - ERCOT_WESTTX
+  swedencentral:
+  - SE
+  uksouth:
+  - UK
+  westcentralus:
+  - PACE
+  westeurope:
+  - NL
+  westus:
+  - CAISO_ESCONDIDO
+  - CAISO_LONGBEACH
+  - CAISO_NORTH
+  - CAISO_PALMSPRINGS
+  - CAISO_REDDING
+  - CAISO_SANBERNARDINO
+  - CAISO_SANDIEGO
+  westus2:
+  - GCPD
+  westus3:
+  - AZPS

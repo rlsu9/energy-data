@@ -8,10 +8,10 @@ from pathlib import Path
 from datetime import datetime
 from werkzeug.exceptions import NotFound, BadRequest
 
-from api.helpers.balancing_authority import MAPPING_WATTTIME_BA_TO_REGION
+from api.helpers.balancing_authority import MAPPING_WATTTIME_BA_TO_C3LAB_REGION
 from api.util import load_yaml_data, get_psql_connection, psql_execute_list, psql_execute_scalar
 
-M_ISO_TO_C3LAB_REGION = MAPPING_WATTTIME_BA_TO_REGION
+M_ISO_TO_C3LAB_REGION = MAPPING_WATTTIME_BA_TO_C3LAB_REGION
 
 def get_c3lab_region_from_iso(iso: str) -> str:
     # Transform ISO region to c3lab region
