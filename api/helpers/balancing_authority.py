@@ -35,7 +35,7 @@ MAPPING_WATTTIME_BA_TO_C3LAB_REGION = get_mapping_watttime_ba_to_region(
 MAPPING_WATTTIME_BA_TO_AZURE_REGION = get_mapping_watttime_ba_to_region(
     WATTTIME_BA_MAPPING_FILE, 'map_azure_region_to_watttime_ba')
 
-def convert_watttime_ba_abbrev_to_region(watttime_abbrev) -> str:
+def convert_watttime_ba_abbrev_to_c3lab_region(watttime_abbrev) -> str:
     if watttime_abbrev in MAPPING_WATTTIME_BA_TO_C3LAB_REGION:
         return MAPPING_WATTTIME_BA_TO_C3LAB_REGION[watttime_abbrev]
     else:

@@ -7,7 +7,8 @@ from webargs.flaskparser import use_kwargs
 from flask import current_app
 
 from api.helpers.carbon_intensity_c3lab import get_carbon_intensity_list
-from api.routes.balancing_authority import convert_watttime_ba_abbrev_to_region, lookup_watttime_balancing_authority
+from api.routes.balancing_authority import convert_watttime_ba_abbrev_to_c3lab_region, \
+    lookup_watttime_balancing_authority
 
 carbon_intensity_args = {
     'latitude': fields.Float(required=True, validate=lambda x: abs(x) <= 90.),
@@ -30,7 +31,7 @@ class CarbonIntensity(Resource):
 
         watttime_lookup_result = lookup_watttime_balancing_authority(latitude, longitude)
         iso = watttime_lookup_result['watttime_abbrev']
-        region = convert_watttime_ba_abbrev_to_region(iso)
+        region = convert_watttime_ba_abbrev_to_c3lab_region(iso)
         l_carbon_intensity = get_carbon_intensity_list(iso, start, end)
 
         return orig_request | watttime_lookup_result | {
