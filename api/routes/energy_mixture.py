@@ -6,8 +6,9 @@ from webargs import fields
 from webargs.flaskparser import use_kwargs
 from flask import current_app
 
-from api.helpers.carbon_intensity import get_power_by_fuel_type
-from api.routes.balancing_authority import convert_watttime_ba_abbrev_to_region, lookup_watttime_balancing_authority
+from api.helpers.carbon_intensity_c3lab import get_power_by_fuel_type
+from api.routes.balancing_authority import convert_watttime_ba_abbrev_to_c3lab_region, \
+    lookup_watttime_balancing_authority
 
 energy_mixture_args = {
     'latitude': fields.Float(required=True, validate=lambda x: abs(x) <= 90.),
@@ -29,10 +30,12 @@ class EnergyMixture(Resource):
         current_app.logger.info("EnergyMixture.get(%f, %f, %s, %s)" % (latitude, longitude, start, end))
 
         watttime_lookup_result = lookup_watttime_balancing_authority(latitude, longitude)
-        region = convert_watttime_ba_abbrev_to_region(watttime_lookup_result['watttime_abbrev'])
-        power_by_fuel_type = get_power_by_fuel_type(region, start, end)
+        iso = watttime_lookup_result['watttime_abbrev']
+        region = convert_watttime_ba_abbrev_to_c3lab_region(iso)
+        power_by_fuel_type = get_power_by_fuel_type(iso, start, end)
 
         return orig_request | watttime_lookup_result | {
+            'iso': iso,
             'region': region,
             'power_by_fuel_type': power_by_fuel_type,
         }

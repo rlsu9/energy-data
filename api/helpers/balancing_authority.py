@@ -12,14 +12,12 @@ from api.external.watttime.ba_from_loc import get_ba_from_loc
 YAML_CONFIG = 'balancing_authority.yaml'
 
 
-def get_mapping_watttime_ba_to_region(config_path: os.path):
+def get_mapping_watttime_ba_to_region(config_path: os.path, map_name: str):
     """Load the region-to-WattTime-BA mapping from config and inverse it to provide direct lookup table"""
     # Load region-to-WattTime-BA mapping from yaml config
     yaml_data = load_yaml_data(config_path)
-    region_to_watttime_ba_map_name = 'map_region_to_watttime_ba'
-    assert yaml_data is not None and region_to_watttime_ba_map_name in yaml_data, \
-        f'Failed to load {region_to_watttime_ba_map_name}'
-    reverse_mapping = yaml_data[region_to_watttime_ba_map_name]
+    assert yaml_data is not None and map_name in yaml_data, f'Failed to load {map_name}'
+    reverse_mapping = yaml_data[map_name]
     # Inverse the one-to-many mapping to get direct lookup table (WattTime BA -> region)
     lookup_table = {}
     for region, l_watttime_ba in reverse_mapping.items():
@@ -30,13 +28,16 @@ def get_mapping_watttime_ba_to_region(config_path: os.path):
     return lookup_table
 
 
-MAPPING_WATTTIME_BA_TO_REGION = get_mapping_watttime_ba_to_region(
-    os.path.join(Path(__file__).parent.absolute(), YAML_CONFIG))
+WATTTIME_BA_MAPPING_FILE = os.path.join(Path(__file__).parent.absolute(), YAML_CONFIG)
 
+MAPPING_WATTTIME_BA_TO_C3LAB_REGION = get_mapping_watttime_ba_to_region(
+    WATTTIME_BA_MAPPING_FILE, 'map_c3lab_region_to_watttime_ba')
+MAPPING_WATTTIME_BA_TO_AZURE_REGION = get_mapping_watttime_ba_to_region(
+    WATTTIME_BA_MAPPING_FILE, 'map_azure_region_to_watttime_ba')
 
-def convert_watttime_ba_abbrev_to_region(watttime_abbrev) -> str:
-    if watttime_abbrev in MAPPING_WATTTIME_BA_TO_REGION:
-        return MAPPING_WATTTIME_BA_TO_REGION[watttime_abbrev]
+def convert_watttime_ba_abbrev_to_c3lab_region(watttime_abbrev) -> str:
+    if watttime_abbrev in MAPPING_WATTTIME_BA_TO_C3LAB_REGION:
+        return MAPPING_WATTTIME_BA_TO_C3LAB_REGION[watttime_abbrev]
     else:
         current_app.logger.warning('Unknown watttime abbrev "%s"' % watttime_abbrev)
         return 'unknown:' + watttime_abbrev

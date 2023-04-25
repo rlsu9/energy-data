@@ -44,7 +44,7 @@ class CloudLocationManager:
             for raw_cloud_region in l_raw_cloud_regions:
                 region_code = raw_cloud_region['code']
                 region_name = raw_cloud_region['name']
-                region_iso = raw_cloud_region['iso']
+                region_iso = raw_cloud_region['iso'] if 'iso' in raw_cloud_region else None
                 region_gps = tuple([float(coordinate) for coordinate in raw_cloud_region['gps']])
                 assert len(region_gps) == 2 and abs(region_gps[0]) <= 90 and abs(region_gps[1]) <= 180, \
                     f"Invalid GPS coordinate {region_gps} for {cloud_provider}:{region_code}"
@@ -83,4 +83,12 @@ class CloudLocationManager:
         for region in self.all_public_clouds[cloud_provider].regions:
             if region.code == region_code:
                 return region.gps
+        raise NotFound('Unknown region "%s" for provider "%s".' % (region_code, cloud_provider))
+
+    def get_cloud_region( self, cloud_provider: str, region_code: str) -> CloudRegion:
+        if cloud_provider not in self.all_public_clouds:
+            raise NotFound('Unknown cloud provider "%s".' % cloud_provider)
+        for region in self.all_public_clouds[cloud_provider].regions:
+            if region.code == region_code:
+                return region
         raise NotFound('Unknown region "%s" for provider "%s".' % (region_code, cloud_provider))

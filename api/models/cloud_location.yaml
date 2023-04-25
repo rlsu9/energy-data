@@ -4,25 +4,25 @@ public_clouds:
   regions:
   - code: us-west-1
     name: US West (N. California)
-    iso: US-CAISO
+    iso: CAISO_NORTH
     gps:
     - 37.00578
     - -121.56828
   - code: us-west-2
     name: US West (Oregon)
-    iso: US-PACW
+    iso: PACW
     gps:
     - 45.84041
     - -119.28946
   - code: us-east-1
     name: US East (N. Virginia)
-    iso: US-PJM
+    iso: PJM_SOUTHWEST_OH
     gps:
     - 39.983334
     - -82.98333
   - code: us-east-2
     name: US East (Ohio)
-    iso: US-PJM
+    iso: PJM_DC
     gps:
     - 39.040283
     - -77.485165
@@ -84,7 +84,7 @@ public_clouds:
     - -6.2597
   - code: norwayeast
     name: norwayeast (NO)
-    iso: NO
+    iso: "NO"
     gps:
     - 59.913868
     - 10.752245
@@ -136,3 +136,240 @@ public_clouds:
     gps:
     - 33.448376
     - -112.074036
+- provider: Nautilus
+  regions:
+  - code: pacific.hawaii
+    name: fiona.its.hawaii.edu
+    gps:
+    - 21.306944
+    - -157.858333
+  - code: us-west.stanford
+    name: netw-fiona-ucsf.stanford.edu
+    gps:
+    - 37.424106
+    - -122.166076
+  - code: us-west.ucsc
+    name: fiona-100g.ucsc.edu
+    gps:
+    - 36.974117
+    - -122.030796
+  - code: us-west.ucsc-wa
+    name: k8s-gpu-3.ucsc.edu
+    gps:
+    - 37.004394
+    - -122.025796
+  - code: us-west.ucsd-t2
+    name: osdftest.t2.ucsd.edu
+    gps:
+    - 37.338208
+    - -121.886329
+  - code: us-west.ucmerced
+    name: clu-fiona2.ucmerced.edu
+    gps:
+    - 37.347717
+    - -120.609084
+  - code: us-west.cenic-la
+    name: igrok-la.cenic.net
+    gps:
+    - 39.810457
+    - -120.469103
+  - code: us-west.ucsb
+    name: k8s-chase-ci-01.noc.ucsb.edu
+    gps:
+    - 34.420831
+    - -119.698190
+  - code: us-west.usc
+    name: fiona-dtn.usc.edu
+    gps:
+    - 34.052234
+    - -118.243685
+  - code: us-west.uci
+    name: fiona-dtn-1.calit2.uci.edu
+    gps:
+    - 33.683947
+    - -117.794694
+  - code: us-west.ucr
+    name: dtn-main.ucr.edu
+    gps:
+    - 33.953349
+    - -117.396156
+  - code: us-west.ucsd-sdsc
+    name: k8s-epyc-01.sdsc.optiputer.net
+    gps:
+    - 32.832811
+    - -117.271272
+  - code: us-west.csusb
+    name: csusb-sci-103-11.csusb.edu
+    gps:
+    - 34.055569
+    - -117.182538
+  - code: us-west.ucsd
+    name: controller0.calit2.optiputer.net
+    gps:
+    - 32.715738
+    - -117.161084
+  - code: us-west.sdsu
+    name: alveo.sdsu.edu
+    gps:
+    - 32.640054
+    - -117.084196
+  - code: us-mountain.unm
+    name: k8s-a6000-01.unm.edu
+    gps:
+    - 35.085334
+    - -106.605553
+  - code: us-mountain.cheyenne
+    name: fiona.nwsc.ucar.edu
+    gps:
+    - 40.014986
+    - -105.270546
+  - code: us-central.sdsmt
+    name: sdsmt-fiona.sdsmt.edu
+    gps:
+    - 43.850154
+    - -102.894210
+  - code: us-central.onenet
+    name: ceph-1.gpn.onenet.net
+    gps:
+    - 35.467560
+    - -97.516428
+  - code: us-central.usd
+    name: gpn-fiona.usd.edu
+    gps:
+    - 42.779442
+    - -96.929210
+  - code: us-west.caltech
+    name: k8s-ceph-01.ultralight.org
+    gps:
+    - 32.975642
+    - -96.889964
+  - code: us-central.sdstate
+    name: moff.sdstate.edu
+    gps:
+    - 44.311357
+    - -96.798388
+  - code: us-west.seattle
+    name: fiona.cac.washington.edu
+    gps:
+    - 32.776664
+    - -96.796988
+  - code: us-central.unl
+    name: hcc-nrp-shor-c5805.unl.edu
+    gps:
+    - 40.825763
+    - -96.685198
+  - code: us-central.onenet
+    name: k8-1.gpn.onenet.net
+    gps:
+    - 35.988401
+    - -96.601129
+  - code: us-central.ksu
+    name: regional-prp-ceph.beocat.ksu.edu
+    gps:
+    - 39.183608
+    - -96.571669
+  - code: us-central.ou
+    name: fiona.offn.oscer.ou.edu
+    gps:
+    - 36.022873
+    - -95.968328
+  - code: us-east.starlight
+    name: dtn101.sl.startap.net
+    gps:
+    - 41.750839
+    - -88.153535
+  - code: us-east.uic
+    name: evldtn.evl.uic.edu
+    gps:
+    - 41.878114
+    - -87.629798
+  - code: us-east.atlanta
+    name: nautilus1.sox.net
+    gps:
+    - 33.748995
+    - -84.387982
+  - code: us-east.famu
+    name: fiona-1.famu.edu
+    gps:
+    - 30.438256
+    - -84.280733
+  - code: us-east.umich
+    name: mdf-poc.aglt2.org
+    gps:
+    - 42.280826
+    - -83.743038
+  - code: us-east.clemson
+    name: epic001.clemson.edu
+    gps:
+    - 34.685656
+    - -82.953204
+  - code: us-east.cwru
+    name: nautilusc01.sci.cwru.edu
+    gps:
+    - 41.533107
+    - -81.579014
+  - code: us-central.mizzou
+    name: gpn-fiona-mizzou-1.rnet.missouri.edu
+    gps:
+    - 34.000710
+    - -81.034814
+  - code: us-east.miami
+    name: k8s-gen4-01.ampath.net
+    gps:
+    - 25.761680
+    - -80.191790
+  - code: ca-east.ottawa
+    name: ott2.cenidtn.net
+    gps:
+    - 43.653226
+    - -79.383184
+  - code: us-central.uark
+    name: nautilus1.hpc.uark.edu
+    gps:
+    - 35.052664
+    - -78.878359
+  - code: us-east.nysernet
+    name: nrp-c10.nysernet.org
+    gps:
+    - 43.048122
+    - -76.147424
+  - code: us-east.udel
+    name: ceph00.nrp.hpc.udel.edu
+    gps:
+    - 40.735657
+    - -74.172367
+  - code: us-mountain.i2-boise
+    name: dtn-pas.bois.net.internet2.edu
+    gps:
+    - 40.712784
+    - -74.005941
+  - code: us-east.i2-new-york
+    name: osg.newy32aoa.nrp.internet2.edu
+    gps:
+    - 40.686767
+    - -73.373455
+  - code: us-east.mghpcc
+    name: dtn-01.nrp.mghpcc.org
+    gps:
+    - 42.204259
+    - -72.616201
+  - code: eu.uk
+    name: stashcache.gravity.cf.ac.uk
+    gps:
+    - 51.481581
+    - -3.179090
+  - code: eu.amsterdam
+    name: fiona-r-uva.vlan7.uvalight.net
+    gps:
+    - 52.370216
+    - 4.895168
+  - code: pacific.korea
+    name: dtn-gpu2.kreonet.net
+    gps:
+    - 36.362216
+    - 127.356133
+  - code: pacific.guam
+    name: k8s-dtn-01.uog.edu
+    gps:
+    - 13.468748
+    - 144.798803
