@@ -125,10 +125,11 @@ class Workload:
     @validates_schema
     def validate_schema(self, data, **kwargs):
         errors = dict()
-        if bool('candidate_providers' in data) == bool('candidate_locations' in data):
-            errors['candidate_providers'] = errors['candidate_locations'] = 'Must provide one of candidate_providers and candidate_locations'
+        if bool(data['candidate_providers']) == bool(data['candidate_locations']):
+            errors['candidate_providers'] = errors['candidate_locations'] = \
+                'Must provide one of candidate_providers and candidate_locations'
             raise ValidationError(errors)
-        if 'candidate_providers' in data:
+        if data['candidate_providers']:
             sub_errors = _validate_providers(data['candidate_providers'])
             if sub_errors:
                 errors['candidate_providers'] = sub_errors
@@ -136,7 +137,7 @@ class Workload:
             sub_errors = _validate_locations(data['candidate_locations'])
             if sub_errors:
                 errors['candidate_locations'] = sub_errors
-        if 'original_location' in data:
+        if data['original_location']:
             sub_errors = _validate_location_is_defined(data['original_location'], data['candidate_locations'])
             if sub_errors:
                 errors['original_location'] = sub_errors
