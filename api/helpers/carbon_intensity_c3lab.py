@@ -136,6 +136,7 @@ def _calculate_average_carbon_intensity(
 
 @carbon_data_cache.memoize()
 def fetch_emissions(region: str, start: datetime, end: datetime) -> list[dict]:
+    # TODO: make this not throw exception for memoize to work
     conn = get_psql_connection()
     _validate_region_exists(conn, region)
     _validate_time_range(conn, region, start, end)

@@ -16,20 +16,26 @@ def get_azure_region_from_iso(iso: str) -> str:
     return M_ISO_TO_AZURE_REGION[iso]
 
 @carbon_data_cache.memoize()
-def fetch_emissions(region: str, start: datetime, end: datetime) -> list[dict]:
+def fetch_emissions(region: str, start: datetime, end: datetime) -> tuple[bool, list[dict]|str]:
+    """Fetch emission data and return success/failure and either:
+        (on success) the time series carbon data, or
+        (on failure) any error message."""
     url_get_carbon_intensity = 'https://carbon-aware-api.azurewebsites.net/emissions/bylocations'
     response = requests.get(url_get_carbon_intensity, params={
         'location': [region],
         'time': arrow.get(start).for_json(),
         'toTime': arrow.get(end).shift(minutes=-1).for_json(),
     })
-    assert response.ok, "GSF carbon intensity lookup failed (%d): %s" % (response.status_code, response.text)
+    try:
+        assert response.ok
+    except AssertionError:
+        return False, "GSF carbon intensity lookup failed (%d): %s" % (response.status_code, response.text)
     if response.status_code == 204:
-        return []
+        return True, []
     try:
         response_json = response.json()
     except (ValueError, TypeError) as e:
-        raise ValueError(f'Failed to read JSON: "{e}", url: "{response.request.path_url}", text: "{response.text}"')
+        return False, f'Failed to read JSON: "{e}", url: "{response.request.path_url}", text: "{response.text}"'
 
     rows = []
     if len(response_json) == 0:
@@ -44,11 +50,14 @@ def fetch_emissions(region: str, start: datetime, end: datetime) -> list[dict]:
             'timestamp': timestamp,
             'carbon_intensity': rating
         })
-    return rows
+    return True, rows
 
 
 @carbon_data_cache.memoize()
-def fetch_prediction(region: str, start: datetime, end: datetime) -> list[dict]:
+def fetch_prediction(region: str, start: datetime, end: datetime) -> tuple[bool, list[dict]|str]:
+    """Fetch prediction data and return success/failure and either:
+        (on success) the time series carbon data, or
+        (on failure) any error message."""
     url_get_carbon_intensity = 'https://carbon-aware-api.azurewebsites.net/emissions/forecasts/batch'
     response = requests.post(url_get_carbon_intensity, json=[{
         'location': region,
@@ -60,13 +69,13 @@ def fetch_prediction(region: str, start: datetime, end: datetime) -> list[dict]:
     try:
         assert response.ok
     except AssertionError:
-        raise ValueError("GSF carbon forecast lookup failed (%d): %s" % (response.status_code, response.text))
+        return False, "GSF carbon forecast lookup failed (%d): %s" % (response.status_code, response.text)
     if response.status_code == 204:
-        return []
+        return True, []
     try:
         response_json = response.json()
     except (ValueError, TypeError) as e:
-        raise ValueError(f'Failed to read JSON: "{e}", url: "{response.request.path_url}", text: "{response.text}"')
+        return False, f'Failed to read JSON: "{e}", url: "{response.request.path_url}", text: "{response.text}"'
 
     if len(response_json) == 0:
         return []
@@ -84,7 +93,7 @@ def fetch_prediction(region: str, start: datetime, end: datetime) -> list[dict]:
                 'carbon_intensity': rating
             })
         break
-    return rows
+    return True, rows
 
 def get_carbon_intensity_list(iso: str, start: datetime, end: datetime,
         use_prediction: bool = False) -> list[dict]:
@@ -101,6 +110,10 @@ def get_carbon_intensity_list(iso: str, start: datetime, end: datetime,
     """
     region = get_azure_region_from_iso(iso)
     if use_prediction:
-        return fetch_prediction(region, start, end)
+        success, result_or_error = fetch_prediction(region, start, end)
     else:
-        return fetch_emissions(region, start, end)
+        success, result_or_error = fetch_emissions(region, start, end)
+    if success:
+        return result_or_error
+    else:
+        raise ValueError('Failed to get carbon intensity: ' + result_or_error)
