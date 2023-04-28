@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 import requests
 import arrow
 
 from api.helpers.balancing_authority import MAPPING_WATTTIME_BA_TO_AZURE_REGION
-from api.util import carbon_data_cache
+from api.util import carbon_data_cache, round_down, round_up
 
 M_ISO_TO_AZURE_REGION = MAPPING_WATTTIME_BA_TO_AZURE_REGION
 
@@ -59,6 +59,12 @@ def fetch_prediction(region: str, start: datetime, end: datetime) -> tuple[bool,
         (on success) the time series carbon data, or
         (on failure) any error message."""
     url_get_carbon_intensity = 'https://carbon-aware-api.azurewebsites.net/emissions/forecasts/batch'
+    # Calculate bounds based on typical available window of this prediction API
+    min_window = timedelta(minutes=5)
+    prediction_window_min = round_up(datetime.now(timezone.utc), min_window)
+    prediction_window_max = prediction_window_min + timedelta(days=1)
+    start = max(prediction_window_min, round_down(start, min_window))
+    end = min(prediction_window_max, round_up(end, min_window))
     response = requests.post(url_get_carbon_intensity, json=[{
         'location': region,
         'requestedAt': arrow.get().for_json(),
