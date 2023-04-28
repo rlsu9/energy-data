@@ -112,12 +112,20 @@ def get_all_enum_values(enum_type):
     return [e.value for e in enum_type]
 
 
+def round_up(dt: datetime, round_to: timedelta) -> datetime:
+    """Round up the given datetime to the specified interval."""
+    dt = dt.replace(microsecond=0)
+    # datetime.max has tzinfo=None
+    total_seconds = (datetime.max - dt.replace(tzinfo=None)).total_seconds()
+    remainder_seconds = total_seconds % round_to.total_seconds()
+    return dt + timedelta(seconds=remainder_seconds)
+
 def round_down(dt: datetime, round_to: timedelta) -> datetime:
     """Round down the given datetime to the specified interval."""
-    # datetime.min has tzinfo=None
-    total_seconds = (dt.replace(tzinfo=None, microsecond=0) - datetime.min).total_seconds()
-    remainder_seconds = total_seconds % round_to.total_seconds()
     dt = dt.replace(microsecond=0)
+    # datetime.min has tzinfo=None
+    total_seconds = (dt.replace(tzinfo=None) - datetime.min).total_seconds()
+    remainder_seconds = total_seconds % round_to.total_seconds()
     return dt - timedelta(seconds=remainder_seconds)
 
 

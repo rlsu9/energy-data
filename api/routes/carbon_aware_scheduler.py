@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+from datetime import timedelta, timezone
 import traceback
 from typing import Any
 
@@ -14,6 +15,7 @@ from api.models.wan_bandwidth import load_wan_bandwidth_model
 from api.models.workload import DEFAULT_CPU_POWER_PER_CORE, CloudLocation, Workload
 from api.models.dataclass_extensions import *
 from api.routes.balancing_authority import lookup_watttime_balancing_authority
+from api.util import round_up
 
 g_cloud_manager = CloudLocationManager()
 OPTIMIZATION_FACTORS_AND_WEIGHTS = [
@@ -133,6 +135,11 @@ class CarbonAwareScheduler(Resource):
         orig_request = {'request': workload}
         current_app.logger.info("CarbonAwareScheduler.get(%s)" % workload)
 
+        if workload.use_prediction:
+            min_start_time = round_up(datetime.now(timezone.utc), timedelta(minutes=5))
+            if workload.schedule.start_time < min_start_time:
+                workload.schedule.start_time = min_start_time
+
         candidate_cloud_regions = get_candidate_regions(args.candidate_providers, args.candidate_locations)
         d_region_scores = {}
         d_region_warnings = dict()
@@ -155,7 +162,7 @@ class CarbonAwareScheduler(Resource):
                 current_app.logger.error(traceback.format_exc())
         best_region, d_weighted_scores = g_optimizer.compare_candidates(d_region_scores, True)
         if best_region is None:
-            return {
+            return orig_request | {
                 'error': 'No viable candidate',
                 'details': d_region_warnings
             }, 400

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from datetime import timedelta
+from datetime import timedelta, timezone
 from enum import Enum
 from typing import Optional, Tuple
 
@@ -39,6 +39,8 @@ class WorkloadSchedule:
             errors['interval'] = 'interval must be specified for recurring workload'
         if errors:
             raise ValidationError(errors)
+        if data.get('start_time', None) is None:
+            data['start_time'] = datetime.now(timezone.utc)
 
 
 @dataclass
