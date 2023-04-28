@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 from datetime import datetime, timedelta, timezone
+from flask import current_app
 import requests
 import arrow
 
@@ -20,6 +21,7 @@ def fetch_emissions(region: str, start: datetime, end: datetime) -> tuple[bool, 
     """Fetch emission data and return success/failure and either:
         (on success) the time series carbon data, or
         (on failure) any error message."""
+    current_app.logger.debug(f'fetch_emissions({region}, {start}, {end})')
     url_get_carbon_intensity = 'https://carbon-aware-api.azurewebsites.net/emissions/bylocations'
     response = requests.get(url_get_carbon_intensity, params={
         'location': [region],
@@ -58,6 +60,7 @@ def fetch_prediction(region: str, start: datetime, end: datetime) -> tuple[bool,
     """Fetch prediction data and return success/failure and either:
         (on success) the time series carbon data, or
         (on failure) any error message."""
+    current_app.logger.debug(f'fetch_prediction({region}, {start}, {end})')
     url_get_carbon_intensity = 'https://carbon-aware-api.azurewebsites.net/emissions/forecasts/batch'
     # Calculate bounds based on typical available window of this prediction API
     min_window = timedelta(minutes=5)

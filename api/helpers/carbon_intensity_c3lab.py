@@ -2,6 +2,7 @@
 
 import os
 from typing import Tuple
+from flask import current_app
 import numpy as np
 import psycopg2
 from pathlib import Path
@@ -137,6 +138,7 @@ def _calculate_average_carbon_intensity(
 @carbon_data_cache.memoize()
 def fetch_emissions(region: str, start: datetime, end: datetime) -> list[dict]:
     # TODO: make this not throw exception for memoize to work
+    current_app.logger.debug(f'fetch_emissions({region}, {start}, {end})')
     conn = get_psql_connection()
     _validate_region_exists(conn, region)
     _validate_time_range(conn, region, start, end)
@@ -146,6 +148,7 @@ def fetch_emissions(region: str, start: datetime, end: datetime) -> list[dict]:
 
 @carbon_data_cache.memoize()
 def fetch_prediction(region: str, start: datetime, end: datetime) -> list[dict]:
+    current_app.logger.debug(f'fetch_prediction({region}, {start}, {end})')
     raise ValueError('c3lab carbon data source does not support prediction')
 
 def get_carbon_intensity_list(iso: str, start: datetime, end: datetime,
