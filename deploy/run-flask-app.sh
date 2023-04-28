@@ -28,6 +28,6 @@ else
   gunicorn --workers=4 \
     --log-level=info \
     --access-logfile - \
-    --access-logformat '%({X-Real-IP}i)s %(l)s %(u)s %(t)s "%(r)s" %(s)s %(b)s "%(f)s" "%(a)s"' \
+    --access-logformat '%({X-Real-IP}i)s %(l)s %(u)s %(t)s "%(r)s" %(s)s %(b)s %(M)s "%(f)s" "%(a)s"' \
     'api:create_app()'
 fi
