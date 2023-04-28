@@ -91,7 +91,7 @@ def fetch_prediction(region: str, start: datetime, end: datetime) -> tuple[bool,
     rows = []
     for response_element in response_json:
         generatedAt = arrow.get(response_element['generatedAt']).datetime
-        print('generatedAt:', generatedAt)
+        current_app.logger.debug(f'fetch_prediction({region}, {start}, {end}) generatedAt:', generatedAt)
         for entry in response_element['forecastData']:
             iso = entry['location']
             timestamp = arrow.get(entry['timestamp']).datetime

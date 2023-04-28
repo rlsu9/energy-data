@@ -6,6 +6,8 @@ import os
 import requests
 from requests.auth import HTTPBasicAuth
 
+from api.util import simple_cache
+
 CONFIG_FILE = "watttime.ini"
 
 
@@ -23,6 +25,7 @@ def get_username_password():
 
 # Source: https://www.watttime.org/api-documentation/#login-amp-obtain-token
 
+@simple_cache.memoize(60)
 def get_watttime_token():
     login_url = 'https://api2.watttime.org/v2/login'
     (username, password) = get_username_password()

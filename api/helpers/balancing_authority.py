@@ -47,6 +47,7 @@ def lookup_watttime_balancing_authority(latitude: float, longitude: float) -> di
     """
         Lookup the balancing authority from WattTime API, and returns:
         1) parsed information, or error message, and optionally 2) error status code."""
+    current_app.logger.debug(f'lookup_watttime_balancing_authority({latitude}, {longitude})')
     watttime_response = get_ba_from_loc(latitude, longitude)
     watttime_json = watttime_response.json()
 
