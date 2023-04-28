@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 from datetime import timedelta, timezone
+from multiprocessing import Pool
 import traceback
 from typing import Any
 
@@ -127,6 +128,27 @@ def calculate_workload_scores(workload: Workload, iso: str, carbon_data_source: 
         d_scores[factor] = score
     return d_scores, d_misc
 
+def init_parallel_process_candidate(_workload: Workload,
+                                    _carbon_data_source: CarbonDataSource,
+                                    _use_prediction: bool):
+    global workload, carbon_data_source, use_prediction
+    workload = _workload
+    carbon_data_source = _carbon_data_source
+    use_prediction = _use_prediction
+
+def process_candidate(region: CloudRegion) -> tuple:
+    global workload, carbon_data_source, use_prediction
+    region_name = str(region)
+    iso = region.iso
+    try:
+        if not iso:
+            iso = lookup_iso_region(region.gps)
+        scores, d_misc = calculate_workload_scores(workload, iso, carbon_data_source, use_prediction)
+        # region_name, iso, scores, d_misc, ex, stack_trace
+        return region_name, iso, scores, d_misc, None, None
+    except Exception as ex:
+        return region_name, iso, None, None, str(ex), traceback.format_exc()
+
 
 class CarbonAwareScheduler(Resource):
     @use_args(marshmallow_dataclass.class_schema(Workload)())
@@ -141,25 +163,24 @@ class CarbonAwareScheduler(Resource):
                 workload.schedule.start_time = min_start_time
 
         candidate_cloud_regions = get_candidate_regions(args.candidate_providers, args.candidate_locations)
-        d_region_scores = {}
+        d_cloud_region_to_iso = dict()
+        d_region_scores = dict()
         d_region_warnings = dict()
         d_misc_details = dict()
-        for cloud_region in candidate_cloud_regions:
-            region_name = str(cloud_region)
-            try:
-                if not cloud_region.iso:
-                    cloud_region.iso = lookup_iso_region(cloud_region.gps)
-                workload_scores, d_misc = calculate_workload_scores(workload, cloud_region.iso,
-                                            args.carbon_data_source, args.use_prediction)
-                # if all([delay > timedelta() for delay in d_misc['start_delay']]):
-                d_misc_details[region_name] = d_misc
-                d_region_scores[region_name] = workload_scores
-            # except PSqlExecuteException as e:
-            #     raise e
-            except Exception as e:
-                d_region_warnings[region_name] = str(e)
-                current_app.logger.error(f'Exception when calculating score for region {cloud_region}: {e}')
-                current_app.logger.error(traceback.format_exc())
+        with Pool(2,
+                  initializer=init_parallel_process_candidate,
+                  initargs=(workload, args.carbon_data_source, args.use_prediction)
+                  ) as pool:
+            result = pool.map(process_candidate, candidate_cloud_regions)
+            for (region_name, iso, scores, d_misc, ex, stack_trace) in result:
+                d_cloud_region_to_iso[region_name] = iso
+                if not ex:
+                    d_region_scores[region_name] = scores
+                    d_misc_details[region_name] = d_misc
+                else:
+                    d_region_warnings[region_name] = str(ex)
+                    current_app.logger.error(f'Exception when calculating score for region {region_name}: {ex}')
+                    current_app.logger.error(stack_trace)
         best_region, d_weighted_scores = g_optimizer.compare_candidates(d_region_scores, True)
         if best_region is None:
             return orig_request | {
@@ -167,10 +188,6 @@ class CarbonAwareScheduler(Resource):
                 'details': d_region_warnings
             }, 400
 
-        d_cloud_region_to_iso = {}
-        for i in range(len(candidate_cloud_regions)):
-            region_name = str(candidate_cloud_regions[i])
-            d_cloud_region_to_iso[region_name] = candidate_cloud_regions[i].iso
         return orig_request | {
             'original-region': str(args.original_location),
             'selected-region': best_region,
