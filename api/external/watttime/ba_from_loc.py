@@ -4,6 +4,7 @@
 
 import requests
 import argparse
+from flask_caching import Cache
 
 if __package__:
     from .util import get_watttime_token
@@ -11,7 +12,10 @@ else:
     from util import get_watttime_token
 
 
+ba_from_loc_cache = Cache(config={'CACHE_TYPE': 'SimpleCache'})
+
 # Get the balancing authority based on GPS location
+@ba_from_loc_cache.memoize(timeout=0)
 def get_ba_from_loc(latitude: float, longitude: float):
     region_url = 'https://api2.watttime.org/v2/ba-from-loc'
     headers = {'Authorization': 'Bearer {}'.format(get_watttime_token())}

@@ -8,6 +8,7 @@ from datetime import datetime, timedelta
 from werkzeug.exceptions import NotFound, BadRequest
 from bisect import bisect
 from flask import current_app
+from flask_caching import Cache
 
 from api.helpers.carbon_intensity_c3lab import get_carbon_intensity_list as get_carbon_intensity_list_c3lab
 from api.helpers.carbon_intensity_azure import get_carbon_intensity_list as get_carbon_intensity_list_azure
@@ -18,6 +19,10 @@ class CarbonDataSource(str, Enum):
     Azure = "azure"
 
 
+carbon_intensity_cache = Cache(config={'CACHE_TYPE': 'SimpleCache'})
+
+
+@carbon_intensity_cache.memoize(timeout=15*60)
 def get_carbon_intensity_list(iso: str, start: datetime, end: datetime,
         carbon_data_source: CarbonDataSource, use_prediction: bool) -> list[dict]:
     """Retrieve the carbon intensity time series data in the given time window.
