@@ -10,12 +10,15 @@ CONFIG_FILE = "watttime.ini"
 
 
 def get_username_password():
-    parser = configparser.ConfigParser()
-    config_filepath = os.path.join(os.path.dirname(os.path.realpath(__file__)), CONFIG_FILE)
-    parser.read(config_filepath)
-    username = parser['auth']['username']
-    password = parser['auth']['password']
-    return username, password
+    try:
+        parser = configparser.ConfigParser()
+        config_filepath = os.path.join(os.path.dirname(os.path.realpath(__file__)), CONFIG_FILE)
+        parser.read(config_filepath)
+        username = parser['auth']['username']
+        password = parser['auth']['password']
+        return username, password
+    except Exception as ex:
+        raise ValueError(f'Failed to retrieve watttime credentials: {ex}') from ex
 
 
 # Source: https://www.watttime.org/api-documentation/#login-amp-obtain-token
