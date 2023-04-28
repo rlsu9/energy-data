@@ -5,6 +5,7 @@ import requests
 import arrow
 
 from api.helpers.balancing_authority import MAPPING_WATTTIME_BA_TO_AZURE_REGION
+from api.util import carbon_data_cache
 
 M_ISO_TO_AZURE_REGION = MAPPING_WATTTIME_BA_TO_AZURE_REGION
 
@@ -14,6 +15,7 @@ def get_azure_region_from_iso(iso: str) -> str:
         raise ValueError(f'Unknown azure region for iso {iso}')
     return M_ISO_TO_AZURE_REGION[iso]
 
+@carbon_data_cache.memoize()
 def fetch_emissions(region: str, start: datetime, end: datetime) -> list[dict]:
     url_get_carbon_intensity = 'https://carbon-aware-api.azurewebsites.net/emissions/bylocations'
     response = requests.get(url_get_carbon_intensity, params={
@@ -45,7 +47,8 @@ def fetch_emissions(region: str, start: datetime, end: datetime) -> list[dict]:
     return rows
 
 
-def fetch_prediction(region: str, start: datetime, end: datetime) -> tuple[list[dict], datetime]:
+@carbon_data_cache.memoize()
+def fetch_prediction(region: str, start: datetime, end: datetime) -> list[dict]:
     url_get_carbon_intensity = 'https://carbon-aware-api.azurewebsites.net/emissions/forecasts/batch'
     response = requests.post(url_get_carbon_intensity, json=[{
         'location': region,

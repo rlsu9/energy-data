@@ -9,7 +9,7 @@ from datetime import datetime
 from werkzeug.exceptions import NotFound, BadRequest
 
 from api.helpers.balancing_authority import MAPPING_WATTTIME_BA_TO_C3LAB_REGION
-from api.util import load_yaml_data, get_psql_connection, psql_execute_list, psql_execute_scalar
+from api.util import load_yaml_data, get_psql_connection, psql_execute_list, psql_execute_scalar, carbon_data_cache
 
 M_ISO_TO_C3LAB_REGION = MAPPING_WATTTIME_BA_TO_C3LAB_REGION
 
@@ -134,6 +134,18 @@ def _calculate_average_carbon_intensity(
         })
     return l_carbon_intensity_by_timestamp
 
+@carbon_data_cache.memoize()
+def fetch_emissions(region: str, start: datetime, end: datetime) -> list[dict]:
+    conn = get_psql_connection()
+    _validate_region_exists(conn, region)
+    _validate_time_range(conn, region, start, end)
+    return _get_average_carbon_intensity(conn, region, start, end)
+    # power_by_fuel_source = get_power_by_timestamp_and_fuel_source(conn, region, start, end)
+    # return _calculate_average_carbon_intensity(power_by_fuel_source)
+
+@carbon_data_cache.memoize()
+def fetch_prediction(region: str, start: datetime, end: datetime) -> list[dict]:
+    raise ValueError('c3lab carbon data source does not support prediction')
 
 def get_carbon_intensity_list(iso: str, start: datetime, end: datetime,
         use_prediction: bool = False) -> list[dict]:
@@ -148,15 +160,12 @@ def get_carbon_intensity_list(iso: str, start: datetime, end: datetime,
         Returns:
             A list of time series data.
     """
-    if use_prediction:
-        raise ValueError('c3lab carbon data source does not support prediction')
+    
     region = get_c3lab_region_from_iso(iso)
-    conn = get_psql_connection()
-    _validate_region_exists(conn, region)
-    _validate_time_range(conn, region, start, end)
-    return _get_average_carbon_intensity(conn, region, start, end)
-    # power_by_fuel_source = get_power_by_timestamp_and_fuel_source(conn, region, start, end)
-    # return calculate_average_carbon_intensity(power_by_fuel_source)
+    if use_prediction:
+        return fetch_prediction(region, start, end)
+    else:
+        return fetch_emissions(region, start, end)
 
 
 def get_power_by_fuel_type(iso: str, start: datetime, end: datetime) -> list[dict]:

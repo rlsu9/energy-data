@@ -10,8 +10,18 @@ import psycopg2
 import dataclasses
 from flask import current_app
 from flask.json import JSONEncoder
+from flask_caching import Cache
 from werkzeug.exceptions import HTTPException
 
+
+simple_cache = Cache(config={
+    'CACHE_TYPE': 'SimpleCache'
+})
+
+carbon_data_cache = Cache(config={
+    'CACHE_TYPE': 'SimpleCache',
+    'CACHE_DEFAULT_TIMEOUT': 15*60
+})
 
 def load_yaml_data(filepath):
     with open(filepath, 'r') as f:
