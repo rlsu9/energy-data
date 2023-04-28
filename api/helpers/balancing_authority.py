@@ -52,9 +52,7 @@ def lookup_watttime_balancing_authority(latitude: float, longitude: float) -> di
 
     if not watttime_response.ok:
         error = watttime_json['error'] if 'error' in watttime_json else 'Unknown'
-        error = 'WattTime error: %s' % error
-        current_app.logger.warning(error)
-        raise CustomHTTPException(error, watttime_response.status_code)
+        raise CustomHTTPException('WattTime error: %s' % error, watttime_response.status_code)
 
     try:
         watttime_abbrev = watttime_json['abbrev']
