@@ -121,8 +121,8 @@ class Workload:
     candidate_providers: Optional[list[str]] = field(default_factory=list)
     candidate_locations: Optional[list[CloudLocation]] = field(default_factory=list)
 
-    carbon_data_source: CarbonDataSource = field_enum(CarbonDataSource, CarbonDataSource.Azure)
-    use_prediction: bool = field(default=True)
+    carbon_data_source: CarbonDataSource = field_enum(CarbonDataSource, CarbonDataSource.C3Lab)
+    use_prediction: bool = field(default=False)
 
     @validates_schema
     def validate_schema(self, data, **kwargs):
