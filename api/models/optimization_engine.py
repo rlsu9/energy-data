@@ -3,8 +3,6 @@
 from enum import Enum
 from typing import Optional
 
-from api.util import dict_min_key
-
 
 class OptimizationFactor(str, Enum):
     EnergyUsage = 'energy-usage'
@@ -41,20 +39,22 @@ class OptimizationEngine:
         return total_weighted_score / len(self.factors)
 
     def compare_candidates(self, d_scores: dict[str, dict[OptimizationFactor, float]], return_scores=False) -> \
-            tuple[int, Optional[dict[str, float]]]:
-        """Compares the candidate based on their scores in each factor and return the best candidate.
+            tuple[list, Optional[dict[str, float]]]:
+        """Compares the candidate based on their scores in each factor and return the best candidates.
 
         Args:
             scores: a map from candidate name to a dict; the latter contains scores key'd by factor.
             return_scores: whether to return the calculated score.
 
         Returns:
-            The index of the best candidate, and optionally the weighted score per candidate
+            A list of the best candidates, and optionally the weighted score per candidate.
         """
         if len(d_scores) == 0:
-            return None, None if return_scores else None
+            return [], None if return_scores else None
         d_weighted_scores = dict()
         for candidate, scores in d_scores.items():
             weighted_score = self._calculate_weighted_score(scores)
             d_weighted_scores[candidate] = weighted_score
-        return dict_min_key(d_weighted_scores, lambda p: p[1]), d_weighted_scores if return_scores else None
+        min_score = min(d_weighted_scores.values())
+        optimal_candidates = [ k for k in d_weighted_scores if d_weighted_scores[k] == min_score]
+        return optimal_candidates, d_weighted_scores if return_scores else None

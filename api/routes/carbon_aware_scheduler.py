@@ -253,8 +253,8 @@ class CarbonAwareScheduler(Resource):
                     current_app.logger.error(f'Exception when calculating score for region {region_name}: {ex}')
                     current_app.logger.error(stack_trace)
 
-        best_region, d_weighted_scores = g_optimizer.compare_candidates(d_region_scores, True)
-        if best_region is None:
+        optimal_regions, d_weighted_scores = g_optimizer.compare_candidates(d_region_scores, True)
+        if not optimal_regions:
             return orig_request | {
                 'error': 'No viable candidate',
                 'isos': d_region_isos,
@@ -263,7 +263,7 @@ class CarbonAwareScheduler(Resource):
 
         return orig_request | {
             'original-region': str(args.original_location),
-            'selected-region': best_region,
+            'optimal-regions': optimal_regions,
             'isos': d_region_isos,
             'weighted-scores': d_weighted_scores,
             'raw-scores': d_region_scores,
