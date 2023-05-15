@@ -61,20 +61,19 @@ def fetch_prediction(region: str, start: datetime, end: datetime) -> tuple[bool,
         (on success) the time series carbon data, or
         (on failure) any error message."""
     current_app.logger.debug(f'fetch_prediction({region}, {start}, {end})')
-    url_get_carbon_intensity = 'https://carbon-aware-api.azurewebsites.net/emissions/forecasts/batch'
+    url_get_carbon_intensity = 'https://carbon-aware-api.azurewebsites.net/emissions/forecasts/current'
     # Calculate bounds based on typical available window of this prediction API
     min_window = timedelta(minutes=5)
     prediction_window_min = round_up(datetime.now(timezone.utc), min_window)
     prediction_window_max = prediction_window_min + timedelta(days=1)
     start = max(prediction_window_min, round_down(start, min_window))
     end = min(prediction_window_max, round_up(end, min_window))
-    response = requests.post(url_get_carbon_intensity, json=[{
+    response = requests.get(url_get_carbon_intensity, params={
         'location': region,
-        'requestedAt': arrow.get().for_json(),
-        'windowSize': 5,
         'dataStartAt': arrow.get(start).for_json(),
         'dataEndAt': arrow.get(end).shift(minutes=5).for_json(),
-    }])
+        'windowSize': 5,
+    })
     try:
         assert response.ok
     except AssertionError:
