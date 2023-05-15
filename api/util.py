@@ -9,7 +9,7 @@ import traceback
 import psycopg2
 import dataclasses
 from flask import current_app
-from flask.json import JSONEncoder
+from json import JSONEncoder
 from flask_caching import Cache
 from werkzeug.exceptions import HTTPException
 
