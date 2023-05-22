@@ -6,7 +6,7 @@ from webargs.flaskparser import use_args
 from flask import current_app
 import marshmallow_dataclass
 
-from api.helpers.carbon_intensity_c3lab import get_carbon_intensity_list
+from api.helpers.carbon_intensity import CarbonDataSource, get_carbon_intensity_list
 from api.models.dataclass_extensions import *
 from api.routes.balancing_authority import convert_watttime_ba_abbrev_to_c3lab_region, \
     lookup_watttime_balancing_authority
@@ -19,6 +19,9 @@ class CarbonIntensityRequest:
     start: datetime = field_default()
     end: datetime = field_default()
 
+    carbon_data_source: CarbonDataSource = field_enum(CarbonDataSource, CarbonDataSource.C3Lab)
+    use_prediction: bool = field(default=False)
+
 
 class CarbonIntensity(Resource):
     @use_args(marshmallow_dataclass.class_schema(CarbonIntensityRequest)(), location='query')
@@ -29,7 +32,8 @@ class CarbonIntensity(Resource):
         watttime_lookup_result = lookup_watttime_balancing_authority(request.latitude, request.longitude)
         iso = watttime_lookup_result['watttime_abbrev']
         region = convert_watttime_ba_abbrev_to_c3lab_region(iso)
-        l_carbon_intensity = get_carbon_intensity_list(iso, request.start, request.end)
+        l_carbon_intensity = get_carbon_intensity_list(iso, request.start, request.end,
+                                                       request.carbon_data_source, request.use_prediction)
 
         return orig_request | watttime_lookup_result | {
             'region': region,
