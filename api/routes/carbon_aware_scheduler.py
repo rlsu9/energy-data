@@ -13,7 +13,7 @@ from api.helpers.carbon_intensity import CarbonDataSource, calculate_total_carbo
 from api.models.cloud_location import CloudLocationManager, CloudRegion
 from api.models.optimization_engine import OptimizationEngine, OptimizationFactor
 from api.models.wan_bandwidth import load_wan_bandwidth_model
-from api.models.workload import DEFAULT_CPU_POWER_PER_CORE, CloudLocation, Workload
+from api.models.workload import CloudLocation, Workload
 from api.models.dataclass_extensions import *
 from api.routes.balancing_authority import lookup_watttime_balancing_authority
 from api.util import round_up
@@ -130,7 +130,7 @@ def calculate_workload_scores(workload: Workload, iso: str) -> tuple[dict[Optimi
                     l_carbon_intensity = get_preloaded_carbon_data(iso, start, end)
                     carbon_intensity_by_timestamp = convert_carbon_intensity_list_to_dict(l_carbon_intensity)
                     total_compute_carbon_emissions, optimal_delay_time = calculate_total_carbon_emissions(
-                        start, end, DEFAULT_CPU_POWER_PER_CORE, carbon_intensity_by_timestamp, max_delay)
+                        start, end, workload.get_power_in_watts(), carbon_intensity_by_timestamp, max_delay)
                     d_misc['start_delay'].append(optimal_delay_time)
                     # Note: temporarily disabled
                     """

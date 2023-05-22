@@ -124,6 +124,9 @@ class Workload:
     carbon_data_source: CarbonDataSource = field_enum(CarbonDataSource, CarbonDataSource.C3Lab)
     use_prediction: bool = field(default=False)
 
+    watts_per_core: float = field(default=DEFAULT_CPU_POWER_PER_CORE)
+    core_count: float = field(default=1.)
+
     @validates_schema
     def validate_schema(self, data, **kwargs):
         errors = dict()
@@ -188,7 +191,10 @@ class Workload:
                 raise NotImplementedError()
         return intervals
 
+    def get_power_in_watts(self) -> float:
+        return self.watts_per_core * self.core_count
+
     def get_energy_usage_24h(self) -> float:
         """Get the energy usage in a 24h period, in kWh."""
         cpu_usage_hours = self.get_cputime_in_24h().total_seconds() / timedelta(hours=1).total_seconds()
-        return DEFAULT_CPU_POWER_PER_CORE / 1000 * cpu_usage_hours
+        return self.get_power_in_watts() / 1000 * cpu_usage_hours
