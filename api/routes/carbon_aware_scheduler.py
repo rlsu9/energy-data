@@ -66,19 +66,26 @@ def task_lookup_iso(region: CloudRegion) -> tuple:
 
 def init_preload_carbon_data(_workload: Workload,
                                     _carbon_data_source: CarbonDataSource,
-                                    _use_prediction: bool):
-    global workload, carbon_data_source, use_prediction
+                                    _use_prediction: bool,
+                                    _desired_renewable_ratio: float = None):
+    global workload, carbon_data_source, use_prediction, desired_renewable_ratio
     workload = _workload
     carbon_data_source = _carbon_data_source
     use_prediction = _use_prediction
+    desired_renewable_ratio = _desired_renewable_ratio
 
-def preload_carbon_data(workload: Workload, iso: str, carbon_data_source: CarbonDataSource, use_prediction: bool):
+def preload_carbon_data(workload: Workload,
+                        iso: str,
+                        carbon_data_source: CarbonDataSource,
+                        use_prediction: bool,
+                        desired_renewable_ratio: float = None):
     carbon_data_store = dict()
     running_intervals = workload.get_running_intervals_in_24h()
     for (start, end) in running_intervals:
         max_delay = workload.schedule.max_delay
         carbon_data_store[(iso, start, end)] = get_carbon_intensity_list(iso, start, end + max_delay,
-                                                        carbon_data_source, use_prediction)
+                                                        carbon_data_source, use_prediction,
+                                                        desired_renewable_ratio)
     return carbon_data_store
 
 def task_preload_carbon_data(iso: str) -> tuple:
@@ -224,7 +231,8 @@ class CarbonAwareScheduler(Resource):
         d_iso_errors = dict()
         with Pool(4,
                   initializer=init_preload_carbon_data,
-                  initargs=(workload, args.carbon_data_source, args.use_prediction)
+                  initargs=(workload, args.carbon_data_source, args.use_prediction,
+                            args.desired_renewable_ratio)
                   ) as pool:
             result = pool.map(task_preload_carbon_data, unique_isos)
         for (iso, partial_carbon_data, ex, stack_trace) in result:
