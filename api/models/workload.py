@@ -123,6 +123,8 @@ class Workload:
 
     carbon_data_source: CarbonDataSource = field_enum(CarbonDataSource, CarbonDataSource.C3Lab)
     use_prediction: bool = field(default=False)
+    desired_renewable_ratio: Optional[float] = \
+        optional_field_with_validation(lambda ratio: 0. <= ratio <= 1.)
 
     watts_per_core: float = field(default=DEFAULT_CPU_POWER_PER_CORE)
     core_count: float = field(default=1.)

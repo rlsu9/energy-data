@@ -20,7 +20,8 @@ class CarbonDataSource(str, Enum):
 
 
 def get_carbon_intensity_list(iso: str, start: datetime, end: datetime,
-        carbon_data_source: CarbonDataSource, use_prediction: bool) -> list[dict]:
+        carbon_data_source: CarbonDataSource, use_prediction: bool,
+        desired_renewable_ratio: float = None) -> list[dict]:
     """Retrieve the carbon intensity time series data in the given time window.
 
         Args:
@@ -36,8 +37,10 @@ def get_carbon_intensity_list(iso: str, start: datetime, end: datetime,
     current_app.logger.info(f'Getting carbon intensity for {iso} in range ({start}, {end})')
     match carbon_data_source:
         case CarbonDataSource.C3Lab:
-            return get_carbon_intensity_list_c3lab(iso, start, end, use_prediction)
+            return get_carbon_intensity_list_c3lab(iso, start, end, use_prediction, desired_renewable_ratio)
         case CarbonDataSource.Azure:
+            if desired_renewable_ratio is not None:
+                raise ValueError('Azure carbon data source does not support custom renewable ratio.')
             return get_carbon_intensity_list_azure(iso, start, end, use_prediction)
         case _:
             raise NotImplementedError()
