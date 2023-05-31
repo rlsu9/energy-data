@@ -21,6 +21,12 @@ We are starting with US ISOs, which currently include:
 
 You can find the exact list at the top of the main crawler file [crawl.py](./crawler/crawl.py).
 
+## Prediction
+
+We use [CarbonCast](https://github.com/carbonfirst/CarbonCast) to produce 96-hour carbon intensity forecast.
+
+Details are in the [prediction](./prediction) directory. This is currently being developed.
+
 ## Database
 - Database is currently hosted on development machine and only locally accessible (or via SSH tunnel).
 - Table definitions are in [database/tables](./database/tables).

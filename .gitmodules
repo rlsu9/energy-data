@@ -1,0 +1,3 @@
+[submodule "prediction/carboncast"]
+	path = prediction/carboncast
+	url = git@github.com:c3lab-net/CarbonCast.git
