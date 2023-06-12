@@ -249,7 +249,7 @@ def fetch_and_update(conn, region, run_timestamp):
             backfill_current_date = arrow.get(args.backfill_begin_date)
             backfill_end_date = arrow.get(args.backfill_end_date)
             while backfill_current_date <= backfill_end_date:
-                l_result += fetch_new_data(region, target_datetime=backfill_current_date)
+                l_result += fetch_new_data(region, target_datetime=backfill_current_date.datetime)
                 backfill_current_date = backfill_current_date.shift(days=1)
         else:
             raise NotImplementedError()
