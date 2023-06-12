@@ -1,6 +1,6 @@
 #!usr/bin/env python3
 
-# Source: https://github.com/electricitymap/electricitymap-contrib/blob/master/parsers/US_PREPA.py
+# Source: https://github.com/electricitymap/electricitymap-contrib/blob/master/parsers/US_SPP.py
 
 """Parser for the Southwest Power Pool area of the United States."""
 
@@ -31,9 +31,12 @@ class CustomHTTPAdapter(requests.adapters.HTTPAdapter):
         kwargs['ssl_context'] = context
         return super(CustomHTTPAdapter, self).proxy_manager_for(*args, **kwargs)
 
-HISTORIC_GENERATION_BASE_URL = 'https://marketplace.spp.org/file-browser-api/download/generation-mix-historical?path=%2F'
+HISTORIC_GENERATION_BASE_URL = 'https://portal.spp.org/file-browser-api/download/generation-mix-historical?path=/'
+# HISTORIC_GENERATION_BASE_URL = 'https://portal.spp.org/file-browser-api/download/hourly-generation-capacity-by-fuel-type?path='
 
-GENERATION_URL = 'https://marketplace.spp.org/chart-api/gen-mix/asFile'
+GENERATION_URL = 'https://portal.spp.org/file-browser-api/download/generation-mix-historical?path=%2FGenMix2Hour.csv'
+
+# GENERATION_URL = 'https://portal.spp.org/file-browser-api/download/hourly-generation-capacity-by-fuel-type?path=/HRLY-GEN-CAP-BY-FUEL-TYPE-LATEST-INTERVAL.csv'
 
 MAPPING = {'Wind': 'wind',
            'Nuclear': 'nuclear',
@@ -47,6 +50,8 @@ MAPPING = {'Wind': 'wind',
 
 TIE_MAPPING = {'US-MISO->US-SPP': ['AMRN', 'DPC', 'GRE', 'MDU', 'MEC', 'NSP', 'OTP']}
 
+TIMESTAMP_COLUMN = 'GMT MKT Interval'
+
 # NOTE
 # Data sources return timestamps in GMT.
 # Energy storage situation unclear as of 16/03/2018, likely to change quickly in future.
@@ -56,8 +61,9 @@ def get_data(url, session=None):
     """Returns a pandas dataframe."""
 
     s=session or requests.Session()
-    s.mount("https://marketplace.spp.org", CustomHTTPAdapter())
-    req = s.get(url, verify=False)
+    # s.mount("https://marketplace.spp.org", CustomHTTPAdapter())
+    # req = s.get(url, verify=False)
+    req = s.get(url)
     df = pd.read_csv(StringIO(req.text))
 
     return df
@@ -91,7 +97,7 @@ def data_processor(df, logger) -> list:
 
             df.drop(col, inplace=True, axis=1)
 
-    keys_to_remove = {'GMT MKT Interval', 'Average Actual Load', 'Load'}
+    keys_to_remove = {TIMESTAMP_COLUMN, 'Average Actual Load', 'Load'}
 
     # Check for new generation columns.
     known_keys = MAPPING.keys() | keys_to_remove
@@ -111,7 +117,7 @@ def data_processor(df, logger) -> list:
         production = row.to_dict()
         production['unknown'] = sum([production[k] for k in unknown_keys])
 
-        dt_aware = production['GMT MKT Interval'].to_pydatetime()
+        dt_aware = production[TIMESTAMP_COLUMN].to_pydatetime()
         for k in keys_to_remove:
             production.pop(k, None)
 
@@ -121,7 +127,7 @@ def data_processor(df, logger) -> list:
     return processed_data
 
 
-def fetch_production(zone_key = 'US-SPP', session=None, target_datetime=None, logger=getLogger(__name__)) -> dict:
+def fetch_production(zone_key = 'US-SPP', session=None, target_datetime:datetime.datetime=None, logger=getLogger(__name__)) -> dict:
     """Requests the last known production mix (in MW) of a given zone."""
 
     if target_datetime is not None:
@@ -138,19 +144,27 @@ def fetch_production(zone_key = 'US-SPP', session=None, target_datetime=None, lo
         else:
             filename = f'GenMix_{target_year}.csv'
 
+        # # E.g. '/2022/01/HRLY-GEN-CAP-BY-FUEL-TYPE-20220101.csv'
+        # filepath = '/%s/%s/HRLY-GEN-CAP-BY-FUEL-TYPE-%s.csv' % (
+        #     target_datetime.strftime('%Y'),
+        #     target_datetime.strftime('%m'),
+        #     target_datetime.strftime('%Y%m%d')
+        # )
+        # historic_generation_url = HISTORIC_GENERATION_BASE_URL + filepath
+
         historic_generation_url = HISTORIC_GENERATION_BASE_URL + filename
         raw_data = get_data(historic_generation_url, session=session)
         #In some cases the timeseries column is named differently, so we standardize it
-        raw_data.rename(columns={'GMTTime': 'GMT MKT Interval'},inplace=True)
+        raw_data.rename(columns={'GMTTime': TIMESTAMP_COLUMN},inplace=True)
 
-        raw_data['GMT MKT Interval'] = pd.to_datetime(raw_data['GMT MKT Interval'], utc=True)
+        raw_data[TIMESTAMP_COLUMN] = pd.to_datetime(raw_data[TIMESTAMP_COLUMN])
         end = target_datetime
         start = target_datetime - datetime.timedelta(days=1)
-        start = max(start, raw_data['GMT MKT Interval'].min())
-        raw_data = raw_data[(raw_data['GMT MKT Interval'] >= start)&(raw_data['GMT MKT Interval']<= end)]
+        start = max(start, raw_data[TIMESTAMP_COLUMN].min())
+        raw_data = raw_data[(raw_data[TIMESTAMP_COLUMN] >= start)&(raw_data[TIMESTAMP_COLUMN]<= end)]
     else:
         raw_data = get_data(GENERATION_URL, session=session)
-        raw_data['GMT MKT Interval'] = pd.to_datetime(raw_data['GMT MKT Interval'])
+        raw_data[TIMESTAMP_COLUMN] = pd.to_datetime(raw_data[TIMESTAMP_COLUMN])
 
     processed_data = data_processor(raw_data, logger)
 
@@ -172,3 +186,4 @@ def fetch_production(zone_key = 'US-SPP', session=None, target_datetime=None, lo
 if __name__ == '__main__':
     print('fetch_production() -> ')
     print(fetch_production())
+    # print(fetch_production(target_datetime=datetime.datetime(2023, 1, 1, tzinfo=tz.gettz('America/Chicago'))))

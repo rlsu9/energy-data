@@ -75,9 +75,9 @@ map_regions = {
         'fetchCurrentData': False
     },
     'US-SPP': {
-        # Realtime source is updated every 2 hours, but pulling more frequently to avoid missing data
+        # Realtime source is kept for the last 2 hours and updated every 5 minutes.
         'updateFrequency': timedelta(minutes=5),
-        'timeZone': tz.gettz('Etc/GMT'),
+        'timeZone': tz.gettz('America/Chicago'),
         'fetchFn': parsers.US_SPP.fetch_production,
         'fetchResultIsList': True,
         'fetchCurrentData': True
