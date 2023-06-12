@@ -75,9 +75,9 @@ map_regions = {
         'fetchCurrentData': False
     },
     'US-SPP': {
-        # Realtime source is updated every 2 hours, but pulling more frequently to avoid missing data
+        # Realtime source is kept for the last 2 hours and updated every 5 minutes.
         'updateFrequency': timedelta(minutes=5),
-        'timeZone': tz.gettz('Etc/GMT'),
+        'timeZone': tz.gettz('America/Chicago'),
         'fetchFn': parsers.US_SPP.fetch_production,
         'fetchResultIsList': True,
         'fetchCurrentData': True
@@ -249,7 +249,7 @@ def fetch_and_update(conn, region, run_timestamp):
             backfill_current_date = arrow.get(args.backfill_begin_date)
             backfill_end_date = arrow.get(args.backfill_end_date)
             while backfill_current_date <= backfill_end_date:
-                l_result += fetch_new_data(region, target_datetime=backfill_current_date)
+                l_result += fetch_new_data(region, target_datetime=backfill_current_date.datetime)
                 backfill_current_date = backfill_current_date.shift(days=1)
         else:
             raise NotImplementedError()
