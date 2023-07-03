@@ -214,7 +214,7 @@ class CarbonAwareScheduler(Resource):
         d_region_warnings = dict()
         d_misc_details = dict()
 
-        with Pool(4) as pool:
+        with Pool(1 if __debug__ else 4) as pool:
             result_iso = pool.map(task_lookup_iso, candidate_regions)
         for i in range(len(candidate_regions)):
             (region_name, iso, ex, stack_trace) = result_iso[i]
@@ -229,7 +229,7 @@ class CarbonAwareScheduler(Resource):
         unique_isos = set(d_region_isos.values())
         carbon_data = dict()
         d_iso_errors = dict()
-        with Pool(4,
+        with Pool(1 if __debug__ else 4,
                   initializer=init_preload_carbon_data,
                   initargs=(workload, args.carbon_data_source, args.use_prediction,
                             args.desired_renewable_ratio)
@@ -243,7 +243,7 @@ class CarbonAwareScheduler(Resource):
                 current_app.logger.error(f'Carbon data lookup failed for {iso}: {ex}')
                 current_app.logger.error(stack_trace)
 
-        with Pool(8,
+        with Pool(1 if __debug__ else 8,
                   initializer=init_parallel_process_candidate,
                   initargs=(workload, args.carbon_data_source, args.use_prediction, carbon_data)
                   ) as pool:
