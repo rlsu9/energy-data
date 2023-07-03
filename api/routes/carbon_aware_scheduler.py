@@ -9,7 +9,8 @@ from flask import current_app
 from flask_restful import Resource
 from webargs.flaskparser import use_args
 
-from api.helpers.carbon_intensity import CarbonDataSource, calculate_total_carbon_emissions, convert_carbon_intensity_list_to_dict, get_carbon_intensity_list
+from api.helpers.carbon_intensity import CarbonDataSource, convert_carbon_intensity_list_to_dict, get_carbon_intensity_list
+from api.helpers.carbon_emission import calculate_total_carbon_emissions
 from api.models.cloud_location import CloudLocationManager, CloudRegion
 from api.models.optimization_engine import OptimizationEngine, OptimizationFactor
 from api.models.wan_bandwidth import load_wan_bandwidth_model
