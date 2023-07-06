@@ -89,9 +89,9 @@ def preload_carbon_data(workload: Workload,
     return carbon_data_store
 
 def task_preload_carbon_data(iso: str) -> tuple:
-    global workload, carbon_data_source, use_prediction
+    global workload, carbon_data_source, use_prediction, desired_renewable_ratio
     try:
-        carbon_data = preload_carbon_data(workload, iso, carbon_data_source, use_prediction)
+        carbon_data = preload_carbon_data(workload, iso, carbon_data_source, use_prediction, desired_renewable_ratio)
         return iso, carbon_data, None, None
     except Exception as ex:
         return iso, None, str(ex), traceback.format_exc()
