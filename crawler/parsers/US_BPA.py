@@ -27,7 +27,10 @@ def get_data(url, session=None):
     """Returns a pandas dataframe."""
     s = session or requests.Session()
     req = s.get(url)
-    df = pd.read_table(StringIO(req.text), skiprows=11)
+    try:
+        df = pd.read_table(StringIO(req.text), skiprows=11)
+    except pd.errors.EmptyDataError:
+        raise ValueError(f'Cannot parse empty response after skipping header rows: {req.text}')
 
     return df
 
