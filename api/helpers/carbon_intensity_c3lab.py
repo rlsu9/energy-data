@@ -60,6 +60,8 @@ def _get_available_time_range(conn: psycopg2.extensions.connection, region: str)
 def _validate_time_range(conn: psycopg2.extensions.connection,
                         region: str, start: datetime, end: datetime) -> None:
     """Validate we have electricity data for the given time range."""
+    if start is None or end is None:
+        return
     if start > end:
         raise BadRequest("end must be before start")
     (available_start, available_end) = _get_available_time_range(conn, region)
@@ -92,29 +94,38 @@ def _calculate_scaled_carbon_intensity(
 
 def _get_average_carbon_intensity(conn: psycopg2.extensions.connection,
                                  region: str, start: datetime, end: datetime,
-                                 desired_renewable_ratio: float) -> list[dict]:
+                                 desired_renewable_ratio: float,
+                                 aggregate_by: str) -> list[dict]:
+    # aggregate_by is fed into date_trunc, and thus supports values listed here: https://www.postgresql.org/docs/current/functions-datetime.html#FUNCTIONS-DATETIME-TRUNC
+    if aggregate_by is None:
+        aggregate_by = "second"
     cursor = conn.cursor()
     # in case start/end lie in between two timestamps, find the timestamp <= start and >= end.
     records: list[tuple[datetime, float]] = psql_execute_list(
         cursor,
-        """SELECT datetime,
-                Renewable_CarbonIntensity,
-                NonRenewable_CarbonIntensity,
-                Renewable_Ratio
+        """SELECT date_trunc(%(aggregate_by)s, datetime) as datetime,
+                avg(Renewable_CarbonIntensity),
+                avg(NonRenewable_CarbonIntensity),
+                avg(Renewable_Ratio)
             FROM CarbonIntensityByRenewable
             WHERE region = %(region)s
                 AND datetime >= (SELECT COALESCE(
-                    (SELECT MAX(datetime) FROM EnergyMixture
-                        WHERE datetime <= %(start)s AND region = %(region)s),
+                    (CASE WHEN %(start)s IS NOT NULL
+                        THEN (SELECT MAX(datetime) FROM EnergyMixture
+                            WHERE datetime <= %(start)s AND region = %(region)s)
+                        END),
                     (SELECT MIN(datetime) FROM EnergyMixture
                         WHERE region = %(region)s)))
                 AND datetime <= (SELECT COALESCE(
-                    (SELECT MIN(datetime) FROM EnergyMixture
-                        WHERE datetime >= %(end)s AND region = %(region)s),
+                    (CASE WHEN %(end)s IS NOT NULL
+                        THEN (SELECT MIN(datetime) FROM EnergyMixture
+                            WHERE datetime >= %(end)s AND region = %(region)s)
+                        END),
                     (SELECT MAX(datetime) FROM EnergyMixture
                         WHERE region = %(region)s)))
+            GROUP BY datetime
             ORDER BY datetime;""",
-        dict(region=region, start=start, end=end))
+        dict(region=region, start=start, end=end, aggregate_by=aggregate_by))
     l_carbon_intensity = []
     for tuple in records:
         (timestamp, renewable_carbon_intensity, nonrenewable_carbon_intensity, renewable_ratio) = tuple
@@ -171,25 +182,27 @@ def _calculate_average_carbon_intensity(
 
 @carbon_data_cache.memoize()
 def fetch_emissions(region: str, start: datetime, end: datetime,
-                                 desired_renewable_ratio: float) -> list[dict]:
+                                 desired_renewable_ratio: float,
+                                 aggregate_by) -> list[dict]:
     # TODO: make this not throw exception for memoize to work
     current_app.logger.debug(f'fetch_emissions({region}, {start}, {end}, {desired_renewable_ratio})')
     conn = get_psql_connection()
     _validate_region_exists(conn, region)
     _validate_time_range(conn, region, start, end)
-    return _get_average_carbon_intensity(conn, region, start, end, desired_renewable_ratio)
+    return _get_average_carbon_intensity(conn, region, start, end, desired_renewable_ratio, aggregate_by)
     # power_by_fuel_source = get_power_by_timestamp_and_fuel_source(conn, region, start, end)
     # return _calculate_average_carbon_intensity(power_by_fuel_source)
 
 @carbon_data_cache.memoize()
 def fetch_prediction(region: str, start: datetime, end: datetime,
-        desired_renewable_ratio: float) -> list[dict]:
+        desired_renewable_ratio: float, aggregate_by: str) -> list[dict]:
     current_app.logger.debug(f'fetch_prediction({region}, {start}, {end}, {desired_renewable_ratio})')
     raise ValueError('c3lab carbon data source does not support prediction')
 
 def get_carbon_intensity_list(iso: str, start: datetime, end: datetime,
         use_prediction: bool = False,
-        desired_renewable_ratio: float = None) -> list[dict]:
+        desired_renewable_ratio: float = None,
+        aggregate_by: str = None) -> list[dict]:
     """Retrieve the carbon intensity time series data in the given time window.
 
         Args:
@@ -205,9 +218,9 @@ def get_carbon_intensity_list(iso: str, start: datetime, end: datetime,
     
     region = get_c3lab_region_from_iso(iso)
     if use_prediction:
-        return fetch_prediction(region, start, end, desired_renewable_ratio)
+        return fetch_prediction(region, start, end, desired_renewable_ratio, aggregate_by)
     else:
-        return fetch_emissions(region, start, end, desired_renewable_ratio)
+        return fetch_emissions(region, start, end, desired_renewable_ratio, aggregate_by)
 
 
 def get_power_by_fuel_type(iso: str, start: datetime, end: datetime) -> list[dict]:

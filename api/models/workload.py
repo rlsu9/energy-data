@@ -21,6 +21,13 @@ class ScheduleType(Enum):
     ONETIME = "onetime"
 
 
+class CarbonAccountingPolicy(Enum):
+    """The method/metric used for calculating carbon emissions."""
+    Carbon_CombinedComputeAndMigration = "carbon:compute+migration"
+    Carbon_Instantaneous = "carbon:instantaneous"
+    Carbon_HistoricAverage = "carbon:historic_average"
+
+
 @dataclass
 class WorkloadSchedule:
     type: ScheduleType = field_enum(ScheduleType)
@@ -128,6 +135,7 @@ class Workload:
 
     watts_per_core: float = field(default=DEFAULT_CPU_POWER_PER_CORE)
     core_count: float = field(default=1.)
+    carbon_accounting_policy: CarbonAccountingPolicy = field_enum(CarbonAccountingPolicy, CarbonAccountingPolicy.Carbon_CombinedComputeAndMigration)
 
     @validates_schema
     def validate_schema(self, data, **kwargs):

@@ -14,7 +14,7 @@ from api.helpers.carbon_emission import calculate_total_carbon_emissions
 from api.models.cloud_location import CloudLocationManager, CloudRegion
 from api.models.optimization_engine import OptimizationEngine, OptimizationFactor
 from api.models.wan_bandwidth import load_wan_bandwidth_model
-from api.models.workload import CloudLocation, Workload
+from api.models.workload import CarbonAccountingPolicy, CloudLocation, Workload
 from api.models.dataclass_extensions import *
 from api.routes.balancing_authority import lookup_watttime_balancing_authority
 from api.util import round_up
@@ -68,31 +68,49 @@ def task_lookup_iso(region: CloudRegion) -> tuple:
 def init_preload_carbon_data(_workload: Workload,
                                     _carbon_data_source: CarbonDataSource,
                                     _use_prediction: bool,
+                                    _carbon_accounting_policy: CarbonAccountingPolicy,
                                     _desired_renewable_ratio: float = None):
-    global workload, carbon_data_source, use_prediction, desired_renewable_ratio
+    global workload, carbon_data_source, use_prediction, carbon_accounting_policy, desired_renewable_ratio
     workload = _workload
     carbon_data_source = _carbon_data_source
     use_prediction = _use_prediction
+    carbon_accounting_policy = _carbon_accounting_policy
     desired_renewable_ratio = _desired_renewable_ratio
 
 def preload_carbon_data(workload: Workload,
                         iso: str,
                         carbon_data_source: CarbonDataSource,
                         use_prediction: bool,
+                        carbon_accounting_policy: CarbonAccountingPolicy,
                         desired_renewable_ratio: float = None):
     carbon_data_store = dict()
     running_intervals = workload.get_running_intervals_in_24h()
     for (start, end) in running_intervals:
         max_delay = workload.schedule.max_delay
-        carbon_data_store[(iso, start, end)] = get_carbon_intensity_list(iso, start, end + max_delay,
+        match carbon_accounting_policy:
+            case CarbonAccountingPolicy.Carbon_CombinedComputeAndMigration:
+                carbon_intensity_list = get_carbon_intensity_list(iso, start, end + max_delay,
                                                         carbon_data_source, use_prediction,
                                                         desired_renewable_ratio)
+            case CarbonAccountingPolicy.Carbon_Instantaneous:
+                # Instantaneous strategy does not need to consider future carbon intensity variation
+                carbon_intensity_list = get_carbon_intensity_list(iso, start, start + max_delay,
+                                                        carbon_data_source, use_prediction,
+                                                        desired_renewable_ratio)
+            case CarbonAccountingPolicy.Carbon_HistoricAverage:
+                # Historic average queries the less granular (or averaged) data.
+                carbon_intensity_list = get_carbon_intensity_list(iso, None, None,
+                                                        carbon_data_source, use_prediction,
+                                                        desired_renewable_ratio, 'year')
+            case _:
+                raise NotImplementedError(f'Carbon accounting policy {carbon_accounting_policy} is not supported.')
+        carbon_data_store[(iso, start, end)] = carbon_intensity_list
     return carbon_data_store
 
 def task_preload_carbon_data(iso: str) -> tuple:
-    global workload, carbon_data_source, use_prediction, desired_renewable_ratio
+    global workload, carbon_data_source, use_prediction, carbon_accounting_policy, desired_renewable_ratio
     try:
-        carbon_data = preload_carbon_data(workload, iso, carbon_data_source, use_prediction, desired_renewable_ratio)
+        carbon_data = preload_carbon_data(workload, iso, carbon_data_source, use_prediction, carbon_accounting_policy, desired_renewable_ratio)
         return iso, carbon_data, None, None
     except Exception as ex:
         return iso, None, str(ex), traceback.format_exc()
@@ -138,7 +156,8 @@ def calculate_workload_scores(workload: Workload, iso: str) -> tuple[dict[Optimi
                     l_carbon_intensity = get_preloaded_carbon_data(iso, start, end)
                     carbon_intensity_by_timestamp = convert_carbon_intensity_list_to_dict(l_carbon_intensity)
                     total_compute_carbon_emissions, optimal_delay_time = calculate_total_carbon_emissions(
-                        start, end, workload.get_power_in_watts(), carbon_intensity_by_timestamp, max_delay)
+                        workload.carbon_accounting_policy, start, end, workload.get_power_in_watts(),
+                        carbon_intensity_by_timestamp, max_delay)
                     d_misc['start_delay'].append(optimal_delay_time)
                     # Note: temporarily disabled
                     """
@@ -156,12 +175,14 @@ def calculate_workload_scores(workload: Workload, iso: str) -> tuple[dict[Optimi
                     available_bandwidth_end: Rate = g_wan_bandwidth.available_bandwidth_at(timestamp=end.time())
                     post_run_migration_duration: timedelta = output_size / available_bandwidth_end
                     pre_run_migration_carbon_emission, _ = calculate_total_carbon_emissions(
+                        workload.carbon_accounting_policy,
                         start,
                         start + pre_run_migration_duration,
                         DEFAULT_STORAGE_POWER,
                         carbon_intensity_by_timestamp
                     )
                     post_run_migration_carbon_emission, _ = calculate_total_carbon_emissions(
+                        workload.carbon_accounting_policy,
                         end,
                         end + post_run_migration_duration,
                         DEFAULT_STORAGE_POWER,
@@ -233,7 +254,7 @@ class CarbonAwareScheduler(Resource):
         with Pool(1 if __debug__ else 4,
                   initializer=init_preload_carbon_data,
                   initargs=(workload, args.carbon_data_source, args.use_prediction,
-                            args.desired_renewable_ratio)
+                            args.carbon_accounting_policy, args.desired_renewable_ratio)
                   ) as pool:
             result = pool.map(task_preload_carbon_data, unique_isos)
         for (iso, partial_carbon_data, ex, stack_trace) in result:

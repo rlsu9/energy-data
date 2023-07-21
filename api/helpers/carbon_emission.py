@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import sys
 from typing import Tuple
 from datetime import datetime, timedelta
 from werkzeug.exceptions import NotFound, BadRequest
@@ -7,10 +8,12 @@ from bisect import bisect
 import numpy as np
 
 from api.helpers.carbon_intensity import get_carbon_intensity_interval
+from api.models.workload import CarbonAccountingPolicy
 from api.util import round_down
 
 
-def calculate_total_carbon_emissions(start: datetime, end: datetime, power: float,
+def calculate_total_carbon_emissions(carbon_accounting_policy: CarbonAccountingPolicy,
+                                     start: datetime, end: datetime, power: float,
                                      carbon_intensity_by_timestamp: dict[datetime, float],
                                      max_delay: timedelta = timedelta()) -> Tuple[float, timedelta]:
     """Calculate the total carbon emission by multiplying energy with carbon intensity.
@@ -29,6 +32,29 @@ def calculate_total_carbon_emissions(start: datetime, end: datetime, power: floa
     if start > end:
         raise BadRequest("start time is later than end time")
 
+    match carbon_accounting_policy:
+        case CarbonAccountingPolicy.Carbon_CombinedComputeAndMigration:
+            return calculate_total_carbon_emissions_run_and_migration(start, end, power, carbon_intensity_by_timestamp, max_delay)
+        case CarbonAccountingPolicy.Carbon_Instantaneous:
+            return calculate_total_carbon_emissions_instantaneous(start, end, power, carbon_intensity_by_timestamp, max_delay)
+        case CarbonAccountingPolicy.Carbon_HistoricAverage:
+            return calculate_total_carbon_emissions_average_long_term(start, end, power, carbon_intensity_by_timestamp, max_delay)
+        case _:
+            raise NotImplementedError(f'Carbon accounting policy {carbon_accounting_policy} is not supported.')
+
+
+def _calculate_carbon_emission_in_interval(interval: timedelta, power_watts: float, carbon_intensity: float) -> float:
+    """Calculate carbon emission in a small interval with fixed carbon intensity."""
+    # This converts s * W * gCO2/kWh to h * kW * kgCO2/kWh (or kgCO2)
+    conversion_factor = timedelta(hours=1).total_seconds() * 1000 * 1000
+    return interval.total_seconds() * power_watts * carbon_intensity / conversion_factor
+
+
+def calculate_total_carbon_emissions_run_and_migration(start: datetime, end: datetime, power: float,
+                                     carbon_intensity_by_timestamp: dict[datetime, float],
+                                     max_delay: timedelta = timedelta()) -> Tuple[float, timedelta]:
+    """Calculate the total carbon emission using the provided timeseries carbon intensity data."""
+
     # Convert dict to lists for easier indexing and searching
     l_timestamps = sorted(carbon_intensity_by_timestamp.keys())
     l_carbon_intensity = [carbon_intensity_by_timestamp[timestamp] for timestamp in l_timestamps]
@@ -39,12 +65,6 @@ def calculate_total_carbon_emissions(start: datetime, end: datetime, power: floa
     if start < min(l_timestamps) or end_rounded > max(l_timestamps):
         raise NotFound("Missing carbon intensity data for the given time interval.")
 
-    def _calculate_carbon_emission_in_interval(interval: timedelta, carbon_intensity: float) -> float:
-        """Calculate carbon emission in a small interval with fixed carbon intensity."""
-        # This converts s * W * gCO2/kWh to h * kW * kgCO2/kWh (or kgCO2)
-        conversion_factor = timedelta(hours=1).total_seconds() * 1000 * 1000
-        return interval.total_seconds() * power * carbon_intensity / conversion_factor
-
     def _find_timestamp_index(timestamp: datetime) -> int:
         """Find the timestamp index in carbon intensity timestamp list, or the closest one to the left."""
         return bisect(l_timestamps, timestamp) - 1
@@ -53,7 +73,7 @@ def calculate_total_carbon_emissions(start: datetime, end: datetime, power: floa
     index_end = _find_timestamp_index(end)
     if index_start == index_end:  # start and end lie in one interval
         carbon_intensity = l_carbon_intensity[index_start]
-        return _calculate_carbon_emission_in_interval(end - start, carbon_intensity), timedelta()
+        return _calculate_carbon_emission_in_interval(end - start, power, carbon_intensity), timedelta()
 
     # Calculate total carbon emissions with unaligned interval
     total_carbon_emissions = 0.
@@ -61,6 +81,7 @@ def calculate_total_carbon_emissions(start: datetime, end: datetime, power: floa
     # Partial starting interval
     total_carbon_emissions += _calculate_carbon_emission_in_interval(
         l_timestamps[index_start + 1] - start,
+        power,
         l_carbon_intensity[index_start])
 
     # Whole intervals in the middle
@@ -68,12 +89,14 @@ def calculate_total_carbon_emissions(start: datetime, end: datetime, power: floa
     while index_interval < index_end:
         total_carbon_emissions += _calculate_carbon_emission_in_interval(
             l_timestamps[index_interval + 1] - l_timestamps[index_interval],
+            power,
             l_carbon_intensity[index_interval])
         index_interval += 1
 
     # Partial ending interval
     total_carbon_emissions += _calculate_carbon_emission_in_interval(
         end - l_timestamps[index_end],
+        power,
         l_carbon_intensity[index_end])
 
     if max_delay == timedelta():
@@ -104,7 +127,7 @@ def calculate_total_carbon_emissions(start: datetime, end: datetime, power: floa
         carbon_intensity_right = l_carbon_intensity[_find_timestamp_index(end + + l_delay[-1])]
         carbon_intensity_diff = carbon_intensity_right - carbon_intensity_left
         # Translate carbon intensity diff to carbon emission diff
-        carbon_emission_delta = _calculate_carbon_emission_in_interval(step_size, carbon_intensity_diff)
+        carbon_emission_delta = _calculate_carbon_emission_in_interval(step_size, power, carbon_intensity_diff)
         # Record data and iterate. Emission diff is applied after the current step; thus adding to delay first.
         delay += step_size
         l_delay.append(delay)
@@ -115,3 +138,28 @@ def calculate_total_carbon_emissions(start: datetime, end: datetime, power: floa
     min_carbon_emission = total_carbon_emissions + min_carbon_emission_delta
     optimal_delay = l_delay[index_min_carbon_emission_delta]
     return min_carbon_emission, optimal_delay
+
+def calculate_total_carbon_emissions_instantaneous(start: datetime, end: datetime, power: float,
+                                     carbon_intensity_by_timestamp: dict[datetime, float],
+                                     max_delay: timedelta = timedelta()) -> Tuple[float, timedelta]:
+    """Calculate the total carbon emission using instantaneous carbon intensity data."""
+    min_carbon_intensity = sys.float_info.max
+    min_timestamp = None
+    for timestamp in carbon_intensity_by_timestamp:
+        if not (start <= timestamp and timestamp <= start + max_delay):
+            continue
+        carbon_intensity = carbon_intensity_by_timestamp[timestamp]
+        if carbon_intensity < min_carbon_intensity:
+            min_carbon_intensity = carbon_intensity
+            min_timestamp = timestamp
+
+    if min_timestamp is None:
+        raise ValueError('No valid carbon intensity data found.')
+    return _calculate_carbon_emission_in_interval(end - start, power, min_carbon_intensity), min_timestamp - start
+
+def calculate_total_carbon_emissions_average_long_term(start: datetime, end: datetime, power: float,
+                                     carbon_intensity_by_timestamp: dict[datetime, float],
+                                     max_delay: timedelta = timedelta()) -> Tuple[float, timedelta]:
+    """Calculate the total carbon emission using average long-term carbon intensity data."""
+    average_carbon_intensity = np.average(list(carbon_intensity_by_timestamp.values()))
+    return _calculate_carbon_emission_in_interval(end - start, power, average_carbon_intensity), 0
