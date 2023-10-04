@@ -2,13 +2,14 @@
 
 from datetime import timedelta, timezone
 from enum import Enum
-from typing import Optional, Tuple
+from typing import Optional
 
 import numpy as np
 from marshmallow import validates_schema, ValidationError
 from marshmallow_dataclass import dataclass
 from api.helpers.carbon_intensity import CarbonDataSource
 
+# from api.models.common import Coordinate
 from api.models.cloud_location import CloudLocationManager
 from api.models.dataclass_extensions import *
 
@@ -121,6 +122,9 @@ class Workload:
     candidate_providers: Optional[list[str]] = field(default_factory=list)
     candidate_locations: Optional[list[CloudLocation]] = field(default_factory=list)
 
+    # TODO: add custom routes support
+    # custom_routes: Optional[dict[str, RouteInCoordinate]] = field(default_factory=dict)
+
     carbon_data_source: CarbonDataSource = field_enum(CarbonDataSource, CarbonDataSource.C3Lab)
     use_prediction: bool = field(default=False)
     desired_renewable_ratio: Optional[float] = \
@@ -164,7 +168,7 @@ class Workload:
                 raise NotImplementedError()
         return self.runtime * run_count
 
-    def get_running_intervals_in_24h(self) -> list[Tuple[datetime, datetime]]:
+    def get_running_intervals_in_24h(self) -> list[tuple[datetime, datetime]]:
         intervals = []
 
         def _add_current_run_to_interval(start: datetime):

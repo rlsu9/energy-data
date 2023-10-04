@@ -2,7 +2,6 @@
 
 # Source: https://flask.palletsprojects.com/en/2.1.x/testing/
 
-from typing import Tuple
 import pytest
 from api import create_app
 from api.util import CustomJSONEncoder
@@ -30,7 +29,7 @@ def runner(app):
 
 @pytest.fixture()
 def get_gps_coordinate():
-    m_test_location_to_gps_coordinate: dict[str, Tuple[float, float]] = {
+    m_test_location_to_gps_coordinate: dict[str, tuple[float, float]] = {
         'UCSD': (32.8801, -117.2340),
         'Milwaukee, WI': (43.0389, -87.9065),
         'Columbus, OH': (39.9833, -82.9833),
@@ -40,7 +39,7 @@ def get_gps_coordinate():
         'Austin, TX': (30.2672, -97.7431),
     }
 
-    def _method_impl(location_name) -> Tuple[float, float]:
+    def _method_impl(location_name) -> tuple[float, float]:
         assert location_name in m_test_location_to_gps_coordinate, f"Unknown test location {location_name}"
         return m_test_location_to_gps_coordinate[location_name]
 

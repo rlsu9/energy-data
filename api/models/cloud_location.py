@@ -3,10 +3,10 @@
 from dataclasses import dataclass
 import os
 from pathlib import Path
-from typing import Tuple
 from flask import current_app
 from werkzeug.exceptions import NotFound
 
+from api.models.common import Coordinate
 from api.util import load_yaml_data
 
 @dataclass
@@ -15,7 +15,7 @@ class CloudRegion:
     code: str
     name: str
     iso: str
-    gps: Tuple[float, float]
+    gps: Coordinate
 
     def __str__(self) -> str:
         return f'{self.provider}:{self.code}'
@@ -74,7 +74,7 @@ class CloudLocationManager:
         return [region.code for region in self.all_public_clouds[cloud_provider].regions]
 
     def get_gps_coordinate(self, cloud_region: CloudRegion = None, cloud_provider: str = None,
-                           region_code: str = None) -> Tuple[float, float]:
+                           region_code: str = None) -> Coordinate:
         if not cloud_provider and not region_code and cloud_region:
             cloud_provider = cloud_region.provider
             region_code = cloud_region.code

@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
 from enum import Enum
-from typing import Tuple
 import numpy as np
 from datetime import datetime, timedelta
 from datetime import datetime, timedelta
@@ -67,7 +66,7 @@ def get_carbon_intensity_interval(timestamps: list[datetime]) -> timedelta:
 
 def calculate_total_carbon_emissions(start: datetime, end: datetime, power: float,
                                      carbon_intensity_by_timestamp: dict[datetime, float],
-                                     max_delay: timedelta = timedelta()) -> Tuple[float, timedelta]:
+                                     max_delay: timedelta = timedelta()) -> tuple[float, timedelta]:
     """Calculate the total carbon emission by multiplying energy with carbon intensity.
 
         Args:
