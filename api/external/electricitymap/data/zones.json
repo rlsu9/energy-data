@@ -1,415 +1,6145 @@
 {
-    "AD":{"zoneName":"Andorra"},
-    "AE":{"zoneName":"United Arab Emirates"},
-    "AF":{"zoneName":"Afghanistan"},
-    "AG":{"zoneName":"Antigua and Barbuda"},
-    "AL":{"zoneName":"Albania"},
-    "AM":{"zoneName":"Armenia"},
-    "AO":{"zoneName":"Angola"},
-    "AR":{"zoneName":"Argentina"},
-    "AT":{"zoneName":"Austria"},
-    "AUS-ACT":{"zoneName":"Unknown"},
-    "AUS-NSW":{"countryName":"Australia","zoneName":"New South Wales"},
-    "AUS-NT":{"countryName":"Australia","zoneName":"Northern Territory"},
-    "AUS-QLD":{"countryName":"Australia","zoneName":"Queensland"},
-    "AUS-SA":{"countryName":"Australia","zoneName":"South Australia"},
-    "AUS-TAS":{"countryName":"Australia","zoneName":"Tasmania"},
-    "AUS-TAS-CBI":{"countryName":"Australia","zoneName":"Cape Barren Island"},
-    "AUS-TAS-FI":{"countryName":"Australia","zoneName":"Flinders Island"},
-    "AUS-TAS-KI":{"countryName":"Australia","zoneName":"King Island"},
-    "AUS-VIC":{"countryName":"Australia","zoneName":"Victoria"},
-    "AUS-WA":{"countryName":"Australia","zoneName":"Western Australia"},
-    "AUS-WA-RI":{"countryName":"Australia","zoneName":"Rottnest Island"},
-    "AW":{"zoneName":"Aruba"},
-    "AX":{"zoneName":"Åland Islands"},
-    "AZ":{"zoneName":"Azerbaijan"},
-    "BA":{"zoneName":"Bosnia and Herzegovina"},
-    "BB":{"zoneName":"Barbados"},
-    "BD":{"zoneName":"Bangladesh"},
-    "BE":{"zoneName":"Belgium"},
-    "BF":{"zoneName":"Burkina Faso"},
-    "BG":{"zoneName":"Bulgaria"},
-    "BH":{"zoneName":"Bahrain"},
-    "BI":{"zoneName":"Burundi"},
-    "BJ":{"zoneName":"Benin"},
-    "BN":{"zoneName":"Brunei"},
-    "BO":{"zoneName":"Bolivia"},
-    "BR-CS":{"countryName":"Brazil","zoneName":"Central Brazil"},
-    "BR-I":{"countryName":"Brazil","zoneName":"Isolated Systems"},
-    "BR-N":{"countryName":"Brazil","zoneName":"North Brazil"},
-    "BR-NE":{"countryName":"Brazil","zoneName":"North-East Brazil"},
-    "BR-S":{"countryName":"Brazil","zoneName":"South Brazil"},
-    "BS":{"zoneName":"Bahamas"},
-    "BT":{"zoneName":"Bhutan"},
-    "BW":{"zoneName":"Botswana"},
-    "BY":{"zoneName":"Belarus"},
-    "BZ":{"zoneName":"Belize"},
-    "CA-AB":{"countryName":"Canada","zoneName":"Alberta"},
-    "CA-BC":{"countryName":"Canada","zoneName":"British Columbia"},
-    "CA-MB":{"countryName":"Canada","zoneName":"Manitoba"},
-    "CA-NB":{"countryName":"Canada","zoneName":"New Brunswick"},
-    "CA-NL-LB":{"countryName":"Canada","zoneName":"Labrador"},
-    "CA-NL-NF":{"countryName":"Canada","zoneName":"Newfoundland"},
-    "CA-NS":{"countryName":"Canada","zoneName":"Nova Scotia"},
-    "CA-NT":{"countryName":"Canada","zoneName":"Northwest Territories"},
-    "CA-NU":{"countryName":"Canada","zoneName":"Nunavut"},
-    "CA-ON":{"countryName":"Canada","zoneName":"Ontario"},
-    "CA-PE":{"countryName":"Canada","zoneName":"Prince Edward Island"},
-    "CA-QC":{"countryName":"Canada","zoneName":"Québec"},
-    "CA-SK":{"countryName":"Canada","zoneName":"Saskatchewan"},
-    "CA-YT":{"countryName":"Canada","zoneName":"Yukon"},
-    "CD":{"zoneName":"Democratic Republic of the Congo"},
-    "CF":{"zoneName":"Central African Republic"},
-    "CG":{"zoneName":"Congo"},
-    "CH":{"zoneName":"Switzerland"},
-    "CI":{"zoneName":"Ivory Coast"},
-    "CL-CHP":{"countryName":"Chile","zoneName":"Easter Island"},
-    "CL-SEA":{"countryName":"Chile","zoneName":"Sistema Eléctrico de Aysén"},
-    "CL-SEM":{"countryName":"Chile","zoneName":"Sistema Eléctrico de Magallanes"},
-    "CL-SEN":{"countryName":"Chile","zoneName":"Sistema Eléctrico Nacional"},
-    "CM":{"zoneName":"Cameroon"},
-    "CN":{"zoneName":"China"},
-    "CO":{"zoneName":"Colombia"},
-    "CR":{"zoneName":"Costa Rica"},
-    "CU":{"zoneName":"Cuba"},
-    "CV":{"zoneName":"Cabo Verde"},
-    "CY":{"zoneName":"Cyprus"},
-    "CZ":{"zoneName":"Czechia"},
-    "DE":{"zoneName":"Germany"},
-    "DJ":{"zoneName":"Djibouti"},
-    "DK":{"zoneName":"Denmark"},
-    "DK-BHM":{"countryName":"Denmark","zoneName":"Bornholm"},
-    "DK-DK1":{"countryName":"Denmark","zoneName":"West Denmark"},
-    "DK-DK2":{"countryName":"Denmark","zoneName":"East Denmark"},
-    "DM":{"zoneName":"Dominica"},
-    "DO":{"zoneName":"Dominican Republic"},
-    "DZ":{"zoneName":"Algeria"},
-    "EC":{"zoneName":"Ecuador"},
-    "EE":{"zoneName":"Estonia"},
-    "EG":{"zoneName":"Egypt"},
-    "EH":{"zoneName":"Western Sahara"},
-    "ER":{"zoneName":"Eritrea"},
-    "ES":{"zoneName":"Spain"},
-    "ES-CN-FVLZ":{"countryName":"Spain","zoneName":"Fuerteventura/Lanzarote"},
-    "ES-CN-GC":{"countryName":"Spain","zoneName":"Gran Canaria"},
-    "ES-CN-HI":{"countryName":"Spain","zoneName":"El Hierro"},
-    "ES-CN-IG":{"countryName":"Spain","zoneName":"Isla de la Gomera"},
-    "ES-CN-LP":{"countryName":"Spain","zoneName":"La Palma"},
-    "ES-CN-TE":{"countryName":"Spain","zoneName":"Tenerife"},
-    "ES-IB-FO":{"countryName":"Spain","zoneName":"Formentera"},
-    "ES-IB-IZ":{"countryName":"Spain","zoneName":"Ibiza"},
-    "ES-IB-MA":{"countryName":"Spain","zoneName":"Mallorca"},
-    "ES-IB-ME":{"countryName":"Spain","zoneName":"Menorca"},
-    "ET":{"zoneName":"Ethiopia"},
-    "FI":{"zoneName":"Finland"},
-    "FJ":{"zoneName":"Fiji"},
-    "FK":{"zoneName":"Falkland Islands"},
-    "FM":{"zoneName":"Micronesia"},
-    "FO":{"zoneName":"Faroe Islands"},
-    "FR":{"zoneName":"France"},
-    "FR-COR":{"countryName":"France","zoneName":"Corsica"},
-    "GA":{"zoneName":"Gabon"},
-    "GB":{"zoneName":"Great Britain"},
-    "GB-NIR":{"zoneName":"Northern Ireland"},
-    "GB-ORK":{"countryName":"Great Britain","zoneName":"Orkney Islands"},
-    "GB-SHI":{"countryName":"Great Britain","zoneName":"Shetland Islands"},
-    "GE":{"zoneName":"Georgia"},
-    "GF":{"zoneName":"French Guiana"},
-    "GH":{"zoneName":"Ghana"},
-    "GL":{"zoneName":"Greenland"},
-    "GM":{"zoneName":"Gambia"},
-    "GN":{"zoneName":"Guinea"},
-    "GP":{"zoneName":"Guadeloupe"},
-    "GQ":{"zoneName":"Equatorial Guinea"},
-    "GR":{"zoneName":"Greece"},
-    "GR-IS":{"countryName":"Greece","zoneName":"Aegean Islands"},
-    "GS":{"zoneName":"South Georgia and the South Sandwich Islands"},
-    "GT":{"zoneName":"Guatemala"},
-    "GU":{"zoneName":"Guam"},
-    "GW":{"zoneName":"Guinea-Bissau"},
-    "GY":{"zoneName":"Guyana"},
-    "HK":{"zoneName":"Hong Kong"},
-    "HM":{"zoneName":"Heard Island and McDonald Islands"},
-    "HN":{"zoneName":"Honduras"},
-    "HR":{"zoneName":"Croatia"},
-    "HT":{"zoneName":"Haiti"},
-    "HU":{"zoneName":"Hungary"},
-    "ID":{"zoneName":"Indonesia"},
-    "IE":{"zoneName":"Ireland"},
-    "IL":{"zoneName":"Israel"},
-    "IM":{"zoneName":"Isle of Man"},
-    "IN":{"zoneName":"Unknown"},
-    "IN-AN":{"countryName":"India","zoneName":"Andaman and Nicobar Islands"},
-    "IN-AP":{"countryName":"India","zoneName":"Andhra Pradesh"},
-    "IN-AR":{"countryName":"India","zoneName":"Arunachal Pradesh"},
-    "IN-AS":{"countryName":"India","zoneName":"Assam"},
-    "IN-BR":{"countryName":"India","zoneName":"Bihar"},
-    "IN-CT":{"countryName":"India","zoneName":"Chhattisgarh"},
-    "IN-DL":{"countryName":"India","zoneName":"Delhi"},
-    "IN-DN":{"countryName":"India","zoneName":"Dadra and Nagar Haveli"},
-    "IN-GA":{"countryName":"India","zoneName":"Goa"},
-    "IN-GJ":{"countryName":"India","zoneName":"Gujarat"},
-    "IN-HP":{"countryName":"India","zoneName":"Himachal Pradesh"},
-    "IN-HR":{"countryName":"India","zoneName":"Haryana"},
-    "IN-JH":{"countryName":"India","zoneName":"Jharkhand"},
-    "IN-JK":{"countryName":"India","zoneName":"Jammu and Kashmir"},
-    "IN-KA":{"countryName":"India","zoneName":"Karnataka"},
-    "IN-KL":{"countryName":"India","zoneName":"Kerala"},
-    "IN-MH":{"countryName":"India","zoneName":"Maharashtra"},
-    "IN-ML":{"countryName":"India","zoneName":"Meghalaya"},
-    "IN-MN":{"countryName":"India","zoneName":"Manipur"},
-    "IN-MP":{"countryName":"India","zoneName":"Madhya Pradesh"},
-    "IN-MZ":{"countryName":"India","zoneName":"Mizoram"},
-    "IN-NL":{"countryName":"India","zoneName":"Nagaland"},
-    "IN-OR":{"countryName":"India","zoneName":"Orissa"},
-    "IN-PB":{"countryName":"India","zoneName":"Punjab"},
-    "IN-PY":{"countryName":"India","zoneName":"Pondicherry"},
-    "IN-RJ":{"countryName":"India","zoneName":"Rajasthan"},
-    "IN-SK":{"countryName":"India","zoneName":"Sikkim"},
-    "IN-TN":{"countryName":"India","zoneName":"Tamil Nadu"},
-    "IN-TR":{"countryName":"India","zoneName":"Tripura"},
-    "IN-UP":{"countryName":"India","zoneName":"Uttar Pradesh"},
-    "IN-UT":{"countryName":"India","zoneName":"Uttarakhand"},
-    "IN-WB":{"countryName":"India","zoneName":"West Bengal"},
-    "IQ":{"zoneName":"Iraq"},
-    "IQ-KUR":{"countryName":"Iraq","zoneName":"Kurdistan"},
-    "IR":{"zoneName":"Iran"},
-    "IS":{"zoneName":"Iceland"},
-    "IT":{"zoneName":"Italy"},
-    "IT-CNO":{"countryName":"Italy","zoneName":"Central North"},
-    "IT-CSO":{"countryName":"Italy","zoneName":"Central South"},
-    "IT-NO":{"countryName":"Italy","zoneName":"North"},
-    "IT-SAR":{"countryName":"Italy","zoneName":"Sardinia"},
-    "IT-SIC":{"countryName":"Italy","zoneName":"Sicily"},
-    "IT-SO":{"countryName":"Italy","zoneName":"South"},
-    "JM":{"zoneName":"Jamaica"},
-    "JO":{"zoneName":"Jordan"},
-    "JP-CB":{"countryName":"Japan","zoneName":"Chūbu"},
-    "JP-CG":{"countryName":"Japan","zoneName":"Chūgoku"},
-    "JP-HKD":{"countryName":"Japan","zoneName":"Hokkaidō"},
-    "JP-HR":{"countryName":"Japan","zoneName":"Hokuriku"},
-    "JP-KN":{"countryName":"Japan","zoneName":"Kansai"},
-    "JP-KY":{"countryName":"Japan","zoneName":"Kyūshū"},
-    "JP-ON":{"countryName":"Japan","zoneName":"Okinawa"},
-    "JP-SK":{"countryName":"Japan","zoneName":"Shikoku"},
-    "JP-TH":{"countryName":"Japan","zoneName":"Tōhoku"},
-    "JP-TK":{"countryName":"Japan","zoneName":"Tōkyō"},
-    "KE":{"zoneName":"Kenya"},
-    "KG":{"zoneName":"Kyrgyzstan"},
-    "KH":{"zoneName":"Cambodia"},
-    "KM":{"zoneName":"Comoros"},
-    "KP":{"zoneName":"North Korea"},
-    "KR":{"zoneName":"South Korea"},
-    "KW":{"zoneName":"Kuwait"},
-    "KZ":{"zoneName":"Kazakhstan"},
-    "LA":{"zoneName":"Laos"},
-    "LB":{"zoneName":"Lebanon"},
-    "LC":{"zoneName":"Saint Lucia"},
-    "LI":{"zoneName":"Liechtenstein"},
-    "LK":{"zoneName":"Sri Lanka"},
-    "LR":{"zoneName":"Liberia"},
-    "LS":{"zoneName":"Lesotho"},
-    "LT":{"zoneName":"Lithuania"},
-    "LU":{"zoneName":"Luxembourg"},
-    "LV":{"zoneName":"Latvia"},
-    "LY":{"zoneName":"Libya"},
-    "MA":{"zoneName":"Morocco"},
-    "MD":{"zoneName":"Moldova"},
-    "ME":{"zoneName":"Montenegro"},
-    "MG":{"zoneName":"Madagascar"},
-    "MK":{"zoneName":"North Macedonia"},
-    "ML":{"zoneName":"Mali"},
-    "MM":{"zoneName":"Myanmar"},
-    "MN":{"zoneName":"Mongolia"},
-    "MQ":{"zoneName":"Martinique"},
-    "MR":{"zoneName":"Mauritania"},
-    "MT":{"zoneName":"Malta"},
-    "MU":{"zoneName":"Mauritius"},
-    "MW":{"zoneName":"Malawi"},
-    "MX":{"zoneName":"Mexico"},
-    "MX-BC":{"countryName":"Mexico","zoneName":"Baja California"},
-    "MX-CE":{"countryName":"Mexico","zoneName":"Central"},
-    "MX-NE":{"countryName":"Mexico","zoneName":"North East"},
-    "MX-NO":{"countryName":"Mexico","zoneName":"North"},
-    "MX-NW":{"countryName":"Mexico","zoneName":"North West"},
-    "MX-OC":{"countryName":"Mexico","zoneName":"Occidental"},
-    "MX-OR":{"countryName":"Mexico","zoneName":"Oriental"},
-    "MX-PN":{"countryName":"Mexico","zoneName":"Peninsula"},
-    "MY-EM":{"countryName":"Malaysia","zoneName":"Borneo"},
-    "MY-WM":{"countryName":"Malaysia","zoneName":"Peninsula"},
-    "MZ":{"zoneName":"Mozambique"},
-    "NA":{"zoneName":"Namibia"},
-    "NC":{"zoneName":"New Caledonia"},
-    "NE":{"zoneName":"Niger"},
-    "NG":{"zoneName":"Nigeria"},
-    "NI":{"zoneName":"Nicaragua"},
-    "NKR":{"zoneName":"Nagorno-Karabakh"},
-    "NL":{"zoneName":"Netherlands"},
-    "NO":{"zoneName":"Unknown"},
-    "NO-NO1":{"countryName":"Norway","zoneName":"Southeast Norway"},
-    "NO-NO2":{"countryName":"Norway","zoneName":"Southwest Norway"},
-    "NO-NO3":{"countryName":"Norway","zoneName":"Middle Norway"},
-    "NO-NO4":{"countryName":"Norway","zoneName":"North Norway"},
-    "NO-NO5":{"countryName":"Norway","zoneName":"West Norway"},
-    "NP":{"zoneName":"Nepal"},
-    "NZ":{"zoneName":"New Zealand"},
-    "NZ-NZA":{"countryName":"New Zealand","zoneName":"Auckland Islands"},
-    "NZ-NZC":{"countryName":"New Zealand","zoneName":"Chatham Islands"},
-    "NZ-NZST":{"countryName":"New Zealand","zoneName":"Stewart Island"},
-    "OM":{"zoneName":"Oman"},
-    "PA":{"zoneName":"Panama"},
-    "PE":{"zoneName":"Peru"},
-    "PF":{"zoneName":"French Polynesia"},
-    "PG":{"zoneName":"Papua New Guinea"},
-    "PH":{"zoneName":"Philippines"},
-    "PK":{"zoneName":"Pakistan"},
-    "PL":{"zoneName":"Poland"},
-    "PM":{"zoneName":"Saint Pierre and Miquelon"},
-    "PR":{"zoneName":"Puerto Rico"},
-    "PS":{"zoneName":"State of Palestine"},
-    "PT":{"zoneName":"Portugal"},
-    "PT-AC":{"countryName":"Portugal","zoneName":"Azores"},
-    "PT-MA":{"countryName":"Portugal","zoneName":"Madeira"},
-    "PW":{"zoneName":"Palau"},
-    "PY":{"zoneName":"Paraguay"},
-    "QA":{"zoneName":"Qatar"},
-    "RE":{"zoneName":"Réunion"},
-    "RO":{"zoneName":"Romania"},
-    "RS":{"zoneName":"Serbia"},
-    "RU":{"zoneName":"Russia"},
-    "RU-1":{"countryName":"Russia","zoneName":"Europe-Ural"},
-    "RU-2":{"countryName":"Russia","zoneName":"Siberia"},
-    "RU-AS":{"countryName":"Russia","zoneName":"East"},
-    "RU-EU":{"countryName":"Russia","zoneName":"Arctic"},
-    "RU-FE":{"countryName":"Russia","zoneName":"Far East"},
-    "RU-KGD":{"countryName":"Russia","zoneName":"Kaliningrad"},
-    "RW":{"zoneName":"Rwanda"},
-    "SA":{"zoneName":"Saudi Arabia"},
-    "SB":{"zoneName":"Solomon Islands"},
-    "SD":{"zoneName":"Sudan"},
-    "SE":{"zoneName":"Sweden"},
-    "SE-SE1":{"zoneName":"Unknown"},
-    "SE-SE2":{"zoneName":"Unknown"},
-    "SE-SE3":{"zoneName":"Unknown"},
-    "SE-SE4":{"zoneName":"Unknown"},
-    "SG":{"zoneName":"Singapore"},
-    "SI":{"zoneName":"Slovenia"},
-    "SJ":{"zoneName":"Svalbard and Jan Mayen"},
-    "SK":{"zoneName":"Slovakia"},
-    "SL":{"zoneName":"Sierra Leone"},
-    "SN":{"zoneName":"Senegal"},
-    "SO":{"zoneName":"Somalia"},
-    "SR":{"zoneName":"Suriname"},
-    "SS":{"zoneName":"South Sudan"},
-    "ST":{"zoneName":"Sao Tome and Principe"},
-    "SV":{"zoneName":"El Salvador"},
-    "SY":{"zoneName":"Syria"},
-    "SZ":{"zoneName":"Swaziland"},
-    "TD":{"zoneName":"Chad"},
-    "TF":{"zoneName":"French Southern Territories"},
-    "TG":{"zoneName":"Togo"},
-    "TH":{"zoneName":"Thailand"},
-    "TJ":{"zoneName":"Tajikistan"},
-    "TL":{"zoneName":"Timor-Leste"},
-    "TM":{"zoneName":"Turkmenistan"},
-    "TN":{"zoneName":"Tunisia"},
-    "TO":{"zoneName":"Tonga"},
-    "TR":{"zoneName":"Turkey"},
-    "TT":{"zoneName":"Trinidad and Tobago"},
-    "TW":{"zoneName":"Taiwan"},
-    "TZ":{"zoneName":"Tanzania"},
-    "UA":{"zoneName":"Ukraine"},
-    "UA-CR":{"countryName":"Ukraine","zoneName":"Crimea"},
-    "UG":{"zoneName":"Uganda"},
-    "US-AK":{"zoneName":"Unknown"},
-    "US-CAL-BANC":{"countryName":"USA","zoneName":"Balancing Authority Of Northern California"},
-    "US-CAL-CISO":{"countryName":"USA","zoneName":"California Independent System Operator"},
-    "US-CAL-IID":{"countryName":"USA","zoneName":"Imperial Irrigation District"},
-    "US-CAL-LDWP":{"countryName":"USA","zoneName":"Los Angeles Department Of Water And Power"},
-    "US-CAL-TIDC":{"countryName":"USA","zoneName":"Turlock Irrigation District"},
-    "US-CAR-CPLE":{"countryName":"USA","zoneName":"Duke Energy Progress East"},
-    "US-CAR-CPLW":{"countryName":"USA","zoneName":"Duke Energy Progress West"},
-    "US-CAR-DUK":{"countryName":"USA","zoneName":"Duke Energy Carolinas"},
-    "US-CAR-SC":{"countryName":"USA","zoneName":"South Carolina Public Service Authority"},
-    "US-CAR-SCEG":{"countryName":"USA","zoneName":"South Carolina Electric & Gas Company"},
-    "US-CAR-YAD":{"countryName":"USA","zoneName":"Alcoa Power Generating, Inc. Yadkin Division"},
-    "US-CENT-SPA":{"countryName":"USA","zoneName":"Southwestern Power Administration"},
-    "US-CENT-SWPP":{"countryName":"USA","zoneName":"Southwest Power Pool"},
-    "US-FLA-FMPP":{"countryName":"USA","zoneName":"Florida Municipal Power Pool"},
-    "US-FLA-FPC":{"countryName":"USA","zoneName":"Duke Energy Florida Inc"},
-    "US-FLA-FPL":{"countryName":"USA","zoneName":"Florida Power & Light Company"},
-    "US-FLA-GVL":{"countryName":"USA","zoneName":"Gainesville Regional Utilities"},
-    "US-FLA-HST":{"countryName":"USA","zoneName":"City Of Homestead"},
-    "US-FLA-JEA":{"countryName":"USA","zoneName":"Jacksonville Electric Authority"},
-    "US-FLA-NSB":{"countryName":"USA","zoneName":"Utilities Commission Of New Smyrna Beach"},
-    "US-FLA-SEC":{"countryName":"USA","zoneName":"Seminole Electric Cooperative"},
-    "US-FLA-TAL":{"countryName":"USA","zoneName":"City Of Tallahassee"},
-    "US-FLA-TEC":{"countryName":"USA","zoneName":"Tampa Electric Company"},
-    "US-HI-HA":{"countryName":"USA","zoneName":"Hawaii"},
-    "US-HI-KA":{"countryName":"USA","zoneName":"Kauai"},
-    "US-HI-KH":{"countryName":"USA","zoneName":"Kahoolawe"},
-    "US-HI-LA":{"countryName":"USA","zoneName":"Lanai"},
-    "US-HI-MA":{"countryName":"USA","zoneName":"Maui"},
-    "US-HI-MO":{"countryName":"USA","zoneName":"Molokai"},
-    "US-HI-NI":{"countryName":"USA","zoneName":"Niihau"},
-    "US-HI-OA":{"countryName":"USA","zoneName":"Oahu"},
-    "US-MIDA-PJM":{"countryName":"USA","zoneName":"PJM Interconnection, Llc"},
-    "US-MIDW-AECI":{"countryName":"USA","zoneName":"Associated Electric Cooperative, Inc."},
-    "US-MIDW-EEI":{"countryName":"USA","zoneName":"Electric Energy, Inc."},
-    "US-MIDW-GLHB":{"countryName":"USA","zoneName":"GridLiance"},
-    "US-MIDW-LGEE":{"countryName":"USA","zoneName":"Louisville Gas And Electric Company And Kentucky Utilities"},
-    "US-MIDW-MISO":{"countryName":"USA","zoneName":"Midcontinent Independent Transmission System Operator, Inc."},
-    "US-NE-ISNE":{"countryName":"USA","zoneName":"Iso New England Inc."},
-    "US-NW-AVA":{"countryName":"USA","zoneName":"Avista Corporation"},
-    "US-NW-AVRN":{"countryName":"USA","zoneName":"Avangrid Renewables Cooperative"},
-    "US-NW-BPAT":{"countryName":"USA","zoneName":"Bonneville Power Administration"},
-    "US-NW-CHPD":{"countryName":"USA","zoneName":"PUD No. 1 Of Chelan County"},
-    "US-NW-DOPD":{"countryName":"USA","zoneName":"PUD No. 1 Of Douglas County"},
-    "US-NW-GCPD":{"countryName":"USA","zoneName":"PUD No. 2 Of Grant County, Washington"},
-    "US-NW-GRID":{"countryName":"USA","zoneName":"Gridforce Energy Management, Llc"},
-    "US-NW-GWA":{"countryName":"USA","zoneName":"Naturener Power Watch, Llc (Gwa)"},
-    "US-NW-IPCO":{"countryName":"USA","zoneName":"Idaho Power Company"},
-    "US-NW-NEVP":{"countryName":"USA","zoneName":"Nevada Power Company"},
-    "US-NW-NWMT":{"countryName":"USA","zoneName":"Northwestern Energy"},
-    "US-NW-PACE":{"countryName":"USA","zoneName":"Pacificorp East"},
-    "US-NW-PACW":{"countryName":"USA","zoneName":"Pacificorp West"},
-    "US-NW-PGE":{"countryName":"USA","zoneName":"Portland General Electric Company"},
-    "US-NW-PSCO":{"countryName":"USA","zoneName":"Public Service Company Of Colorado"},
-    "US-NW-PSEI":{"countryName":"USA","zoneName":"Puget Sound Energy"},
-    "US-NW-SCL":{"countryName":"USA","zoneName":"Seattle City Light"},
-    "US-NW-TPWR":{"countryName":"USA","zoneName":"City Of Tacoma, Department Of Public Utilities, Light Division"},
-    "US-NW-WACM":{"countryName":"USA","zoneName":"Western Area Power Administration - Rocky Mountain Region"},
-    "US-NW-WAUW":{"countryName":"USA","zoneName":"Western Area Power Administration UGP West"},
-    "US-NW-WWA":{"countryName":"USA","zoneName":"Naturener Wind Watch, Llc"},
-    "US-NY-NYIS":{"countryName":"USA","zoneName":"New York Independent System Operator"},
-    "US-SE-AEC":{"countryName":"USA","zoneName":"Powersouth Energy Cooperative"},
-    "US-SE-SEPA":{"countryName":"USA","zoneName":"Southeastern Power Administration"},
-    "US-SE-SOCO":{"countryName":"USA","zoneName":"Southern Company Services, Inc. - Trans"},
-    "US-SW-AZPS":{"countryName":"USA","zoneName":"Arizona Public Service Company"},
-    "US-SW-DEAA":{"countryName":"USA","zoneName":"Arlington Valley, LLC"},
-    "US-SW-EPE":{"countryName":"USA","zoneName":"El Paso Electric Company"},
-    "US-SW-GRIF":{"countryName":"USA","zoneName":"Griffith Energy, LLC"},
-    "US-SW-GRMA":{"countryName":"USA","zoneName":"Gila River Power, LLC"},
-    "US-SW-HGMA":{"countryName":"USA","zoneName":"New Harquahala Generating Company, LLC"},
-    "US-SW-PNM":{"countryName":"USA","zoneName":"Public Service Company Of New Mexico"},
-    "US-SW-SRP":{"countryName":"USA","zoneName":"Salt River Project"},
-    "US-SW-TEPC":{"countryName":"USA","zoneName":"Tucson Electric Power Company"},
-    "US-SW-WALC":{"countryName":"USA","zoneName":"Western Area Power Administration - Desert Southwest Region"},
-    "US-TEN-TVA":{"countryName":"USA","zoneName":"Tennessee Valley Authority"},
-    "US-TEX-ERCO":{"countryName":"USA","zoneName":"Electric Reliability Council Of Texas, Inc."},
-    "UY":{"zoneName":"Uruguay"},
-    "UZ":{"zoneName":"Uzbekistan"},
-    "VC":{"zoneName":"Saint Vincent and the Grenadines"},
-    "VE":{"zoneName":"Venezuela"},
-    "VI":{"countryName":"USA","zoneName":"Virgin Islands"},
-    "VN":{"zoneName":"Vietnam"},
-    "VU":{"zoneName":"Vanuatu"},
-    "WS":{"zoneName":"Samoa"},
-    "XK":{"zoneName":"Kosovo"},
-    "XX":{"zoneName":"Northern Cyprus"},
-    "YE":{"zoneName":"Yemen"},
-    "YT":{"zoneName":"Mayotte"},
-    "ZA":{"zoneName":"South Africa"},
-    "ZM":{"zoneName":"Zambia"},
-    "ZW":{"zoneName":"Zimbabwe"}
+  "AD": {
+    "zoneName": "Andorra",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "AE": {
+    "zoneName": "United Arab Emirates",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "AF": {
+    "zoneName": "Afghanistan",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "AG": {
+    "zoneName": "Antigua and Barbuda",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "AL": {
+    "zoneName": "Albania",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "AM": {
+    "zoneName": "Armenia",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "AO": {
+    "zoneName": "Angola",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "AR": {
+    "zoneName": "Argentina",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "AT": {
+    "zoneName": "Austria",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "AU": {
+    "zoneName": "Australia",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "AU-LH": {
+    "countryName": "Australia",
+    "zoneName": "Lord Howe Island",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "AU-NSW": {
+    "countryName": "Australia",
+    "zoneName": "New South Wales",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "AU-NT": {
+    "countryName": "Australia",
+    "zoneName": "Northern Territory",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "AU-QLD": {
+    "countryName": "Australia",
+    "zoneName": "Queensland",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "AU-SA": {
+    "countryName": "Australia",
+    "zoneName": "South Australia",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "AU-TAS": {
+    "countryName": "Australia",
+    "zoneName": "Tasmania",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "AU-TAS-CBI": {
+    "countryName": "Australia",
+    "zoneName": "Cape Barren Island",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "AU-TAS-FI": {
+    "countryName": "Australia",
+    "zoneName": "Flinders Island",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "AU-TAS-KI": {
+    "countryName": "Australia",
+    "zoneName": "King Island",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "AU-VIC": {
+    "countryName": "Australia",
+    "zoneName": "Victoria",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "AU-WA": {
+    "countryName": "Australia",
+    "zoneName": "Western Australia",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "AU-WA-RI": {
+    "countryName": "Australia",
+    "zoneName": "Rottnest Island",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "AW": {
+    "zoneName": "Aruba",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "AX": {
+    "zoneName": "Åland Islands",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "AZ": {
+    "zoneName": "Azerbaijan",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "BA": {
+    "zoneName": "Bosnia and Herzegovina",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "BB": {
+    "zoneName": "Barbados",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "BD": {
+    "zoneName": "Bangladesh",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "BE": {
+    "zoneName": "Belgium",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "BF": {
+    "zoneName": "Burkina Faso",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "BG": {
+    "zoneName": "Bulgaria",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "BH": {
+    "zoneName": "Bahrain",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "BI": {
+    "zoneName": "Burundi",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "BJ": {
+    "zoneName": "Benin",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "BN": {
+    "zoneName": "Brunei",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "BO": {
+    "zoneName": "Bolivia",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "BR": {
+    "zoneName": "Brazil",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "BR-CS": {
+    "countryName": "Brazil",
+    "zoneName": "Central Brazil",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "BR-N": {
+    "countryName": "Brazil",
+    "zoneName": "North Brazil",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "BR-NE": {
+    "countryName": "Brazil",
+    "zoneName": "North-East Brazil",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "BR-S": {
+    "countryName": "Brazil",
+    "zoneName": "South Brazil",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "BS": {
+    "zoneName": "Bahamas",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "BT": {
+    "zoneName": "Bhutan",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "BW": {
+    "zoneName": "Botswana",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "BY": {
+    "zoneName": "Belarus",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "BZ": {
+    "zoneName": "Belize",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "CA-AB": {
+    "countryName": "Canada",
+    "zoneName": "Alberta",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "CA-BC": {
+    "countryName": "Canada",
+    "zoneName": "British Columbia",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "CA-MB": {
+    "countryName": "Canada",
+    "zoneName": "Manitoba",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "CA-NB": {
+    "countryName": "Canada",
+    "zoneName": "New Brunswick",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "CA-NL-LB": {
+    "countryName": "Canada",
+    "zoneName": "Labrador",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "CA-NL-NF": {
+    "countryName": "Canada",
+    "zoneName": "Newfoundland",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "CA-NS": {
+    "countryName": "Canada",
+    "zoneName": "Nova Scotia",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "CA-NT": {
+    "countryName": "Canada",
+    "zoneName": "Northwest Territories",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "CA-NU": {
+    "countryName": "Canada",
+    "zoneName": "Nunavut",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "CA-ON": {
+    "countryName": "Canada",
+    "zoneName": "Ontario",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "CA-PE": {
+    "countryName": "Canada",
+    "zoneName": "Prince Edward Island",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "CA-QC": {
+    "countryName": "Canada",
+    "zoneName": "Québec",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "CA-SK": {
+    "countryName": "Canada",
+    "zoneName": "Saskatchewan",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "CA-YT": {
+    "countryName": "Canada",
+    "zoneName": "Yukon",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "CD": {
+    "zoneName": "Democratic Republic of the Congo",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "CF": {
+    "zoneName": "Central African Republic",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "CG": {
+    "zoneName": "Congo",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "CH": {
+    "zoneName": "Switzerland",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "CI": {
+    "zoneName": "Ivory Coast",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "CL-CHP": {
+    "countryName": "Chile",
+    "zoneName": "Easter Island",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "CL-SEA": {
+    "countryName": "Chile",
+    "zoneName": "Sistema Eléctrico de Aysén",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "CL-SEM": {
+    "countryName": "Chile",
+    "zoneName": "Sistema Eléctrico de Magallanes",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "CL-SEN": {
+    "countryName": "Chile",
+    "zoneName": "Sistema Eléctrico Nacional",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "CM": {
+    "zoneName": "Cameroon",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "CN": {
+    "zoneName": "China",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "CO": {
+    "zoneName": "Colombia",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "CR": {
+    "zoneName": "Costa Rica",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "CU": {
+    "zoneName": "Cuba",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "CV": {
+    "zoneName": "Cabo Verde",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "CY": {
+    "zoneName": "Cyprus",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "CZ": {
+    "zoneName": "Czechia",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "DE": {
+    "zoneName": "Germany",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "DJ": {
+    "zoneName": "Djibouti",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "DK": {
+    "zoneName": "Denmark",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "DK-BHM": {
+    "countryName": "Denmark",
+    "zoneName": "Bornholm",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "DK-DK1": {
+    "countryName": "Denmark",
+    "zoneName": "West Denmark",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "DK-DK2": {
+    "countryName": "Denmark",
+    "zoneName": "East Denmark",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "DM": {
+    "zoneName": "Dominica",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "DO": {
+    "zoneName": "Dominican Republic",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "DZ": {
+    "zoneName": "Algeria",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "EC": {
+    "zoneName": "Ecuador",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "EE": {
+    "zoneName": "Estonia",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "EG": {
+    "zoneName": "Egypt",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "EH": {
+    "zoneName": "Western Sahara",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "ER": {
+    "zoneName": "Eritrea",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "ES": {
+    "zoneName": "Spain",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "ES-CE": {
+    "countryName": "Spain",
+    "zoneName": "Ceuta",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "ES-CN-FVLZ": {
+    "countryName": "Spain",
+    "zoneName": "Fuerteventura/Lanzarote",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "ES-CN-GC": {
+    "countryName": "Spain",
+    "zoneName": "Gran Canaria",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "ES-CN-HI": {
+    "countryName": "Spain",
+    "zoneName": "El Hierro",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "ES-CN-IG": {
+    "countryName": "Spain",
+    "zoneName": "Isla de la Gomera",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "ES-CN-LP": {
+    "countryName": "Spain",
+    "zoneName": "La Palma",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "ES-CN-TE": {
+    "countryName": "Spain",
+    "zoneName": "Tenerife",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "ES-IB-FO": {
+    "countryName": "Spain",
+    "zoneName": "Formentera",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "ES-IB-IZ": {
+    "countryName": "Spain",
+    "zoneName": "Ibiza",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "ES-IB-MA": {
+    "countryName": "Spain",
+    "zoneName": "Mallorca",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "ES-IB-ME": {
+    "countryName": "Spain",
+    "zoneName": "Menorca",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "ES-ML": {
+    "countryName": "Spain",
+    "zoneName": "Melilla",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "ET": {
+    "zoneName": "Ethiopia",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "FI": {
+    "zoneName": "Finland",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "FJ": {
+    "zoneName": "Fiji",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "FK": {
+    "zoneName": "Falkland Islands",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "FM": {
+    "zoneName": "Micronesia",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "FO": {
+    "zoneName": "Faroe Islands",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "FO-MI": {
+    "countryName": "Faroe Islands",
+    "zoneName": "Main Islands",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "FO-SI": {
+    "countryName": "Faroe Islands",
+    "zoneName": "South Island",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "FR": {
+    "zoneName": "France",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "FR-COR": {
+    "countryName": "France",
+    "zoneName": "Corsica",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "GA": {
+    "zoneName": "Gabon",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "GB": {
+    "zoneName": "Great Britain",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "GB-NIR": {
+    "zoneName": "Northern Ireland",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "GB-ORK": {
+    "countryName": "Great Britain",
+    "zoneName": "Orkney Islands",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "GB-ZET": {
+    "zoneName": "Unknown",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "GE": {
+    "zoneName": "Georgia",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "GF": {
+    "zoneName": "French Guiana",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "GH": {
+    "zoneName": "Ghana",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "GL": {
+    "zoneName": "Greenland",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "GM": {
+    "zoneName": "Gambia",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "GN": {
+    "zoneName": "Guinea",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "GP": {
+    "zoneName": "Guadeloupe",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "GQ": {
+    "zoneName": "Equatorial Guinea",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "GR": {
+    "zoneName": "Greece",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "GR-IS": {
+    "countryName": "Greece",
+    "zoneName": "Aegean Islands",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "GS": {
+    "zoneName": "South Georgia and the South Sandwich Islands",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "GT": {
+    "zoneName": "Guatemala",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "GU": {
+    "zoneName": "Guam",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "GW": {
+    "zoneName": "Guinea-Bissau",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "GY": {
+    "zoneName": "Guyana",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "HK": {
+    "zoneName": "Hong Kong",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "HM": {
+    "zoneName": "Heard Island and McDonald Islands",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "HN": {
+    "zoneName": "Honduras",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "HR": {
+    "zoneName": "Croatia",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "HT": {
+    "zoneName": "Haiti",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "HU": {
+    "zoneName": "Hungary",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "ID": {
+    "zoneName": "Indonesia",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "IE": {
+    "zoneName": "Ireland",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "IL": {
+    "zoneName": "Israel",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "IM": {
+    "zoneName": "Isle of Man",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "IN": {
+    "zoneName": "Mainland India",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "IN-AN": {
+    "countryName": "India",
+    "zoneName": "Andaman and Nicobar Islands",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "IN-DL": {
+    "countryName": "India",
+    "zoneName": "Delhi",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "IN-EA": {
+    "countryName": "India",
+    "zoneName": "Eastern India",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "IN-HP": {
+    "countryName": "India",
+    "zoneName": "Himachal Pradesh",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "IN-KA": {
+    "countryName": "India",
+    "zoneName": "Karnataka",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "IN-MH": {
+    "countryName": "India",
+    "zoneName": "Maharashtra",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "IN-NE": {
+    "countryName": "India",
+    "zoneName": "North Eastern India",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "IN-NO": {
+    "countryName": "India",
+    "zoneName": "Northern India",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "IN-PB": {
+    "countryName": "India",
+    "zoneName": "Punjab",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "IN-SO": {
+    "countryName": "India",
+    "zoneName": "Southern India",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "IN-UP": {
+    "countryName": "India",
+    "zoneName": "Uttar Pradesh",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "IN-UT": {
+    "countryName": "India",
+    "zoneName": "Uttarakhand",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "IN-WE": {
+    "countryName": "India",
+    "zoneName": "Western India",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "IQ": {
+    "zoneName": "Iraq",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "IQ-KUR": {
+    "countryName": "Iraq",
+    "zoneName": "Kurdistan",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "IR": {
+    "zoneName": "Iran",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "IS": {
+    "zoneName": "Iceland",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "IT": {
+    "zoneName": "Italy",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "IT-CNO": {
+    "countryName": "Italy",
+    "zoneName": "Central North Italy",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "IT-CSO": {
+    "countryName": "Italy",
+    "zoneName": "Central South Italy",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "IT-NO": {
+    "countryName": "Italy",
+    "zoneName": "North Italy",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "IT-SAR": {
+    "countryName": "Italy",
+    "zoneName": "Sardinia",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "IT-SIC": {
+    "countryName": "Italy",
+    "zoneName": "Sicily",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "IT-SO": {
+    "countryName": "Italy",
+    "zoneName": "South Italy",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "JM": {
+    "zoneName": "Jamaica",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "JO": {
+    "zoneName": "Jordan",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "JP": {
+    "zoneName": "Japan",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "JP-CB": {
+    "countryName": "Japan",
+    "zoneName": "Chūbu",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "JP-CG": {
+    "countryName": "Japan",
+    "zoneName": "Chūgoku",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "JP-HKD": {
+    "countryName": "Japan",
+    "zoneName": "Hokkaidō",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "JP-HR": {
+    "countryName": "Japan",
+    "zoneName": "Hokuriku",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "JP-KN": {
+    "countryName": "Japan",
+    "zoneName": "Kansai",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "JP-KY": {
+    "countryName": "Japan",
+    "zoneName": "Kyūshū",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "JP-ON": {
+    "countryName": "Japan",
+    "zoneName": "Okinawa",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "JP-SK": {
+    "countryName": "Japan",
+    "zoneName": "Shikoku",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "JP-TH": {
+    "countryName": "Japan",
+    "zoneName": "Tōhoku",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "JP-TK": {
+    "countryName": "Japan",
+    "zoneName": "Tōkyō",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "KE": {
+    "zoneName": "Kenya",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "KG": {
+    "zoneName": "Kyrgyzstan",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "KH": {
+    "zoneName": "Cambodia",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "KM": {
+    "zoneName": "Comoros",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "KP": {
+    "zoneName": "North Korea",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "KR": {
+    "zoneName": "South Korea",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "KW": {
+    "zoneName": "Kuwait",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "KZ": {
+    "zoneName": "Kazakhstan",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "LA": {
+    "zoneName": "Laos",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "LB": {
+    "zoneName": "Lebanon",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "LC": {
+    "zoneName": "Saint Lucia",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "LI": {
+    "zoneName": "Liechtenstein",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "LK": {
+    "zoneName": "Sri Lanka",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "LR": {
+    "zoneName": "Liberia",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "LS": {
+    "zoneName": "Lesotho",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "LT": {
+    "zoneName": "Lithuania",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "LU": {
+    "zoneName": "Luxembourg",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "LV": {
+    "zoneName": "Latvia",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "LY": {
+    "zoneName": "Libya",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "MA": {
+    "zoneName": "Morocco",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "MD": {
+    "zoneName": "Moldova",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "ME": {
+    "zoneName": "Montenegro",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "MG": {
+    "zoneName": "Madagascar",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "MK": {
+    "zoneName": "North Macedonia",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "ML": {
+    "zoneName": "Mali",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "MM": {
+    "zoneName": "Myanmar",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "MN": {
+    "zoneName": "Mongolia",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "MQ": {
+    "zoneName": "Martinique",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "MR": {
+    "zoneName": "Mauritania",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "MT": {
+    "zoneName": "Malta",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "MU": {
+    "zoneName": "Mauritius",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "MW": {
+    "zoneName": "Malawi",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "MX": {
+    "zoneName": "Mexico",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "MX-BC": {
+    "countryName": "Mexico",
+    "zoneName": "Baja California",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "MX-BCS": {
+    "countryName": "Mexico",
+    "zoneName": "Baja California Sur",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "MX-CE": {
+    "countryName": "Mexico",
+    "zoneName": "Central",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "MX-NE": {
+    "countryName": "Mexico",
+    "zoneName": "North East",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "MX-NO": {
+    "countryName": "Mexico",
+    "zoneName": "North",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "MX-NW": {
+    "countryName": "Mexico",
+    "zoneName": "North West",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "MX-OC": {
+    "countryName": "Mexico",
+    "zoneName": "Occidental",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "MX-OR": {
+    "countryName": "Mexico",
+    "zoneName": "Oriental",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "MX-PN": {
+    "countryName": "Mexico",
+    "zoneName": "Peninsula",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "MY-EM": {
+    "countryName": "Malaysia",
+    "zoneName": "Borneo",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "MY-WM": {
+    "countryName": "Malaysia",
+    "zoneName": "Peninsula",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "MZ": {
+    "zoneName": "Mozambique",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "NA": {
+    "zoneName": "Namibia",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "NC": {
+    "zoneName": "New Caledonia",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "NE": {
+    "zoneName": "Niger",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "NG": {
+    "zoneName": "Nigeria",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "NI": {
+    "zoneName": "Nicaragua",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "NKR": {
+    "zoneName": "Nagorno-Karabakh",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "NL": {
+    "zoneName": "Netherlands",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "NO": {
+    "zoneName": "Norway",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "NO-NO1": {
+    "countryName": "Norway",
+    "zoneName": "Southeast Norway",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "NO-NO2": {
+    "countryName": "Norway",
+    "zoneName": "Southwest Norway",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "NO-NO3": {
+    "countryName": "Norway",
+    "zoneName": "Middle Norway",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "NO-NO4": {
+    "countryName": "Norway",
+    "zoneName": "North Norway",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "NO-NO5": {
+    "countryName": "Norway",
+    "zoneName": "West Norway",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "NP": {
+    "zoneName": "Nepal",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "NZ": {
+    "zoneName": "New Zealand",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "NZ-NZA": {
+    "countryName": "New Zealand",
+    "zoneName": "Auckland Islands",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "NZ-NZC": {
+    "countryName": "New Zealand",
+    "zoneName": "Chatham Islands",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "NZ-NZST": {
+    "countryName": "New Zealand",
+    "zoneName": "Stewart Island",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "OM": {
+    "zoneName": "Oman",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "PA": {
+    "zoneName": "Panama",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "PE": {
+    "zoneName": "Peru",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "PF": {
+    "zoneName": "French Polynesia",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "PG": {
+    "zoneName": "Papua New Guinea",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "PH": {
+    "zoneName": "Philippines",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "PH-LU": {
+    "countryName": "Philippines",
+    "zoneName": "Luzon",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "PH-MI": {
+    "countryName": "Philippines",
+    "zoneName": "Mindanao",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "PH-VI": {
+    "countryName": "Philippines",
+    "zoneName": "Visayas",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "PK": {
+    "zoneName": "Pakistan",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "PL": {
+    "zoneName": "Poland",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "PM": {
+    "zoneName": "Saint Pierre and Miquelon",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "PR": {
+    "zoneName": "Puerto Rico",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "PS": {
+    "zoneName": "State of Palestine",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "PT": {
+    "zoneName": "Portugal",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "PT-AC": {
+    "countryName": "Portugal",
+    "zoneName": "Azores",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "PT-MA": {
+    "countryName": "Portugal",
+    "zoneName": "Madeira",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "PW": {
+    "zoneName": "Palau",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "PY": {
+    "zoneName": "Paraguay",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "QA": {
+    "zoneName": "Qatar",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "RE": {
+    "zoneName": "Réunion",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "RO": {
+    "zoneName": "Romania",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "RS": {
+    "zoneName": "Serbia",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "RU": {
+    "zoneName": "Russia",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "RU-1": {
+    "countryName": "Russia",
+    "zoneName": "Europe-Ural",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "RU-2": {
+    "countryName": "Russia",
+    "zoneName": "Siberia",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "RU-AS": {
+    "countryName": "Russia",
+    "zoneName": "East",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "RU-EU": {
+    "countryName": "Russia",
+    "zoneName": "Arctic",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "RU-FE": {
+    "countryName": "Russia",
+    "zoneName": "Far East",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "RU-KGD": {
+    "countryName": "Russia",
+    "zoneName": "Kaliningrad",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "RW": {
+    "zoneName": "Rwanda",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "SA": {
+    "zoneName": "Saudi Arabia",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "SB": {
+    "zoneName": "Solomon Islands",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "SD": {
+    "zoneName": "Sudan",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "SE": {
+    "zoneName": "Sweden",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "SE-SE1": {
+    "countryName": "Sweden",
+    "zoneName": "North Sweden",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "SE-SE2": {
+    "countryName": "Sweden",
+    "zoneName": "North Central Sweden",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "SE-SE3": {
+    "countryName": "Sweden",
+    "zoneName": "South Central Sweden",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "SE-SE4": {
+    "countryName": "Sweden",
+    "zoneName": "South Sweden",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "SG": {
+    "zoneName": "Singapore",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "SI": {
+    "zoneName": "Slovenia",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "SJ": {
+    "zoneName": "Svalbard and Jan Mayen",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "SK": {
+    "zoneName": "Slovakia",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "SL": {
+    "zoneName": "Sierra Leone",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "SN": {
+    "zoneName": "Senegal",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "SO": {
+    "zoneName": "Somalia",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "SR": {
+    "zoneName": "Suriname",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "SS": {
+    "zoneName": "South Sudan",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "ST": {
+    "zoneName": "Sao Tome and Principe",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "SV": {
+    "zoneName": "El Salvador",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "SY": {
+    "zoneName": "Syria",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "SZ": {
+    "zoneName": "Swaziland",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "TD": {
+    "zoneName": "Chad",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "TF": {
+    "zoneName": "French Southern Territories",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "TG": {
+    "zoneName": "Togo",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "TH": {
+    "zoneName": "Thailand",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "TJ": {
+    "zoneName": "Tajikistan",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "TL": {
+    "zoneName": "Timor-Leste",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "TM": {
+    "zoneName": "Turkmenistan",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "TN": {
+    "zoneName": "Tunisia",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "TO": {
+    "zoneName": "Tonga",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "TR": {
+    "zoneName": "Turkey",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "TT": {
+    "zoneName": "Trinidad and Tobago",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "TW": {
+    "zoneName": "Taiwan",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "TZ": {
+    "zoneName": "Tanzania",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "UA": {
+    "zoneName": "Ukraine",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "UA-CR": {
+    "countryName": "Ukraine",
+    "zoneName": "Crimea",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "UG": {
+    "zoneName": "Uganda",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "US": {
+    "zoneName": "Contiguous United States",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "US-AK": {
+    "countryName": "USA",
+    "zoneName": "Alaska",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "US-CAL-BANC": {
+    "countryName": "USA",
+    "zoneName": "Balancing Authority Of Northern California",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "US-CAL-CISO": {
+    "countryName": "USA",
+    "zoneName": "California Independent System Operator",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "US-CAL-IID": {
+    "countryName": "USA",
+    "zoneName": "Imperial Irrigation District",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "US-CAL-LDWP": {
+    "countryName": "USA",
+    "zoneName": "Los Angeles Department Of Water And Power",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "US-CAL-TIDC": {
+    "countryName": "USA",
+    "zoneName": "Turlock Irrigation District",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "US-CAR-CPLE": {
+    "countryName": "USA",
+    "zoneName": "Duke Energy Progress East",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "US-CAR-CPLW": {
+    "countryName": "USA",
+    "zoneName": "Duke Energy Progress West",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "US-CAR-DUK": {
+    "countryName": "USA",
+    "zoneName": "Duke Energy Carolinas",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "US-CAR-SC": {
+    "countryName": "USA",
+    "zoneName": "South Carolina Public Service Authority",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "US-CAR-SCEG": {
+    "countryName": "USA",
+    "zoneName": "South Carolina Electric & Gas Company",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "US-CAR-YAD": {
+    "countryName": "USA",
+    "zoneName": "Alcoa Power Generating, Inc. Yadkin Division",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "US-CENT-SPA": {
+    "countryName": "USA",
+    "zoneName": "Southwestern Power Administration",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "US-CENT-SWPP": {
+    "countryName": "USA",
+    "zoneName": "Southwest Power Pool",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "US-FLA-FMPP": {
+    "countryName": "USA",
+    "zoneName": "Florida Municipal Power Pool",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "US-FLA-FPC": {
+    "countryName": "USA",
+    "zoneName": "Duke Energy Florida Inc",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "US-FLA-FPL": {
+    "countryName": "USA",
+    "zoneName": "Florida Power & Light Company",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "US-FLA-GVL": {
+    "countryName": "USA",
+    "zoneName": "Gainesville Regional Utilities",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "US-FLA-HST": {
+    "countryName": "USA",
+    "zoneName": "City Of Homestead",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "US-FLA-JEA": {
+    "countryName": "USA",
+    "zoneName": "Jacksonville Electric Authority",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "US-FLA-SEC": {
+    "countryName": "USA",
+    "zoneName": "Seminole Electric Cooperative",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "US-FLA-TAL": {
+    "countryName": "USA",
+    "zoneName": "City Of Tallahassee",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "US-FLA-TEC": {
+    "countryName": "USA",
+    "zoneName": "Tampa Electric Company",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "US-HI-HA": {
+    "countryName": "USA",
+    "zoneName": "Hawaii",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "US-HI-KA": {
+    "countryName": "USA",
+    "zoneName": "Kauai",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "US-HI-KH": {
+    "countryName": "USA",
+    "zoneName": "Kahoolawe",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "US-HI-LA": {
+    "countryName": "USA",
+    "zoneName": "Lanai",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "US-HI-MA": {
+    "countryName": "USA",
+    "zoneName": "Maui",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "US-HI-MO": {
+    "countryName": "USA",
+    "zoneName": "Molokai",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "US-HI-NI": {
+    "countryName": "USA",
+    "zoneName": "Niihau",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "US-HI-OA": {
+    "countryName": "USA",
+    "zoneName": "Oahu",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "US-MIDA-PJM": {
+    "countryName": "USA",
+    "zoneName": "PJM Interconnection, Llc",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "US-MIDW-AECI": {
+    "countryName": "USA",
+    "zoneName": "Associated Electric Cooperative, Inc.",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "US-MIDW-LGEE": {
+    "countryName": "USA",
+    "zoneName": "Louisville Gas And Electric Company And Kentucky Utilities",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "US-MIDW-MISO": {
+    "countryName": "USA",
+    "zoneName": "Midcontinent Independent Transmission System Operator, Inc.",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "US-NE-ISNE": {
+    "countryName": "USA",
+    "zoneName": "Iso New England Inc.",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "US-NW-AVA": {
+    "countryName": "USA",
+    "zoneName": "Avista Corporation",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "US-NW-BPAT": {
+    "countryName": "USA",
+    "zoneName": "Bonneville Power Administration",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "US-NW-CHPD": {
+    "countryName": "USA",
+    "zoneName": "PUD No. 1 Of Chelan County",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "US-NW-DOPD": {
+    "countryName": "USA",
+    "zoneName": "PUD No. 1 Of Douglas County",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "US-NW-GCPD": {
+    "countryName": "USA",
+    "zoneName": "PUD No. 2 Of Grant County, Washington",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "US-NW-GRID": {
+    "countryName": "USA",
+    "zoneName": "Gridforce Energy Management, Llc",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "US-NW-IPCO": {
+    "countryName": "USA",
+    "zoneName": "Idaho Power Company",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "US-NW-NEVP": {
+    "countryName": "USA",
+    "zoneName": "Nevada Power Company",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "US-NW-NWMT": {
+    "countryName": "USA",
+    "zoneName": "Northwestern Energy",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "US-NW-PACE": {
+    "countryName": "USA",
+    "zoneName": "Pacificorp East",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "US-NW-PACW": {
+    "countryName": "USA",
+    "zoneName": "Pacificorp West",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "US-NW-PGE": {
+    "countryName": "USA",
+    "zoneName": "Portland General Electric Company",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "US-NW-PSCO": {
+    "countryName": "USA",
+    "zoneName": "Public Service Company Of Colorado",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "US-NW-PSEI": {
+    "countryName": "USA",
+    "zoneName": "Puget Sound Energy",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "US-NW-SCL": {
+    "countryName": "USA",
+    "zoneName": "Seattle City Light",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "US-NW-TPWR": {
+    "countryName": "USA",
+    "zoneName": "City Of Tacoma, Department Of Public Utilities, Light Division",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "US-NW-WACM": {
+    "countryName": "USA",
+    "zoneName": "Western Area Power Administration - Rocky Mountain Region",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "US-NW-WAUW": {
+    "countryName": "USA",
+    "zoneName": "Western Area Power Administration UGP West",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "US-NY-NYIS": {
+    "countryName": "USA",
+    "zoneName": "New York Independent System Operator",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "US-SE-SEPA": {
+    "countryName": "USA",
+    "zoneName": "Southeastern Power Administration",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "US-SE-SOCO": {
+    "countryName": "USA",
+    "zoneName": "Southern Company Services, Inc. - Trans",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "US-SW-AZPS": {
+    "countryName": "USA",
+    "zoneName": "Arizona Public Service Company",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "US-SW-EPE": {
+    "countryName": "USA",
+    "zoneName": "El Paso Electric Company",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "US-SW-PNM": {
+    "countryName": "USA",
+    "zoneName": "Public Service Company Of New Mexico",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "US-SW-SRP": {
+    "countryName": "USA",
+    "zoneName": "Salt River Project",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "US-SW-TEPC": {
+    "countryName": "USA",
+    "zoneName": "Tucson Electric Power Company",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "US-SW-WALC": {
+    "countryName": "USA",
+    "zoneName": "Western Area Power Administration - Desert Southwest Region",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "US-TEN-TVA": {
+    "countryName": "USA",
+    "zoneName": "Tennessee Valley Authority",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "US-TEX-ERCO": {
+    "countryName": "USA",
+    "zoneName": "Electric Reliability Council Of Texas, Inc.",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "UY": {
+    "zoneName": "Uruguay",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "UZ": {
+    "zoneName": "Uzbekistan",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "VC": {
+    "zoneName": "Saint Vincent and the Grenadines",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "VE": {
+    "zoneName": "Venezuela",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "VI": {
+    "countryName": "USA",
+    "zoneName": "Virgin Islands",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "VN": {
+    "zoneName": "Vietnam",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "VN-C": {
+    "countryName": "Vietnam",
+    "zoneName": "Central Vietnam",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "VN-N": {
+    "countryName": "Vietnam",
+    "zoneName": "Northern Vietnam",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "VN-S": {
+    "countryName": "Vietnam",
+    "zoneName": "Southern Vietnam",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "VU": {
+    "zoneName": "Vanuatu",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "WS": {
+    "zoneName": "Samoa",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "XK": {
+    "zoneName": "Kosovo",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "XX": {
+    "zoneName": "Northern Cyprus",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "YE": {
+    "zoneName": "Yemen",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "YT": {
+    "zoneName": "Mayotte",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "ZA": {
+    "zoneName": "South Africa",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "ZM": {
+    "zoneName": "Zambia",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  },
+  "ZW": {
+    "zoneName": "Zimbabwe",
+    "access": [
+      "carbon-intensity/latest",
+      "carbon-intensity/history",
+      "power-breakdown/latest",
+      "power-breakdown/history",
+      "home-assistant/latest",
+      "home-assistant/past",
+      "home-assistant/past-range",
+      "home-assistant/history",
+      "home-assistant/forecast",
+      "/updated-since"
+    ]
+  }
 }
