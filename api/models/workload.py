@@ -106,10 +106,16 @@ def _validate_locations(candidate_locations: list[CloudLocation]):
     return errors
 
 def _validate_location_is_defined(location: str, candidate_locations: list[CloudLocation]):
-    [provider, region] = location.split(':', 1)
+    splitted = location.split(':', 1)
+    if len(splitted) != 2:
+        return 'Location must be in the format of "provider:region"'
+    [provider, region] = splitted
     if provider in ALL_CLOUD_PROVIDERS and region in g_cloud_manager.get_cloud_region_codes(provider):
         return None
-    return location in [location.id for location in candidate_locations]
+    elif location in [location.id for location in candidate_locations]:
+        return None
+    else:
+        return 'Location not defined'
 
 
 @dataclass
@@ -118,7 +124,7 @@ class Workload:
     schedule: WorkloadSchedule
     dataset: Dataset
 
-    original_location: Optional[str] = field(default=None)
+    original_location: str = field()
     candidate_providers: Optional[list[str]] = field(default_factory=list)
     candidate_locations: Optional[list[CloudLocation]] = field(default_factory=list)
 
