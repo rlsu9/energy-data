@@ -92,3 +92,11 @@ class CloudLocationManager:
             if region.code == region_code:
                 return region
         raise NotFound('Unknown region "%s" for provider "%s".' % (region_code, cloud_provider))
+
+def get_iso_route_between_region(src_region: str, dst_region: str) -> list[str]:
+    if src_region == dst_region:
+        return []
+    # TODO: look up from database
+    if src_region == 'AWS:us-west-1' and dst_region == 'AWS:us-east-1':
+        return ['CAISO_NORTH', 'SPP_KANSAS', 'PJM_DC']
+    raise NotImplementedError('TODO: look up from database')

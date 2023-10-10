@@ -2,3 +2,6 @@
 
 Coordinate = tuple[float, float]
 RouteInCoordinate = list[Coordinate]
+
+ISOName = str
+RouteInISO = list[ISOName]

@@ -1,16 +1,19 @@
 #!/usr/bin/env python3
 
 from enum import Enum
+from itertools import product
+from math import ceil
+import sys
 import numpy as np
+import pandas as pd
+import staircase as sc
 from datetime import datetime, timedelta
 from datetime import datetime, timedelta
-from werkzeug.exceptions import NotFound, BadRequest
-from bisect import bisect
+from werkzeug.exceptions import BadRequest
 from flask import current_app
 
 from api.helpers.carbon_intensity_c3lab import get_carbon_intensity_list as get_carbon_intensity_list_c3lab
 from api.helpers.carbon_intensity_azure import get_carbon_intensity_list as get_carbon_intensity_list_azure
-from api.util import round_down
 
 
 class CarbonDataSource(str, Enum):
@@ -64,108 +67,160 @@ def get_carbon_intensity_interval(timestamps: list[datetime]) -> timedelta:
     return values[np.argmax(counts)]
 
 
-def calculate_total_carbon_emissions(start: datetime, end: datetime, power: float,
-                                     carbon_intensity_by_timestamp: dict[datetime, float],
-                                     max_delay: timedelta = timedelta()) -> tuple[float, timedelta]:
-    """Calculate the total carbon emission by multiplying energy with carbon intensity.
+def calculate_total_carbon_emissions(start: datetime, runtime: timedelta,
+                                     max_delay: timedelta,
+                                     input_transfer_time: timedelta,
+                                     output_transfer_time: timedelta,
+                                     compute_carbon_emission_rates: pd.Series,
+                                     transfer_carbon_intensity_rates: pd.Series,
+                                     ) -> tuple[float, timedelta]:
+    """Calculate the total carbon emission, including both compute and data transfer emissions.
 
         Args:
             start: start time of a workload.
-            end: end time of a workload.
-            power: average power in watt.
-            carbon_intensity_by_timestamp: a timeseries carbon intensity data in gCO2/kWh.
+            runtime: runtime of a workload.
             max_delay: the amount of delay that a workload can tolerate.
+            transfer_input_time: time to transfer input data.
+            transfer_output_time: time to transfer output data.
+            compute_carbon_intensity_by_timestamp: the compute carbon emission rate in gCO2/s.
+            transfer_carbon_intensity_by_timestamp: the aggregated data transfer carbon emission rate in gCO2/s.
 
         Returns:
             Total carbon emissions in kgCO2.
             Optimal delay of start time, if applicable.
     """
-    if start > end:
-        raise BadRequest("start time is later than end time")
+    if runtime <= timedelta():
+        raise BadRequest("Runtime must be positive.")
 
-    # Convert dict to lists for easier indexing and searching
-    l_timestamps = sorted(carbon_intensity_by_timestamp.keys())
-    l_carbon_intensity = [carbon_intensity_by_timestamp[timestamp] for timestamp in l_timestamps]
+    def _calculate_carbon_emission_across_intervals(start: datetime, end: datetime, carbon_emission_rates: pd.Series) -> float:
+        if carbon_emission_rates.empty or start >= end:
+            return 0.
+        rates_sc = sc.Stairs.from_values(initial_value=0, values=carbon_emission_rates)
+        # rates_sc = rates_sc.slice(pd.date_range(start, end))
+        rates_sc = rates_sc.clip(start, end)
+        return rates_sc.integral() / timedelta(seconds=1)
 
-    # Check if we have carbon intensity data for the requested range
-    # round down as carbon intensity data starts at mostly aligned intervals
-    end_rounded = round_down(end, get_carbon_intensity_interval(l_timestamps))
-    if start < min(l_timestamps) or end_rounded > max(l_timestamps):
-        raise NotFound("Missing carbon intensity data for the given time interval.")
+    def _calculate_carbon_emission_in_interval(interval: timedelta, carbon_emission_rate: float) -> float:
+        """Calculate carbon emission in a small interval with fixed carbon emission rate (gCO2/s)."""
+        return interval.total_seconds() * carbon_emission_rate
 
-    def _calculate_carbon_emission_in_interval(interval: timedelta, carbon_intensity: float) -> float:
-        """Calculate carbon emission in a small interval with fixed carbon intensity."""
-        # This converts s * W * gCO2/kWh to h * kW * kgCO2/kWh (or kgCO2)
-        conversion_factor = timedelta(hours=1).total_seconds() * 1000 * 1000
-        return interval.total_seconds() * power * carbon_intensity / conversion_factor
+    if input_transfer_time + output_transfer_time > max_delay:
+        raise ValueError("Not enough time to finish before deadline.")
 
-    def _find_timestamp_index(timestamp: datetime) -> int:
-        """Find the timestamp index in carbon intensity timestamp list, or the closest one to the left."""
-        return bisect(l_timestamps, timestamp) - 1
+    # Sliding window algorithm using timestamp directly
+    t_total_wait_limit = max_delay - input_transfer_time - output_transfer_time
+    t_wait_times_minutes = [0, 0, 0]    # input wait, compute wait and output wait
 
-    index_start = _find_timestamp_index(start)
-    index_end = _find_timestamp_index(end)
-    if index_start == index_end:  # start and end lie in one interval
-        carbon_intensity = l_carbon_intensity[index_start]
-        return _calculate_carbon_emission_in_interval(end - start, carbon_intensity), timedelta()
+    def _calculate_total_emission(breakdown=False) -> float:
+        (m_input_wait, m_compute_wait, m_output_wait) = curr_wait_times_minutes.tolist()
+        input_transfer_start = start + timedelta(minutes=m_input_wait)
+        input_transfer_end = input_transfer_start + input_transfer_time
+        compute_start = input_transfer_end + timedelta(minutes=m_compute_wait)
+        compute_end = compute_start + runtime
+        output_transfer_start = compute_end + timedelta(minutes=m_output_wait)
+        output_transfer_end = output_transfer_start + output_transfer_time
+        input_transfer_emission = _calculate_carbon_emission_across_intervals(
+                input_transfer_start,
+                input_transfer_end,
+                transfer_carbon_intensity_rates)
+        compute_emission = _calculate_carbon_emission_across_intervals(
+                compute_start,
+                compute_end,
+                compute_carbon_emission_rates)
+        output_transfer_emission = _calculate_carbon_emission_across_intervals(
+                output_transfer_start,
+                output_transfer_end,
+                transfer_carbon_intensity_rates)
+        if breakdown:
+            return (compute_emission , input_transfer_emission + output_transfer_emission)
+        else:
+            return input_transfer_emission + compute_emission + output_transfer_emission
 
-    # Calculate total carbon emissions with unaligned interval
-    total_carbon_emissions = 0.
+    def _get_marginal_emission_rate_delta_and_step_size(curr_wait_times_minutes, moving_index: int) -> tuple[float, timedelta]:
+        def _impl_single_interval(start: datetime, end: datetime, carbon_emission_rates: pd.Series):
+            """Calculates the marginal emission rate delta and step size for a single interval."""
+            if carbon_emission_rates.empty:
+                return 0., timedelta(days=365)
+            def _get_value_at_timestamp(target: datetime) -> float:
+                return carbon_emission_rates.loc[carbon_emission_rates.index >= target][0]
+            def _get_next_timestamp(target: datetime) -> datetime:
+                return carbon_emission_rates.iloc[carbon_emission_rates.index > target].index[0]
+            marginal_rate_start = _get_value_at_timestamp(start)
+            marginal_rate_end = _get_value_at_timestamp(end)
+            step_size_start = _get_next_timestamp(start) - start
+            step_size_end = _get_next_timestamp(end) - end
+            return marginal_rate_end - marginal_rate_start, min(step_size_start, step_size_end)
 
-    # Partial starting interval
-    total_carbon_emissions += _calculate_carbon_emission_in_interval(
-        l_timestamps[index_start + 1] - start,
-        l_carbon_intensity[index_start])
+        (m_input_wait, m_compute_wait, m_output_wait) = curr_wait_times_minutes.tolist()
+        input_transfer_start = start + timedelta(minutes=m_input_wait)
+        input_transfer_end = input_transfer_start + input_transfer_time
+        compute_start = input_transfer_end + timedelta(minutes=m_compute_wait)
+        compute_end = compute_start + runtime
+        output_transfer_start = compute_end + timedelta(minutes=m_output_wait)
+        output_transfer_end = output_transfer_start + output_transfer_time
+        input_rate_delta, input_step_size = _impl_single_interval(input_transfer_start, input_transfer_end,
+                                                                  transfer_carbon_intensity_rates)
+        compute_rate_delta, compute_step_size = _impl_single_interval(compute_start, compute_end,
+                                                                      compute_carbon_emission_rates)
+        output_rate_delta, output_step_size = _impl_single_interval(output_transfer_start, output_transfer_end,
+                                                                    transfer_carbon_intensity_rates)
+        if moving_index == 0:
+            return input_rate_delta + compute_rate_delta + output_rate_delta, min(input_step_size, compute_step_size, output_step_size)
+        elif moving_index == 1:
+            return compute_rate_delta + output_rate_delta, min(compute_step_size, output_step_size)
+        elif moving_index == 2:
+            return output_rate_delta, output_step_size
+        else:
+            raise ValueError('Invalid moving index.')
 
-    # Whole intervals in the middle
-    index_interval = index_start + 1
-    while index_interval < index_end:
-        total_carbon_emissions += _calculate_carbon_emission_in_interval(
-            l_timestamps[index_interval + 1] - l_timestamps[index_interval],
-            l_carbon_intensity[index_interval])
-        index_interval += 1
+    def _update_emission_values():
+        nonlocal min_total_emission, min_time_values, prev_wait_times_minutes, saved_emissions
+        if current_emission < min_total_emission:
+            min_total_emission = current_emission
+            min_time_values = curr_wait_times_minutes.copy()
+        prev_wait_times_minutes = curr_wait_times_minutes.copy()
+        # saved_emissions[tuple(curr_wait_times_minutes)] = current_emission
 
-    # Partial ending interval
-    total_carbon_emissions += _calculate_carbon_emission_in_interval(
-        end - l_timestamps[index_end],
-        l_carbon_intensity[index_end])
+    NUM_TIME_VARIABLES = 3  # input wait, compute wait and output wait
 
-    if max_delay == timedelta():
-        return total_carbon_emissions, timedelta()
+    t_wait_times_minutes = [0] * NUM_TIME_VARIABLES
+    curr_wait_times_minutes = np.array(t_wait_times_minutes)
+    prev_wait_times_minutes = curr_wait_times_minutes.copy()
 
-    # Check if delaying the workload can result in carbon savings
-    def _min_distance_to_next_interval(start: datetime, end: datetime):
-        """Get the minimum (out of start and end) step size to next carbon intensity interval start."""
-        return min(
-            l_timestamps[_find_timestamp_index(start) + 1] - start,
-            l_timestamps[_find_timestamp_index(end) + 1] - end,
-        )
+    current_emission = _calculate_total_emission()
+    min_total_emission = current_emission
+    min_time_values = curr_wait_times_minutes.copy()
 
-    # Sliding window minimum sum with continuous axis (timestamp)
-    #   but fixed value (carbon intensity) within small intervals.
-    # Basic idea: slide till either left or right of interval changes carbon intensity value, and apply the diff
-    #   during that small step size.
-    delay = timedelta()
-    l_delay = [delay]
-    cumulative_carbon_emission_delta = 0.
-    l_cumulative_carbon_emission_delta = [cumulative_carbon_emission_delta]
-    while delay < max_delay:
-        step_size = _min_distance_to_next_interval(start + delay, end + delay)
-        if delay + step_size > max_delay:
-            step_size = max_delay - delay
-        # Carbon intensity values are to the left of the current timestamp, i.e. last window
-        carbon_intensity_left = l_carbon_intensity[_find_timestamp_index(start + l_delay[-1])]
-        carbon_intensity_right = l_carbon_intensity[_find_timestamp_index(end + + l_delay[-1])]
-        carbon_intensity_diff = carbon_intensity_right - carbon_intensity_left
-        # Translate carbon intensity diff to carbon emission diff
-        carbon_emission_delta = _calculate_carbon_emission_in_interval(step_size, carbon_intensity_diff)
-        # Record data and iterate. Emission diff is applied after the current step; thus adding to delay first.
-        delay += step_size
-        l_delay.append(delay)
-        cumulative_carbon_emission_delta += carbon_emission_delta
-        l_cumulative_carbon_emission_delta.append(cumulative_carbon_emission_delta)
-    index_min_carbon_emission_delta = np.argmin(l_cumulative_carbon_emission_delta)
-    min_carbon_emission_delta = l_cumulative_carbon_emission_delta[index_min_carbon_emission_delta]
-    min_carbon_emission = total_carbon_emissions + min_carbon_emission_delta
-    optimal_delay = l_delay[index_min_carbon_emission_delta]
-    return min_carbon_emission, optimal_delay
+    saved_emissions = {}
+    total_wait_limit_minutes = int(ceil(t_total_wait_limit.total_seconds() / timedelta(minutes=1).total_seconds()))
+    # Ignore transfer time variables update if transfer is not applicable.
+    # This is not ideal... Need a way to generate this on the fly.
+    if transfer_carbon_intensity_rates.empty:
+        all_wait_time_combinations = map(lambda t: (0, t, 0), range(total_wait_limit_minutes + 1))
+    else:
+        all_wait_time_combinations = product(range(total_wait_limit_minutes + 1), repeat=NUM_TIME_VARIABLES)
+    for t_wait_times_minutes in all_wait_time_combinations:
+        if sum(t_wait_times_minutes) > total_wait_limit_minutes:
+            continue
+        curr_wait_times_minutes = np.array(t_wait_times_minutes, dtype=int)
+        if curr_wait_times_minutes.tolist() <= prev_wait_times_minutes.tolist():
+            continue
+        delta_wait_times_minutes = curr_wait_times_minutes - prev_wait_times_minutes
+        print(t_wait_times_minutes, file=sys.stderr)
+        moving_index = (delta_wait_times_minutes > 0).tolist().index(True)
+        assert 0 <= moving_index < NUM_TIME_VARIABLES, "Invalid moving index."
+        if np.sum(delta_wait_times_minutes == 0) != 2:
+            # Find out the next step of the moving index.
+            curr_wait_times_minutes[moving_index] -= delta_wait_times_minutes[moving_index]
+            marginal_emission_rate, step_size = _get_marginal_emission_rate_delta_and_step_size(curr_wait_times_minutes, moving_index)
+            curr_wait_times_minutes[moving_index] += int(ceil(step_size.total_seconds() / timedelta(minutes=1).total_seconds()))
+            current_emission = _calculate_total_emission()
+            _update_emission_values()
+        else:
+            marginal_emission_rate, step_size = _get_marginal_emission_rate_delta_and_step_size(prev_wait_times_minutes, moving_index)
+            current_emission += marginal_emission_rate * step_size.total_seconds()
+            curr_wait_times_minutes[moving_index] += int(step_size.total_seconds() / timedelta(minutes=1).total_seconds())
+            _update_emission_values()
+
+    curr_wait_times_minutes = min_time_values.copy()
+    return (_calculate_total_emission(True), min_time_values.tolist())
