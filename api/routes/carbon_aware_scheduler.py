@@ -8,6 +8,7 @@ import marshmallow_dataclass
 from flask import current_app
 from flask_restful import Resource
 import pandas as pd
+from pandas.tseries.frequencies import to_offset
 from webargs.flaskparser import use_args
 
 from api.helpers.carbon_intensity import CarbonDataSource, calculate_total_carbon_emissions, convert_carbon_intensity_list_to_dict, get_carbon_intensity_list
@@ -155,11 +156,20 @@ def get_carbon_emission_rates_as_pd_series(iso: ISOName, start: datetime, end: d
     l_carbon_intensity = get_preloaded_carbon_data(iso, start, end)
     df = pd.DataFrame(l_carbon_intensity)
     df.set_index('timestamp', inplace=True)
+
     # Only consider hourly data
     df = df.loc[df.index.minute == 0]
     ds = df['carbon_intensity'].sort_index()
     # Conversion: gCO2/kWh * W * 1/(1000*3600) kh/s = gCO2/s
-    return ds * power_in_watts / (1000 * 3600)
+    ds = ds * power_in_watts / (1000 * 3600)
+
+
+    # Insert end-of-time index with zero value to avoid out-of-bound read corner case handling
+    ds_freq = pd.infer_freq(ds.index)
+    end_time_of_series = ds.index.max() + to_offset(ds_freq)
+    ds[end_time_of_series.to_pydatetime()] = 0.
+
+    return ds
 
 def get_compute_carbon_emission_rates(iso: ISOName, start: datetime, end: datetime, host_power_in_watts: float) -> pd.Series:
     return get_carbon_emission_rates_as_pd_series(iso, start, end, host_power_in_watts)

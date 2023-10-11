@@ -4,7 +4,6 @@ from enum import Enum
 import math
 import numpy as np
 import pandas as pd
-from pandas.tseries.frequencies import to_offset
 import staircase as sc
 from datetime import datetime, timedelta
 from datetime import datetime, timedelta
@@ -135,19 +134,10 @@ def calculate_total_carbon_emissions(start: datetime, runtime: timedelta,
         """Calculate the total marginal emission rate delta by moving the n-th wait time and the minimum step size across all three steps."""
         def _impl_single_interval(start: datetime, end: datetime, carbon_emission_rates: pd.Series):
             """Calculates the marginal emission rate delta and step size for a single interval."""
-            if carbon_emission_rates.empty:
-                return 0., timedelta(days=365)
             def _get_value_at_timestamp(target: datetime) -> float:
                 return carbon_emission_rates.loc[carbon_emission_rates.index >= target][0]
             def _get_next_timestamp(target: datetime) -> datetime:
-                filtered = carbon_emission_rates.iloc[carbon_emission_rates.index > target].index
-                if filtered.size == 0:
-                    # Return end of the time series
-                    carbon_emission_rates_freq = pd.infer_freq(carbon_emission_rates.index)
-                    end_time_of_series = carbon_emission_rates.index.max() + to_offset(carbon_emission_rates_freq)
-                    return end_time_of_series.to_pydatetime()
-                else:
-                    return filtered[0]
+                return carbon_emission_rates.iloc[carbon_emission_rates.index > target].index[0]
             marginal_rate_start = _get_value_at_timestamp(start)
             marginal_rate_end = _get_value_at_timestamp(end)
             step_size_start = _get_next_timestamp(start) - start
@@ -167,7 +157,7 @@ def calculate_total_carbon_emissions(start: datetime, runtime: timedelta,
         sum_rate_delta = 0
         min_step_size = timedelta(days=365)
         # Moving the first time afects the latter two steps, and moving the second time affects the last step.
-        if moving_index <= 0:
+        if moving_index <= 0 and not transfer_carbon_intensity_rates.empty:
             input_rate_delta, input_step_size = _impl_single_interval(input_transfer_start, input_transfer_end,
                                                                       transfer_carbon_intensity_rates)
             sum_rate_delta += input_rate_delta
@@ -177,7 +167,7 @@ def calculate_total_carbon_emissions(start: datetime, runtime: timedelta,
                                                                           compute_carbon_emission_rates)
             sum_rate_delta += compute_rate_delta
             min_step_size = min(min_step_size, compute_step_size)
-        if moving_index <= 2:
+        if moving_index <= 2 and not transfer_carbon_intensity_rates.empty:
             output_rate_delta, output_step_size = _impl_single_interval(output_transfer_start, output_transfer_end,
                                                                         transfer_carbon_intensity_rates)
             sum_rate_delta += output_rate_delta
