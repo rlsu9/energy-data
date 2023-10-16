@@ -160,8 +160,8 @@ def get_carbon_emission_rates_as_pd_series(iso: ISOName, start: datetime, end: d
     df = pd.DataFrame(l_carbon_intensity)
     df.set_index('timestamp', inplace=True)
 
-    # Only consider hourly data
-    df = df.loc[df.index.minute == 0]
+    # # Only consider hourly data
+    # df = df.loc[df.index.minute == 0]
     ds = df['carbon_intensity'].sort_index()
     # Conversion: gCO2/kWh * W * 1/(1000*3600) kh/s = gCO2/s
     ds = ds * power_in_watts / (1000 * 3600)
