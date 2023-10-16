@@ -38,11 +38,14 @@ def get_candidate_regions(candidate_providers: list[str], candidate_locations: l
     try:
         if candidate_providers:
             candidate_regions = g_cloud_manager.get_all_cloud_regions(candidate_providers)
-            assert original_location in candidate_regions, "Original location not defined in candidate regions"
-            return { str(region) for region in candidate_regions }
+            d_candidate_regions = { str(region): region for region in candidate_regions }
+            assert original_location in d_candidate_regions, "Original location not defined in candidate regions"
+            return d_candidate_regions
 
         d_candidate_regions = {}
         for location in candidate_locations + [CloudLocation(original_location)]:
+            if location.id in d_candidate_regions:
+                continue
             (provider, region_name) = location.id.split(':', 1)
             if location.latitude and location.longitude:
                 gps = (location.latitude, location.longitude)
