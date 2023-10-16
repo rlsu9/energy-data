@@ -165,8 +165,13 @@ def get_carbon_emission_rates_as_pd_series(iso: ISOName, start: datetime, end: d
 
 
     # Insert end-of-time index with zero value to avoid out-of-bound read corner case handling
-    ds_freq = pd.infer_freq(ds.index)
-    end_time_of_series = ds.index.max() + to_offset(ds_freq)
+    if len(ds.index) < 2:
+        ds_freq = pd.DateOffset(hours=1)
+    elif len(ds.index) == 2:
+        ds_freq = (ds.index[1] - ds.index[0]) # Assume constant frequency
+    else:     # pd.infer_freq requires at least three dates
+        ds_freq = to_offset(pd.infer_freq(ds.index))
+    end_time_of_series = ds.index.max() + ds_freq
     ds[end_time_of_series.to_pydatetime()] = 0.
 
     return ds
