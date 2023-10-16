@@ -99,4 +99,6 @@ def get_iso_route_between_region(src_region: str, dst_region: str) -> list[str]:
     # TODO: look up from database
     if src_region == 'AWS:us-west-1' and dst_region == 'AWS:us-east-1':
         return ['CAISO_NORTH', 'SPP_KANSAS', 'PJM_DC']
+    if src_region == 'AWS:us-east-1' and dst_region == 'AWS:us-west-1':
+        return ['PJM_DC', 'SPP_KANSAS', 'CAISO_NORTH']
     raise NotImplementedError('TODO: look up from database')

@@ -2,9 +2,9 @@
 
 from enum import Enum
 import math
+import time
 import numpy as np
 import pandas as pd
-import staircase as sc
 from datetime import datetime, timedelta
 from datetime import datetime, timedelta
 from werkzeug.exceptions import BadRequest
@@ -80,30 +80,54 @@ def calculate_total_carbon_emissions(start: datetime, runtime: timedelta,
             max_delay: the amount of delay that a workload can tolerate.
             transfer_input_time: time to transfer input data.
             transfer_output_time: time to transfer output data.
-            compute_carbon_intensity_by_timestamp: the compute carbon emission rate in gCO2/s.
-            transfer_carbon_intensity_by_timestamp: the aggregated data transfer carbon emission rate in gCO2/s.
+            compute_carbon_emission_rates: the compute carbon emission rate in gCO2/s.
+            transfer_carbon_intensity_rates: the aggregated data transfer carbon emission rate in gCO2/s.
 
         Returns:
             Total carbon emissions in kgCO2.
             Optimal delay of start time, if applicable.
     """
     current_app.logger.info('Calculating total carbon emissions ...')
+    perf_start_time = time.time()
     if runtime <= timedelta():
         raise BadRequest("Runtime must be positive.")
 
     if input_transfer_time + output_transfer_time > max_delay:
         raise ValueError("Not enough time to finish before deadline.")
 
+    perf_counter_step_size = 0
 
-    def _calculate_carbon_emission_across_intervals(start: datetime, end: datetime, carbon_emission_rates: pd.Series) -> float:
-        if carbon_emission_rates.empty or start >= end:
+    def _integrate_series(series: pd.Series) -> tuple[np.ndarray, np.ndarray]:
+        """Calculate the integral of a series, and return the x and y values for a later np.interp call.
+
+            Args:
+                series: A step function represented by a pandas series with a datetime index and numeric values.
+
+            Returns:
+                A tuple of two numpy arrays, the first one is the UNIX timestamp values and the second one is the y values, or cumulative sum of the original series.
+        """
+        # Calculate the size of each step, in seconds.
+        timestamp_seconds = series.index.astype(np.int64) // (10**9)
+        steps_seconds = (-timestamp_seconds.to_series().diff(-1)).to_numpy(na_value=0)
+        # Intergral of the original step function
+        cumsum = np.cumsum(steps_seconds * series.to_numpy())
+        return np.array(timestamp_seconds), np.insert(cumsum[:-1], 0, 0)
+
+    def _calculate_carbon_emission_across_intervals(start: datetime, end: datetime,
+                                                    carbon_emission_cumsum: tuple[np.ndarray, np.ndarray]) -> float:
+        # return 0.   # _debug_
+        if carbon_emission_cumsum[0].size == 0 or start >= end:
             return 0.
-        rates_sc = sc.Stairs.from_values(initial_value=0, values=carbon_emission_rates)
-        # rates_sc = rates_sc.slice(pd.date_range(start, end))
-        rates_sc = rates_sc.clip(start, end)
-        return rates_sc.integral() / timedelta(seconds=1)
+        # Convert start and end to UNIX timestamp.
+        (start_timestamp, end_timestamp) = (start.timestamp(), end.timestamp())
+
+        # look up in existing carbon emission rates' cumulative carbon emission.
+        (x_values, y_values) = carbon_emission_cumsum
+        (start_cumsum, end_cumsum) = np.interp([start_timestamp, end_timestamp], x_values, y_values)
+        return end_cumsum - start_cumsum
 
     def _calculate_total_emission(curr_wait_times: list[datetime], breakdown=False):
+        # return (0, 0) if breakdown else 0   # _debug_
         (input_wait, compute_wait, output_wait) = curr_wait_times
         input_transfer_start = start + input_wait
         input_transfer_end = input_transfer_start + input_transfer_time
@@ -115,15 +139,15 @@ def calculate_total_carbon_emissions(start: datetime, runtime: timedelta,
         input_transfer_emission = _calculate_carbon_emission_across_intervals(
                 input_transfer_start,
                 input_transfer_end,
-                transfer_carbon_intensity_rates)
+                transfer_carbon_cumsum)
         compute_emission = _calculate_carbon_emission_across_intervals(
                 compute_start,
                 compute_end,
-                compute_carbon_emission_rates)
+                compute_carbon_cumsum)
         output_transfer_emission = _calculate_carbon_emission_across_intervals(
                 output_transfer_start,
                 output_transfer_end,
-                transfer_carbon_intensity_rates)
+                transfer_carbon_cumsum)
         if breakdown:
             return (compute_emission , input_transfer_emission + output_transfer_emission)
         else:
@@ -135,9 +159,11 @@ def calculate_total_carbon_emissions(start: datetime, runtime: timedelta,
         def _impl_single_interval(start: datetime, end: datetime, carbon_emission_rates: pd.Series):
             """Calculates the marginal emission rate delta and step size for a single interval."""
             def _get_value_at_timestamp(target: datetime) -> float:
-                return carbon_emission_rates.loc[carbon_emission_rates.index >= target][0]
+                index = carbon_emission_rates.index.searchsorted(target, side='left')
+                return carbon_emission_rates[index]
             def _get_next_timestamp(target: datetime) -> datetime:
-                return carbon_emission_rates.iloc[carbon_emission_rates.index > target].index[0]
+                index = carbon_emission_rates.index.searchsorted(target, side='right')
+                return carbon_emission_rates.index[index]
             marginal_rate_start = _get_value_at_timestamp(start)
             marginal_rate_end = _get_value_at_timestamp(end)
             step_size_start = _get_next_timestamp(start) - start
@@ -173,6 +199,9 @@ def calculate_total_carbon_emissions(start: datetime, runtime: timedelta,
             sum_rate_delta += output_rate_delta
             min_step_size = min(min_step_size, output_step_size)
 
+        nonlocal perf_counter_step_size
+        perf_counter_step_size += 1
+
         return sum_rate_delta, min_step_size
 
     def _advance_wait_times_and_get_emission_delta(curr_wait_times: list[timedelta],
@@ -195,6 +224,10 @@ def calculate_total_carbon_emissions(start: datetime, runtime: timedelta,
             curr_wait_times = [timedelta()] * len(curr_wait_times)
             raise StopIteration()
 
+    # Transform the carbon intensity rates into cumulative sum for faster lookup.
+    compute_carbon_cumsum = _integrate_series(compute_carbon_emission_rates)
+    transfer_carbon_cumsum = _integrate_series(transfer_carbon_intensity_rates)
+
     NUM_TIME_VARIABLES = 3  # input wait, compute wait and output wait
     t_total_wait_limit = max_delay - input_transfer_time - output_transfer_time
 
@@ -203,12 +236,15 @@ def calculate_total_carbon_emissions(start: datetime, runtime: timedelta,
     min_time_values = curr_wait_times.copy()
     min_total_emission = current_emission
 
+    perf_counter_calculate_total = 0
+
     try:
         while True:
             emission_delta = _advance_wait_times_and_get_emission_delta(curr_wait_times, t_total_wait_limit)
             if math.isnan(emission_delta):
                 # Re-calculate total emission is delta is unknown
                 current_emission = _calculate_total_emission(curr_wait_times)
+                perf_counter_calculate_total += 1
             else:
                 current_emission += emission_delta
             if current_emission < min_total_emission:
@@ -216,6 +252,11 @@ def calculate_total_carbon_emissions(start: datetime, runtime: timedelta,
                 min_time_values = curr_wait_times.copy()
     except StopIteration:
         pass
+
+    perf_elapsed = time.time() - perf_start_time
+    current_app.logger.info('calculate_total_carbon_emissions() took %.3f seconds' % perf_elapsed)
+    current_app.logger.info('perf_counter_calculate_total = %d' % perf_counter_calculate_total)
+    current_app.logger.info('perf_counter_step_size = %d' % perf_counter_step_size)
 
     curr_wait_times = min_time_values.copy()
     return (_calculate_total_emission(curr_wait_times, True), min_time_values)
