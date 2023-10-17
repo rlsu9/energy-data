@@ -11,7 +11,7 @@ import pandas as pd
 from pandas.tseries.frequencies import to_offset
 from webargs.flaskparser import use_args
 
-from api.helpers.carbon_intensity import CarbonDataSource, calculate_total_carbon_emissions, convert_carbon_intensity_list_to_dict, get_carbon_intensity_list
+from api.helpers.carbon_intensity import CarbonDataSource, calculate_total_carbon_emissions, get_carbon_intensity_list
 from api.models.cloud_location import CloudLocationManager, CloudRegion, get_iso_route_between_region
 from api.models.common import Coordinate, ISOName, RouteInISO
 from api.models.optimization_engine import OptimizationEngine, OptimizationFactor
@@ -126,14 +126,6 @@ def get_preloaded_carbon_data(iso: str, start: datetime, end: datetime) -> list[
     else:
         raise ValueError(f'No carbon data found for iso {iso} in time range ({start}, {end})')
 
-def get_total_transfer_carbon_intensity_by_timestamp(route: list[ISOName], start: datetime, end: datetime, max_delay: timedelta) -> dict[datetime, float]:
-    transit_carbon_intensity_by_timestamp = {}
-    # Aggregate carbon intensity from each transit hop
-    for hop in route:
-        for timestamp, carbon_intensity in convert_carbon_intensity_list_to_dict(get_preloaded_carbon_data(hop, start, end + max_delay)):
-            transit_carbon_intensity_by_timestamp[timestamp] += carbon_intensity
-    return transit_carbon_intensity_by_timestamp
-
 def get_transfer_rate(route: list[ISOName], start: datetime, end: datetime, max_delay: timedelta) -> Rate:
     # TODO: update this to consider route
     # return g_wan_bandwidth.available_bandwidth_at(timestamp=start.time())
@@ -148,12 +140,6 @@ def get_per_hop_transfer_power_in_watts(route, transfer_rate: Rate) -> float:
     CORE_ROUTER_POWER_WATT = 640
     CORE_ROUTER_CAPACITY_GBPS = 64
     return transfer_rate / Rate(CORE_ROUTER_CAPACITY_GBPS, RateUnit.Gbps) * CORE_ROUTER_POWER_WATT
-
-def convert_carbon_intensity_to_carbon_emission_rate(carbon_intensity, power_in_watts: float) -> float:
-    """Converts carbon intensity in gCO2/kWh and power in W to carbon emission rate in gCO2/s.
-    """
-    
-    return carbon_intensity * power_in_watts / (1000 * 3600)
 
 def get_carbon_emission_rates_as_pd_series(iso: ISOName, start: datetime, end: datetime, power_in_watts: float) -> pd.Series:
     l_carbon_intensity = get_preloaded_carbon_data(iso, start, end)
@@ -211,6 +197,7 @@ def calculate_workload_scores(workload: Workload, region: CloudRegion) -> tuple[
             case OptimizationFactor.EnergyUsage:
                 # score = per-core power (kW) * cpu usage (h)
                 score = workload.get_energy_usage_24h()
+                # TODO: add data transfer energy cost
             case OptimizationFactor.CarbonEmissionFromCompute: continue
             case OptimizationFactor.CarbonEmissionFromMigration: continue
             case OptimizationFactor.CarbonEmission:
@@ -233,21 +220,18 @@ def calculate_workload_scores(workload: Workload, region: CloudRegion) -> tuple[
                         workload.get_power_in_watts(),
                         get_per_hop_transfer_power_in_watts(route, transfer_rate))
 
-                    # compute_carbon_intensity_by_timestamp = convert_carbon_intensity_list_to_dict(get_preloaded_carbon_data(region.iso, start, end + max_delay))
-                    # transfer_carbon_intensity_by_timestamp = get_total_transfer_carbon_intensity_by_timestamp(route, start, end, max_delay)
-
-                    (total_compute_carbon_emissions, total_migration_carbon_emission), timings = calculate_total_carbon_emissions(
-                        start,
-                        end - start,
-                        max_delay,
-                        transfer_input_time,
-                        transfer_output_time,
-                        compute_carbon_emission_rates,
-                        transfer_carbon_emission_rates)
-                    d_scores[OptimizationFactor.CarbonEmissionFromCompute] = total_compute_carbon_emissions
-                    d_scores[OptimizationFactor.CarbonEmissionFromMigration] = total_migration_carbon_emission
+                    (compute_carbon_emissions, transfer_carbon_emission), timings = \
+                        calculate_total_carbon_emissions(start,
+                                                         end - start,
+                                                         max_delay,
+                                                         transfer_input_time,
+                                                         transfer_output_time,
+                                                         compute_carbon_emission_rates,
+                                                         transfer_carbon_emission_rates)
+                    d_scores[OptimizationFactor.CarbonEmissionFromCompute] = compute_carbon_emissions
+                    d_scores[OptimizationFactor.CarbonEmissionFromMigration] = transfer_carbon_emission
                     d_misc['timings'].append(timings)
-                    score += (total_compute_carbon_emissions + total_migration_carbon_emission)
+                    score += (compute_carbon_emissions + transfer_carbon_emission)
             case OptimizationFactor.WanNetworkUsage:
                 # score = input + output data size (GB)
                 # TODO: add WAN demand as weight
