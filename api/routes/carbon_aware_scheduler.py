@@ -234,7 +234,8 @@ def calculate_workload_scores(workload: Workload, region: CloudRegion) -> tuple[
                                                          transfer_input_time,
                                                          transfer_output_time,
                                                          compute_carbon_emission_rates,
-                                                         transfer_carbon_emission_rates)
+                                                         transfer_carbon_emission_rates) \
+                                                            if workload.optimize_carbon else ((0, 0), {})
                     d_scores[OptimizationFactor.CarbonEmissionFromCompute] = compute_carbon_emissions
                     d_scores[OptimizationFactor.CarbonEmissionFromMigration] = transfer_carbon_emission
                     d_misc['timings'].append(timings)
