@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 from datetime import timedelta, timezone
+import json
 from multiprocessing import Pool
 import traceback
 from typing import Any
@@ -189,6 +190,10 @@ def get_transfer_carbon_emission_rates(route: list[ISOName], start: datetime, en
     ds_total = ds_total.add(ds_endpoints, fill_value=0)
     return ds_total
 
+def dump_emission_rates(ds: pd.Series) -> dict:
+    # Remove the last artifically injected 0 value at the end.
+    return json.loads(ds[:-1].to_json(orient='index', date_format='iso'))
+
 def calculate_workload_scores(workload: Workload, region: CloudRegion) -> tuple[dict[OptimizationFactor, float], dict[str, Any]]:
     global d_candidate_routes
     d_scores = {}
@@ -208,6 +213,7 @@ def calculate_workload_scores(workload: Workload, region: CloudRegion) -> tuple[
                 route = d_candidate_routes[str(region)]
                 score = 0
                 d_misc['timings'] = []
+                d_misc['emission_rates'] = {}
                 # 24 hour / 5 min = 288 slots
                 for (start, end) in running_intervals:
                     transfer_rate = get_transfer_rate(route, start, end, max_delay)
@@ -232,6 +238,8 @@ def calculate_workload_scores(workload: Workload, region: CloudRegion) -> tuple[
                     d_scores[OptimizationFactor.CarbonEmissionFromCompute] = compute_carbon_emissions
                     d_scores[OptimizationFactor.CarbonEmissionFromMigration] = transfer_carbon_emission
                     d_misc['timings'].append(timings)
+                    d_misc['emission_rates']['compute'] = dump_emission_rates(compute_carbon_emission_rates)
+                    d_misc['emission_rates']['transfer'] = dump_emission_rates(transfer_carbon_emission_rates)
                     score += (compute_carbon_emissions + transfer_carbon_emission)
             case OptimizationFactor.WanNetworkUsage:
                 # score = input + output data size (GB)
