@@ -7,6 +7,7 @@ from typing import Any
 import marshmallow_dataclass
 from flask import current_app
 from flask_restful import Resource
+import numpy as np
 import pandas as pd
 from pandas.tseries.frequencies import to_offset
 from webargs.flaskparser import use_args
@@ -156,10 +157,10 @@ def get_carbon_emission_rates_as_pd_series(iso: ISOName, start: datetime, end: d
     # Insert end-of-time index with zero value to avoid out-of-bound read corner case handling
     if len(ds.index) < 2:
         ds_freq = pd.DateOffset(hours=1)
-    elif len(ds.index) == 2:
-        ds_freq = (ds.index[1] - ds.index[0]) # Assume constant frequency
-    else:     # pd.infer_freq requires at least three dates
-        ds_freq = to_offset(pd.infer_freq(ds.index))
+    else:
+        ds_freq = to_offset(np.diff(df.index).min())
+        # pd.infer_freq() only works with perfectly regular frequency
+        # ds_freq = to_offset(pd.infer_freq(ds.index))
     end_time_of_series = ds.index.max() + ds_freq
     ds[end_time_of_series.to_pydatetime()] = 0.
 
