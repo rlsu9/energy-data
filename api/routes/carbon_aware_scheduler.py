@@ -214,6 +214,7 @@ def calculate_workload_scores(workload: Workload, region: CloudRegion) -> tuple[
                 score = 0
                 d_misc['timings'] = []
                 d_misc['emission_rates'] = {}
+                d_misc['emission_integral'] = {}
                 # 24 hour / 5 min = 288 slots
                 for (start, end) in running_intervals:
                     transfer_rate = get_transfer_rate(route, start, end, max_delay)
@@ -227,9 +228,10 @@ def calculate_workload_scores(workload: Workload, region: CloudRegion) -> tuple[
                         workload.get_power_in_watts(),
                         get_per_hop_transfer_power_in_watts(route, transfer_rate))
 
+                    runtime = end - start
                     (compute_carbon_emissions, transfer_carbon_emission), timings = \
                         calculate_total_carbon_emissions(start,
-                                                         end - start,
+                                                         runtime,
                                                          max_delay,
                                                          transfer_input_time,
                                                          transfer_output_time,
@@ -241,6 +243,10 @@ def calculate_workload_scores(workload: Workload, region: CloudRegion) -> tuple[
                     d_misc['timings'].append(timings)
                     d_misc['emission_rates']['compute'] = dump_emission_rates(compute_carbon_emission_rates)
                     d_misc['emission_rates']['transfer'] = dump_emission_rates(transfer_carbon_emission_rates)
+                    d_misc['emission_integral']['compute'] = dump_emission_rates(
+                        compute_carbon_emission_rates * runtime.total_seconds())
+                    d_misc['emission_integral']['transfer'] = dump_emission_rates(
+                        transfer_carbon_emission_rates * (transfer_input_time + transfer_output_time).total_seconds())
                     score += (compute_carbon_emissions + transfer_carbon_emission)
             case OptimizationFactor.WanNetworkUsage:
                 # score = input + output data size (GB)
