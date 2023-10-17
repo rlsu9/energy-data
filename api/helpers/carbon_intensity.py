@@ -259,8 +259,23 @@ def calculate_total_carbon_emissions(start: datetime, runtime: timedelta,
     current_app.logger.info('perf_counter_step_size = %d' % perf_counter_step_size)
 
     curr_wait_times = min_time_values.copy()
+
+    (input_wait, compute_wait, output_wait) = curr_wait_times
+    input_transfer_start = start + input_wait
+    input_transfer_end = input_transfer_start + input_transfer_time
+    compute_start = input_transfer_end + compute_wait
+    compute_end = compute_start + runtime
+    output_transfer_start = compute_end + output_wait
+    output_transfer_end = output_transfer_start + output_transfer_time
+
     return (_calculate_total_emission(curr_wait_times, True), {
-        'compute_delay': curr_wait_times[1],
-        'input_transfer_delay': curr_wait_times[0],
-        'output_transfer_delay': curr_wait_times[2],
+        'input_transfer_start': input_transfer_start,
+        'input_transfer_duration': input_transfer_time,
+        'input_transfer_end': input_transfer_end,
+        'compute_start': compute_start,
+        'compute_duration': runtime,
+        'compute_end': compute_end,
+        'output_transfer_start': output_transfer_start,
+        'output_transfer_duration': output_transfer_time,
+        'output_transfer_end': output_transfer_end,
     })
