@@ -113,9 +113,9 @@ def calculate_total_carbon_emissions(start: datetime, runtime: timedelta,
         cumsum = np.cumsum(steps_seconds * series.to_numpy())
         return np.array(timestamp_seconds), np.insert(cumsum[:-1], 0, 0)
 
-    def _calculate_carbon_emission_across_intervals(start: datetime, end: datetime,
-                                                    carbon_emission_cumsum: tuple[np.ndarray, np.ndarray]) -> float:
-        # return 0.   # _debug_
+    def _calculate_carbon_emission_in_interval(start: datetime, end: datetime,
+                                               carbon_emission_cumsum: tuple[np.ndarray, np.ndarray]) -> float:
+        """Calculate the carbon emission in the given interval, using the cumulative sum on the timeseries."""
         if carbon_emission_cumsum[0].size == 0 or start >= end:
             return 0.
         # Convert start and end to UNIX timestamp.
@@ -127,7 +127,7 @@ def calculate_total_carbon_emissions(start: datetime, runtime: timedelta,
         return end_cumsum - start_cumsum
 
     def _calculate_total_emission(curr_wait_times: list[datetime], breakdown=False):
-        # return (0, 0) if breakdown else 0   # _debug_
+        """Calculate the total carbon emissions based on the current wait times."""
         (input_wait, compute_wait, output_wait) = curr_wait_times
         input_transfer_start = start + input_wait
         input_transfer_end = input_transfer_start + input_transfer_time
@@ -136,15 +136,15 @@ def calculate_total_carbon_emissions(start: datetime, runtime: timedelta,
         output_transfer_start = compute_end + output_wait
         output_transfer_end = output_transfer_start + output_transfer_time
 
-        input_transfer_emission = _calculate_carbon_emission_across_intervals(
+        input_transfer_emission = _calculate_carbon_emission_in_interval(
                 input_transfer_start,
                 input_transfer_end,
                 transfer_carbon_cumsum)
-        compute_emission = _calculate_carbon_emission_across_intervals(
+        compute_emission = _calculate_carbon_emission_in_interval(
                 compute_start,
                 compute_end,
                 compute_carbon_cumsum)
-        output_transfer_emission = _calculate_carbon_emission_across_intervals(
+        output_transfer_emission = _calculate_carbon_emission_in_interval(
                 output_transfer_start,
                 output_transfer_end,
                 transfer_carbon_cumsum)
@@ -155,9 +155,9 @@ def calculate_total_carbon_emissions(start: datetime, runtime: timedelta,
 
     def _get_marginal_emission_rate_delta_and_step_size(curr_wait_times: list[datetime],
                                                         moving_index: int) -> tuple[float, timedelta]:
-        """Calculate the total marginal emission rate delta by moving the n-th wait time and the minimum step size across all three steps."""
+        """Calculate the total marginal emission rate delta by moving the n-th wait time and the minimum step size across all three steps, while the emission rates stay the same."""
         def _impl_single_interval(start: datetime, end: datetime, carbon_emission_rates: pd.Series):
-            """Calculates the marginal emission rate delta and step size for a single interval."""
+            """Calculates the marginal emission rate delta and step size while the emission rate stays the same."""
             def _get_value_at_timestamp(target: datetime) -> float:
                 index = carbon_emission_rates.index.searchsorted(target, side='right') - 1
                 return carbon_emission_rates[index]
@@ -206,7 +206,7 @@ def calculate_total_carbon_emissions(start: datetime, runtime: timedelta,
 
     def _advance_wait_times_and_get_emission_delta(curr_wait_times: list[timedelta],
                       total_wait_limit: timedelta) -> tuple[list[timedelta], float]:
-        """Advance the wait time to the next step and return the emission delta."""
+        """Advance the wait time to the next step and return the accumulated emission delta."""
         moving_index = NUM_TIME_VARIABLES - 1
         marginal_emission_rate_delta, step_size = _get_marginal_emission_rate_delta_and_step_size(curr_wait_times, moving_index)
         if sum(curr_wait_times, timedelta()) + step_size <= total_wait_limit:
