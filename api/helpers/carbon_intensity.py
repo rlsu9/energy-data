@@ -70,7 +70,7 @@ def calculate_total_carbon_emissions(start: datetime, runtime: timedelta,
                                      input_transfer_time: timedelta,
                                      output_transfer_time: timedelta,
                                      compute_carbon_emission_rates: pd.Series,
-                                     transfer_carbon_intensity_rates: pd.Series,
+                                     transfer_carbon_emission_rates: pd.Series,
                                      ) -> tuple[float, timedelta]:
     """Calculate the total carbon emission, including both compute and data transfer emissions.
 
@@ -81,7 +81,7 @@ def calculate_total_carbon_emissions(start: datetime, runtime: timedelta,
             transfer_input_time: time to transfer input data.
             transfer_output_time: time to transfer output data.
             compute_carbon_emission_rates: the compute carbon emission rate in gCO2/s.
-            transfer_carbon_intensity_rates: the aggregated data transfer carbon emission rate in gCO2/s.
+            transfer_carbon_emission_rates: the aggregated data transfer carbon emission rate in gCO2/s.
 
         Returns:
             Total carbon emissions in kgCO2.
@@ -183,9 +183,9 @@ def calculate_total_carbon_emissions(start: datetime, runtime: timedelta,
         sum_rate_delta = 0
         min_step_size = timedelta(days=365)
         # Moving the first time afects the latter two steps, and moving the second time affects the last step.
-        if moving_index <= 0 and not transfer_carbon_intensity_rates.empty:
+        if moving_index <= 0 and not transfer_carbon_emission_rates.empty:
             input_rate_delta, input_step_size = _impl_single_interval(input_transfer_start, input_transfer_end,
-                                                                      transfer_carbon_intensity_rates)
+                                                                      transfer_carbon_emission_rates)
             sum_rate_delta += input_rate_delta
             min_step_size = min(min_step_size, input_step_size)
         if moving_index <= 1:
@@ -193,9 +193,9 @@ def calculate_total_carbon_emissions(start: datetime, runtime: timedelta,
                                                                           compute_carbon_emission_rates)
             sum_rate_delta += compute_rate_delta
             min_step_size = min(min_step_size, compute_step_size)
-        if moving_index <= 2 and not transfer_carbon_intensity_rates.empty:
+        if moving_index <= 2 and not transfer_carbon_emission_rates.empty:
             output_rate_delta, output_step_size = _impl_single_interval(output_transfer_start, output_transfer_end,
-                                                                        transfer_carbon_intensity_rates)
+                                                                        transfer_carbon_emission_rates)
             sum_rate_delta += output_rate_delta
             min_step_size = min(min_step_size, output_step_size)
 
@@ -226,7 +226,7 @@ def calculate_total_carbon_emissions(start: datetime, runtime: timedelta,
 
     # Transform the carbon intensity rates into cumulative sum for faster lookup.
     compute_carbon_cumsum = _integrate_series(compute_carbon_emission_rates)
-    transfer_carbon_cumsum = _integrate_series(transfer_carbon_intensity_rates)
+    transfer_carbon_cumsum = _integrate_series(transfer_carbon_emission_rates)
 
     NUM_TIME_VARIABLES = 3  # input wait, compute wait and output wait
     t_total_wait_limit = max_delay - input_transfer_time - output_transfer_time
