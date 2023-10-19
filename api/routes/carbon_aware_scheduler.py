@@ -191,8 +191,7 @@ def get_transfer_carbon_emission_rates(route: list[ISOName], start: datetime, en
     return ds_total
 
 def dump_emission_rates(ds: pd.Series) -> dict:
-    # Remove the last artifically injected 0 value at the end.
-    return json.loads(ds[:-1].to_json(orient='index', date_format='iso'))
+    return json.loads(ds.to_json(orient='index', date_format='iso'))
 
 def calculate_workload_scores(workload: Workload, region: CloudRegion) -> tuple[dict[OptimizationFactor, float], dict[str, Any]]:
     global d_candidate_routes
@@ -218,8 +217,8 @@ def calculate_workload_scores(workload: Workload, region: CloudRegion) -> tuple[
                 # 24 hour / 5 min = 288 slots
                 for (start, end) in running_intervals:
                     transfer_rate = get_transfer_rate(route, start, end, max_delay)
-                    transfer_input_time = get_transfer_time(workload.dataset.input_size_gb, transfer_rate)
-                    transfer_output_time = get_transfer_time(workload.dataset.output_size_gb, transfer_rate)
+                    transfer_input_time = get_transfer_time(workload.dataset.input_size_gb, transfer_rate) if route else timedelta()
+                    transfer_output_time = get_transfer_time(workload.dataset.output_size_gb, transfer_rate) if route else timedelta()
 
                     compute_carbon_emission_rates = get_compute_carbon_emission_rates(
                         region.iso, start, end, workload.get_power_in_watts())

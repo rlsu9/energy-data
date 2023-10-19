@@ -159,7 +159,7 @@ def calculate_total_carbon_emissions(start: datetime, runtime: timedelta,
         def _impl_single_interval(start: datetime, end: datetime, carbon_emission_rates: pd.Series):
             """Calculates the marginal emission rate delta and step size for a single interval."""
             def _get_value_at_timestamp(target: datetime) -> float:
-                index = carbon_emission_rates.index.searchsorted(target, side='left')
+                index = carbon_emission_rates.index.searchsorted(target, side='right') - 1
                 return carbon_emission_rates[index]
             def _get_next_timestamp(target: datetime) -> datetime:
                 index = carbon_emission_rates.index.searchsorted(target, side='right')
@@ -247,7 +247,7 @@ def calculate_total_carbon_emissions(start: datetime, runtime: timedelta,
                 perf_counter_calculate_total += 1
             else:
                 current_emission += emission_delta
-            if current_emission < min_total_emission:
+            if current_emission < min_total_emission and not math.isclose(current_emission, min_total_emission):
                 min_total_emission = current_emission
                 min_time_values = curr_wait_times.copy()
     except StopIteration:
