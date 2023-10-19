@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
 import os
-from typing import Tuple
 from flask import current_app
 import numpy as np
 import psycopg2
@@ -45,7 +44,7 @@ def _validate_region_exists(conn: psycopg2.extensions.connection, region: str) -
 
 
 def _get_available_time_range(conn: psycopg2.extensions.connection, region: str) -> \
-        Tuple[datetime, datetime]:
+        tuple[datetime, datetime]:
     """Get the timestamp range for which we have electricity data in given region."""
     cursor = conn.cursor()
     timestamp_min: datetime | None = psql_execute_scalar(cursor,

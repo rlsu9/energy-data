@@ -2,13 +2,14 @@
 
 from datetime import timedelta, timezone
 from enum import Enum
-from typing import Optional, Tuple
+from typing import Optional
 
 import numpy as np
 from marshmallow import validates_schema, ValidationError
 from marshmallow_dataclass import dataclass
 from api.helpers.carbon_intensity import CarbonDataSource
 
+# from api.models.common import Coordinate
 from api.models.cloud_location import CloudLocationManager
 from api.models.dataclass_extensions import *
 
@@ -61,7 +62,8 @@ DEFAULT_CPU_TDP = 240
 DEFAULT_CPU_POWER_PER_CORE = DEFAULT_CPU_TDP / 48  # in watt
 # Storage system consumes roughly 20% of total DC energy, based on Borroso book.
 DEFAULT_STORAGE_POWER = DEFAULT_CPU_TDP * 0.2
-
+DEFAULT_DC_PUE = 1.2
+DEFAULT_NETWORK_PUE = 2.4
 
 ALL_CLOUD_PROVIDERS = g_cloud_manager.get_all_cloud_providers()
 
@@ -105,10 +107,16 @@ def _validate_locations(candidate_locations: list[CloudLocation]):
     return errors
 
 def _validate_location_is_defined(location: str, candidate_locations: list[CloudLocation]):
-    [provider, region] = location.split(':', 1)
+    splitted = location.split(':', 1)
+    if len(splitted) != 2:
+        return 'Location must be in the format of "provider:region"'
+    [provider, region] = splitted
     if provider in ALL_CLOUD_PROVIDERS and region in g_cloud_manager.get_cloud_region_codes(provider):
         return None
-    return location in [location.id for location in candidate_locations]
+    elif location in [location.id for location in candidate_locations]:
+        return None
+    else:
+        return 'Location not defined'
 
 
 @dataclass
@@ -117,14 +125,18 @@ class Workload:
     schedule: WorkloadSchedule
     dataset: Dataset
 
-    original_location: Optional[str] = field(default=None)
+    original_location: str = field()
     candidate_providers: Optional[list[str]] = field(default_factory=list)
     candidate_locations: Optional[list[CloudLocation]] = field(default_factory=list)
+
+    # TODO: add custom routes support
+    # custom_routes: Optional[dict[str, RouteInCoordinate]] = field(default_factory=dict)
 
     carbon_data_source: CarbonDataSource = field_enum(CarbonDataSource, CarbonDataSource.C3Lab)
     use_prediction: bool = field(default=False)
     desired_renewable_ratio: Optional[float] = \
         optional_field_with_validation(lambda ratio: 0. <= ratio <= 1.)
+    optimize_carbon: bool = field(default=True)
 
     watts_per_core: float = field(default=DEFAULT_CPU_POWER_PER_CORE)
     core_count: float = field(default=1.)
@@ -164,7 +176,7 @@ class Workload:
                 raise NotImplementedError()
         return self.runtime * run_count
 
-    def get_running_intervals_in_24h(self) -> list[Tuple[datetime, datetime]]:
+    def get_running_intervals_in_24h(self) -> list[tuple[datetime, datetime]]:
         intervals = []
 
         def _add_current_run_to_interval(start: datetime):

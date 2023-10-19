@@ -30,13 +30,14 @@ map_regions = {
         # Whether the crawler supports an input timestamp, or only supports current time
         'fetchCurrentData': True
     },
-    'US-PJM': {
-        'updateFrequency': timedelta(minutes=30),
-        'timeZone': tz.gettz('America/New_York'),
-        'fetchFn': parsers.US_PJM.fetch_production,
-        'fetchResultIsList': False,
-        'fetchCurrentData': True
-    },
+    # TODO: fix this data source as the underlying data format has changed.
+    #'US-PJM': {
+    #    'updateFrequency': timedelta(minutes=30),
+    #    'timeZone': tz.gettz('America/New_York'),
+    #    'fetchFn': parsers.US_PJM.fetch_production,
+    #    'fetchResultIsList': False,
+    #    'fetchCurrentData': True
+    #},
     'US-CAISO': {
         # Daily feed, but updated every ~ 5min
         'updateFrequency': timedelta(minutes=5),

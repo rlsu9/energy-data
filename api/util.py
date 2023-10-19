@@ -40,7 +40,7 @@ class CustomJSONEncoder(JSONEncoder):
         if isinstance(o, (datetime, date)):
             return o.isoformat()
         if isinstance(o, timedelta):
-            return o.total_seconds()
+            return (datetime.min + o).time().isoformat()
         if dataclasses.is_dataclass(o):
             return dataclasses.asdict(o)
         if isinstance(o, Enum):
@@ -296,6 +296,16 @@ class Rate(ValueWithUnit):
         value = self.value * other.total_seconds() / BITS_PER_BYTE
         unit = SizeUnit(self.unit.value)
         return Size(value, unit)
+
+    def __str__(self) -> str:
+        return f'{self.value} {self.unit.name}bps'
+
+    # def __truediv__(self, other):
+    #     if not isinstance(other, Rate):
+    #         raise ValueError("Can only Rate divide with another Rate")
+    #     if other.value == 0:
+    #         raise ValueError("Cannot divide by zero")
+    #     return self.value / other.value
 
 def dict_min_key(d: dict, sort_key):
     return min(d.items(), key=sort_key)[0]

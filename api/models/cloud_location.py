@@ -3,10 +3,10 @@
 from dataclasses import dataclass
 import os
 from pathlib import Path
-from typing import Tuple
 from flask import current_app
 from werkzeug.exceptions import NotFound
 
+from api.models.common import Coordinate
 from api.util import load_yaml_data
 
 @dataclass
@@ -15,7 +15,7 @@ class CloudRegion:
     code: str
     name: str
     iso: str
-    gps: Tuple[float, float]
+    gps: Coordinate
 
     def __str__(self) -> str:
         return f'{self.provider}:{self.code}'
@@ -74,7 +74,7 @@ class CloudLocationManager:
         return [region.code for region in self.all_public_clouds[cloud_provider].regions]
 
     def get_gps_coordinate(self, cloud_region: CloudRegion = None, cloud_provider: str = None,
-                           region_code: str = None) -> Tuple[float, float]:
+                           region_code: str = None) -> Coordinate:
         if not cloud_provider and not region_code and cloud_region:
             cloud_provider = cloud_region.provider
             region_code = cloud_region.code
@@ -92,3 +92,13 @@ class CloudLocationManager:
             if region.code == region_code:
                 return region
         raise NotFound('Unknown region "%s" for provider "%s".' % (region_code, cloud_provider))
+
+def get_iso_route_between_region(src_region: str, dst_region: str) -> list[str]:
+    if src_region == dst_region:
+        return []
+    # TODO: look up from database
+    if src_region == 'AWS:us-west-1' and dst_region == 'AWS:us-east-1':
+        return ['CAISO_NORTH', 'SPP_KANSAS', 'PJM_DC']
+    if src_region == 'AWS:us-east-1' and dst_region == 'AWS:us-west-1':
+        return ['PJM_DC', 'SPP_KANSAS', 'CAISO_NORTH']
+    raise NotImplementedError('TODO: look up from database')
