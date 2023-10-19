@@ -278,4 +278,7 @@ def calculate_total_carbon_emissions(start: datetime, runtime: timedelta,
         'output_transfer_start': output_transfer_start,
         'output_transfer_duration': output_transfer_time,
         'output_transfer_end': output_transfer_end,
+        'min_start': start,
+        'max_end': start + runtime + max_delay,
+        'total_transfer_time': input_transfer_time + output_transfer_time,
     })

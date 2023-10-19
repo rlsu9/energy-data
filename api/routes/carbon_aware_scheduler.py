@@ -18,7 +18,7 @@ from api.models.cloud_location import CloudLocationManager, CloudRegion, get_iso
 from api.models.common import Coordinate, ISOName, RouteInISO
 from api.models.optimization_engine import OptimizationEngine, OptimizationFactor
 from api.models.wan_bandwidth import load_wan_bandwidth_model
-from api.models.workload import CloudLocation, Workload
+from api.models.workload import DEFAULT_DC_PUE, DEFAULT_NETWORK_PUE, DEFAULT_STORAGE_POWER, CloudLocation, Workload
 from api.models.dataclass_extensions import *
 from api.routes.balancing_authority import lookup_watttime_balancing_authority
 from api.util import Rate, RateUnit, Size, SizeUnit, round_up
@@ -171,24 +171,23 @@ def get_compute_carbon_emission_rates(iso: ISOName, start: datetime, end: dateti
     return get_carbon_emission_rates_as_pd_series(iso, start, end, host_power_in_watts)
 
 def get_transfer_carbon_emission_rates(route: list[ISOName], start: datetime, end: datetime,
-                                       host_power_in_watts: float, per_hop_power_in_watts: float) -> pd.Series:
+                                       host_transfer_power_in_watts: float, per_hop_power_in_watts: float) -> \
+                                        tuple[pd.Series,pd.Series,pd.Series]:
+    if len(route) == 0: # Same region, no transfer needed.
+        return [pd.Series(dtype=float),pd.Series(dtype=float),pd.Series(dtype=float)]
     # Transfer power includes both end hosts and network devices
-    ds_total = pd.Series(dtype=float)
-    if len(route) == 0:
-        return ds_total
+    ds_network = pd.Series(dtype=float)
     ds_endpoints = pd.Series(dtype=float)
     for i in range(len(route)):
         hop = route[i]
         # Part 1: Network power consumption
         ds_hop = get_carbon_emission_rates_as_pd_series(hop, start, end, per_hop_power_in_watts)
-        ds_total = ds_total.add(ds_hop, fill_value=0)
+        ds_network = ds_network.add(ds_hop, fill_value=0)
         # Part 2: End host power consumption, or first and last hop.
         if i == 0 or i == len(route) - 1:
-            # Barroso book estimates that storage layer consumes 20% of total host power.
-            ds_endpoint = get_carbon_emission_rates_as_pd_series(hop, start, end, host_power_in_watts * 0.2)
+            ds_endpoint = get_carbon_emission_rates_as_pd_series(hop, start, end, host_transfer_power_in_watts)
             ds_endpoints = ds_endpoints.add(ds_endpoint, fill_value=0)
-    ds_total = ds_total.add(ds_endpoints, fill_value=0)
-    return ds_total
+    return (ds_network.add(ds_endpoints, fill_value=0), ds_network, ds_endpoints)
 
 def dump_emission_rates(ds: pd.Series) -> dict:
     return json.loads(ds.to_json(orient='index', date_format='iso'))
@@ -221,11 +220,15 @@ def calculate_workload_scores(workload: Workload, region: CloudRegion) -> tuple[
                     transfer_output_time = get_transfer_time(workload.dataset.output_size_gb, transfer_rate) if route else timedelta()
 
                     compute_carbon_emission_rates = get_compute_carbon_emission_rates(
-                        region.iso, start, end, workload.get_power_in_watts())
-                    transfer_carbon_emission_rates = get_transfer_carbon_emission_rates(
+                        region.iso, start, end, workload.get_power_in_watts() * DEFAULT_DC_PUE)
+                    host_transfer_power = DEFAULT_STORAGE_POWER
+                    all_transfer_carbon_emission_rates = get_transfer_carbon_emission_rates(
                         route, start, end,
-                        workload.get_power_in_watts(),
-                        get_per_hop_transfer_power_in_watts(route, transfer_rate))
+                        host_transfer_power * DEFAULT_DC_PUE,
+                        get_per_hop_transfer_power_in_watts(route, transfer_rate) * DEFAULT_NETWORK_PUE)
+                    (transfer_carbon_emission_rates, \
+                        transfer_network_carbon_emission_rates, \
+                        transfer_endpoint_carbon_emission_rates) = all_transfer_carbon_emission_rates
 
                     runtime = end - start
                     (compute_carbon_emissions, transfer_carbon_emission), timings = \
@@ -242,10 +245,17 @@ def calculate_workload_scores(workload: Workload, region: CloudRegion) -> tuple[
                     d_misc['timings'].append(timings)
                     d_misc['emission_rates']['compute'] = dump_emission_rates(compute_carbon_emission_rates)
                     d_misc['emission_rates']['transfer'] = dump_emission_rates(transfer_carbon_emission_rates)
+                    d_misc['emission_rates']['transfer.network'] = dump_emission_rates(transfer_network_carbon_emission_rates)
+                    d_misc['emission_rates']['transfer.endpoint'] = dump_emission_rates(transfer_endpoint_carbon_emission_rates)
+                    total_transfer_time = transfer_input_time + transfer_output_time
                     d_misc['emission_integral']['compute'] = dump_emission_rates(
                         compute_carbon_emission_rates * runtime.total_seconds())
                     d_misc['emission_integral']['transfer'] = dump_emission_rates(
-                        transfer_carbon_emission_rates * (transfer_input_time + transfer_output_time).total_seconds())
+                        transfer_carbon_emission_rates * total_transfer_time.total_seconds())
+                    d_misc['emission_integral']['transfer.network'] = dump_emission_rates(
+                        transfer_network_carbon_emission_rates * total_transfer_time.total_seconds())
+                    d_misc['emission_integral']['transfer.endpoint'] = dump_emission_rates(
+                        transfer_endpoint_carbon_emission_rates * total_transfer_time.total_seconds())
                     score += (compute_carbon_emissions + transfer_carbon_emission)
             case OptimizationFactor.WanNetworkUsage:
                 # score = input + output data size (GB)
