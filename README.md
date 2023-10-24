@@ -1,14 +1,18 @@
 # energy-data
-This repo holds scripts to collect energy data, e.g. electricity sources, carbon intensity, ...
+This repo holds scripts to collect energy data from various electricity sources (mostly US ISOs, e.g. CAISO, MISO, PJM, etc.) and the api to provide carbon data and related complex query like carbon-aware scheduling.
 
-We're starting with US electricity data from various ISOs, e.g. CAISO, MISO, PJM, etc.
+## Data sources
 
-## Crawler
+### `c3lab`, or directly collected data
+
+We're starting with US electricity data from various ISOs
+
+#### Crawler
 [crawler](./crawler) holds the script to pull data from various sources.
 - [crawl.py](./crawler/crawl.py) runs every minute via `crontab`, invokes individual parser for each source and store the result in a postgre database. The crawling frequency for each source is defined near top of this file.
 - Individual [parsers](./crawler/parsers) are copied/derived from electricityMap's [sources](https://github.com/electricitymap/electricitymap-contrib/tree/master/parsers) (MIT licensed).
 
-### Data sources
+#### Covered regions
 We are starting with US ISOs, which currently include:
 - [MISO](./crawler/parsers/US_MISO.py), which only has current data and is updated every five minutes.
 - [CAISO](./crawler/parsers/US_CAISO.py), [NEISO](./crawler/parsers/US_NEISO.py) and [NY](./crawler/parsers/US_NY.py), which has data for past few days, so we pull last day's full data daily.
@@ -20,6 +24,10 @@ We are starting with US ISOs, which currently include:
 - `ERCOT` (~~[US_ERCOT.py](./crawler/parsers/US_ERCOT.py)~~) and `PACW` which uses the new data source from EIA, and has historic data. ~~We plan to migrate other sources to EIA as well to standardize the data sources.~~ (EIA data sources had some temporary issue since June 2022 and hasn't been fixed in July 2022.)
 
 You can find the exact list at the top of the main crawler file [crawl.py](./crawler/crawl.py).
+
+### `electricity-map`, or `EMap` for short
+
+This covers the free trial data from [electricity map](https://www.electricitymaps.com/).
 
 ## Database
 - Database is currently hosted on development machine and only locally accessible (or via SSH tunnel).
@@ -40,7 +48,7 @@ The Flask app is deployed using `nginx` + `gunicorn`, which are detailed in the 
 Currently, we support:
 - [Look up balancing authority](./api/routes/balancing_authority.py) based on GPS coordinates (via WattTime API).
 - [Look up carbon intensity](./api/routes/carbon_intensity.py) based on GPS coordinates and time range.
-- (prototype) [Carbon-aware multi-region scheduler](./api/routes/carbon_aware_scheduler.py) that assigns workload based on its [profile](./api/models/workload.py) and an [optimization algorithm](./api/models/optimization_engine.py).
+- [Carbon-aware multi-region scheduler](./api/routes/carbon_aware_scheduler.py) that assigns workload based on its [profile](./api/models/workload.py) and an [optimization algorithm](./api/models/optimization_engine.py).
 
 The full list is defined in [api module](./api/__init__.py).
 
