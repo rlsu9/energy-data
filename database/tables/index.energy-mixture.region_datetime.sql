@@ -1,4 +1,4 @@
-CREATE INDEX index_energymixture_region_datetime ON "electricity-data".public.energymixture
+CREATE INDEX index_energymixture_region_datetime ON energymixture
 (
     region,
     datetime
