@@ -153,13 +153,13 @@ def get_carbon_emission_rates_as_pd_series(iso: ISOName, start: datetime, end: d
     ds = df['carbon_intensity'].sort_index()
     # Conversion: gCO2/kWh * W * 1/(1000*3600) kh/s = gCO2/s
     ds = ds * power_in_watts / (1000 * 3600)
-
+    ds.sort_index(inplace=True)
 
     # Insert end-of-time index with zero value to avoid out-of-bound read corner case handling
     if len(ds.index) < 2:
         ds_freq = pd.DateOffset(hours=1)
     else:
-        ds_freq = to_offset(np.diff(df.index).min())
+        ds_freq = to_offset(np.diff(ds.index).min())
         # pd.infer_freq() only works with perfectly regular frequency
         # ds_freq = to_offset(pd.infer_freq(ds.index))
     end_time_of_series = ds.index.max() + ds_freq
