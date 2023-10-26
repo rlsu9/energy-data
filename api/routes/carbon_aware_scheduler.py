@@ -12,15 +12,15 @@ import numpy as np
 import pandas as pd
 from pandas.tseries.frequencies import to_offset
 from webargs.flaskparser import use_args
+from api.helpers.balancing_authority import get_iso_from_gps
 
-from api.helpers.carbon_intensity import CarbonDataSource, calculate_total_carbon_emissions, get_carbon_intensity_list
+from api.helpers.carbon_intensity import calculate_total_carbon_emissions, get_carbon_intensity_list
 from api.models.cloud_location import CloudLocationManager, CloudRegion, get_iso_route_between_region
-from api.models.common import Coordinate, ISOName, RouteInISO
+from api.models.common import CarbonDataSource, ISOName, RouteInISO, get_iso_format_for_carbon_source, identify_iso_format
 from api.models.optimization_engine import OptimizationEngine, OptimizationFactor
 from api.models.wan_bandwidth import load_wan_bandwidth_model
 from api.models.workload import DEFAULT_DC_PUE, DEFAULT_NETWORK_PUE, DEFAULT_STORAGE_POWER, CloudLocation, Workload
 from api.models.dataclass_extensions import *
-from api.routes.balancing_authority import lookup_watttime_balancing_authority
 from api.util import Rate, RateUnit, Size, SizeUnit, round_up
 
 g_cloud_manager = CloudLocationManager()
@@ -59,19 +59,18 @@ def get_candidate_regions(candidate_providers: list[str], candidate_locations: l
     except Exception as ex:
         raise ValueError(f'Failed to get candidate regions: {ex}') from ex
 
-def lookup_iso_from_coordinate(coordinate: Coordinate):
-    try:
-        (latitude, longitude) = coordinate
-        watttime_lookup_result = lookup_watttime_balancing_authority(latitude, longitude)
-        return watttime_lookup_result['watttime_abbrev']
-    except Exception as ex:
-        raise ValueError(f'Failed to lookup ISO region: {ex}') from ex
+def init_lookup_iso(_carbon_data_source: CarbonDataSource):
+    global carbon_data_source
+    carbon_data_source = _carbon_data_source
 
 def task_lookup_iso(region: CloudRegion) -> tuple:
-    if region.iso:
+    global carbon_data_source
+    iso_format = get_iso_format_for_carbon_source(carbon_data_source)
+    if region.iso and iso_format == identify_iso_format(region.iso):
         return str(region), region.iso, None, None
     try:
-        iso = lookup_iso_from_coordinate(region.gps)
+        (latitude, longitude) = region.gps
+        iso = get_iso_from_gps(latitude, longitude, iso_format)
         return str(region), iso, None, None
     except Exception as ex:
         return str(region), None, str(ex), traceback.format_exc()
@@ -310,7 +309,9 @@ class CarbonAwareScheduler(Resource):
         d_region_warnings = dict()
         d_misc_details = dict()
 
-        with Pool(1 if __debug__ else 4) as pool:
+        with Pool(1 if __debug__ else 4,
+                  initializer=init_lookup_iso,
+                  initargs=(args.carbon_data_source,)) as pool:
             result_iso = pool.map(task_lookup_iso, candidate_regions)
         for i in range(len(candidate_regions)):
             (region_name, iso, ex, stack_trace) = result_iso[i]

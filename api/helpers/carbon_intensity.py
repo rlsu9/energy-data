@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 
-from enum import Enum
 import math
 import time
 import numpy as np
@@ -12,11 +11,8 @@ from flask import current_app
 
 from api.helpers.carbon_intensity_c3lab import get_carbon_intensity_list as get_carbon_intensity_list_c3lab
 from api.helpers.carbon_intensity_azure import get_carbon_intensity_list as get_carbon_intensity_list_azure
-
-
-class CarbonDataSource(str, Enum):
-    C3Lab = "c3lab"
-    Azure = "azure"
+from api.helpers.carbon_intensity_emap import get_carbon_intensity_list as get_carbon_intensity_list_emap
+from api.models.common import CarbonDataSource
 
 
 def get_carbon_intensity_list(iso: str, start: datetime, end: datetime,
@@ -42,6 +38,10 @@ def get_carbon_intensity_list(iso: str, start: datetime, end: datetime,
             if desired_renewable_ratio is not None:
                 raise ValueError('Azure carbon data source does not support custom renewable ratio.')
             return get_carbon_intensity_list_azure(iso, start, end, use_prediction)
+        case CarbonDataSource.EMap:
+            if desired_renewable_ratio is not None:
+                raise ValueError('Electricity map carbon data source does not support custom renewable ratio.')
+            return get_carbon_intensity_list_emap(iso, start, end, use_prediction)
         case _:
             raise NotImplementedError()
 
