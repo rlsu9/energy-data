@@ -6,7 +6,7 @@ from typing import Any
 from flask import current_app
 from werkzeug.exceptions import InternalServerError
 
-from api.util import CustomHTTPException, load_yaml_data, get_psql_connection, psql_execute_list
+from api.util import CustomHTTPException, load_yaml_data
 from api.external.watttime.ba_from_loc import get_ba_from_loc
 
 YAML_CONFIG = 'balancing_authority.yaml'
@@ -71,9 +71,9 @@ def lookup_watttime_balancing_authority(latitude: float, longitude: float) -> di
     }
 
 
-def get_all_balancing_authorities():
-    """Return a list of all balancing authorities for which we have collect data."""
-    conn = get_psql_connection()
-    cursor = conn.cursor()
-    results: list[tuple[str]] = psql_execute_list(cursor, "SELECT DISTINCT region FROM EnergyMixture ORDER BY region;")
-    return [row[0] for row in results]  # one column per row
+# def get_all_balancing_authorities():
+#     """Return a list of all balancing authorities for which we have collect data."""
+#     conn = get_psql_connection()
+#     cursor = conn.cursor()
+#     results: list[tuple[str]] = psql_execute_list(cursor, "SELECT DISTINCT region FROM EnergyMixture ORDER BY region;")
+#     return [row[0] for row in results]  # one column per row

@@ -6,7 +6,7 @@ from webargs.flaskparser import use_kwargs
 from flask import current_app
 
 from api.helpers.balancing_authority import convert_watttime_ba_abbrev_to_c3lab_region, \
-    lookup_watttime_balancing_authority, get_all_balancing_authorities
+    lookup_watttime_balancing_authority
 
 balancing_authority_args = {
     'latitude': fields.Float(required=True, validate=lambda x: abs(x) <= 90.),
@@ -32,7 +32,7 @@ class BalancingAuthority(Resource):
         }
 
 
-class BalancingAuthorityList(Resource):
-    def get(self):
-        current_app.logger.info("BalancingAuthorityList.get()")
-        return get_all_balancing_authorities()
+# class BalancingAuthorityList(Resource):
+#     def get(self):
+#         current_app.logger.info("BalancingAuthorityList.get()")
+#         return get_all_balancing_authorities()
