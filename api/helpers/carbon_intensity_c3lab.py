@@ -9,15 +9,22 @@ from datetime import datetime
 from werkzeug.exceptions import NotFound, BadRequest
 
 from api.helpers.balancing_authority import MAPPING_WATTTIME_BA_TO_C3LAB_REGION
+from api.models.common import ISO_PREFIX_C3LAB, ISO_PREFIX_WATTTIME
 from api.util import load_yaml_data, get_psql_connection, psql_execute_list, psql_execute_scalar, carbon_data_cache
 
 M_ISO_TO_C3LAB_REGION = MAPPING_WATTTIME_BA_TO_C3LAB_REGION
 
 def get_c3lab_region_from_iso(iso: str) -> str:
     # Transform ISO region to c3lab region
-    if iso not in M_ISO_TO_C3LAB_REGION:
-        raise ValueError(f'Unknown c3lab region for iso {iso}')
-    return M_ISO_TO_C3LAB_REGION[iso]
+    if iso.startswith(ISO_PREFIX_WATTTIME):
+        iso = iso.removeprefix(ISO_PREFIX_WATTTIME)
+        if iso not in M_ISO_TO_C3LAB_REGION:
+            raise ValueError(f'Unknown c3lab region for iso {iso}')
+        return M_ISO_TO_C3LAB_REGION[iso]
+    elif iso.startswith(ISO_PREFIX_C3LAB):
+        return iso.removeprefix(ISO_PREFIX_C3LAB)
+    else:
+        raise NotImplementedError(f'Unknown c3lab region for iso {iso}')
 
 def get_map_carbon_intensity_by_fuel_source(config_path: os.path) -> dict[str, float]:
     """Load the carbon intensity per fuel source map from config."""

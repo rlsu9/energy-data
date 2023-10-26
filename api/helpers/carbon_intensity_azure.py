@@ -6,15 +6,20 @@ import requests
 import arrow
 
 from api.helpers.balancing_authority import MAPPING_WATTTIME_BA_TO_AZURE_REGION
+from api.models.common import ISO_PREFIX_WATTTIME
 from api.util import carbon_data_cache, round_down, round_up
 
 M_ISO_TO_AZURE_REGION = MAPPING_WATTTIME_BA_TO_AZURE_REGION
 
 def get_azure_region_from_iso(iso: str) -> str:
     # Transform ISO region to azure region
-    if iso not in M_ISO_TO_AZURE_REGION:
-        raise ValueError(f'Unknown azure region for iso {iso}')
-    return M_ISO_TO_AZURE_REGION[iso]
+    if iso.startswith(ISO_PREFIX_WATTTIME):
+        iso = iso.removeprefix(ISO_PREFIX_WATTTIME)
+        if iso not in M_ISO_TO_AZURE_REGION:
+            raise ValueError(f'Unknown azure region for iso {iso}')
+        return M_ISO_TO_AZURE_REGION[iso]
+    else:
+        raise NotImplementedError(f'Unknown azure region for iso {iso}')
 
 @carbon_data_cache.memoize()
 def fetch_emissions(region: str, start: datetime, end: datetime) -> tuple[bool, list[dict]|str]:

@@ -4,25 +4,25 @@ public_clouds:
   regions:
   - code: us-west-1
     name: US West (N. California)
-    iso: CAISO_NORTH
+    iso: watttime:CAISO_NORTH
     gps:
     - 37.00578
     - -121.56828
   - code: us-west-2
     name: US West (Oregon)
-    iso: PACW
+    iso: watttime:PACW
     gps:
     - 45.84041
     - -119.28946
   - code: us-east-1
     name: US East (N. Virginia)
-    iso: PJM_SOUTHWEST_OH
+    iso: watttime:PJM_SOUTHWEST_OH
     gps:
     - 39.983334
     - -82.98333
   - code: us-east-2
     name: US East (Ohio)
-    iso: PJM_DC
+    iso: watttime:PJM_DC
     gps:
     - 39.040283
     - -77.485165
@@ -30,109 +30,109 @@ public_clouds:
   regions:
   - code: australiaeast
     name: australiaeast (NEM_NSW)
-    iso: NEM_NSW
+    iso: watttime:NEM_NSW
     gps:
     - -33.86
     - 151.2094
   - code: australiasoutheast
     name: australiasoutheast (NEM_VIC)
-    iso: NEM_VIC
+    iso: watttime:NEM_VIC
     gps:
     - -37.8136
     - 144.9631
   - code: canadacentral
     name: canadacentral (IESO_NORTH)
-    iso: IESO_NORTH
+    iso: watttime:IESO_NORTH
     gps:
     - 43.653
     - -79.383
   - code: canadaeast
     name: canadaeast (HQ)
-    iso: HQ
+    iso: watttime:HQ
     gps:
     - 46.817
     - -71.217
   - code: centralus
     name: centralus (MISO_MASON_CITY)
-    iso: MISO_MASON_CITY
+    iso: watttime:MISO_MASON_CITY
     gps:
     - 41.5908
     - -93.6208
   - code: eastus
     name: eastus (PJM_ROANOKE)
-    iso: PJM_ROANOKE
+    iso: watttime:PJM_ROANOKE
     gps:
     - 37.3719
     - -79.8164
   - code: francecentral
     name: francecentral (FR)
-    iso: FR
+    iso: watttime:FR
     gps:
     - 46.3772
     - 2.3730
   - code: germanywestcentral
     name: germanywestcentral (DE)
-    iso: DE
+    iso: watttime:DE
     gps:
     - 50.110924
     - 8.682127
   - code: northeurope
     name: northeurope (IE)
-    iso: IE
+    iso: watttime:IE
     gps:
     - 53.3478
     - -6.2597
   - code: norwayeast
     name: norwayeast (NO)
-    iso: "NO"
+    iso: watttime:"NO"
     gps:
     - 59.913868
     - 10.752245
   - code: southcentralus
     name: southcentralus (ERCOT_SANANTONIO)
-    iso: ERCOT_SANANTONIO
+    iso: watttime:ERCOT_SANANTONIO
     gps:
     - 29.4167
     - -98.5
   - code: swedencentral
     name: swedencentral (SE)
-    iso: SE
+    iso: watttime:SE
     gps:
     - 60.67488
     - 17.14127
   - code: uksouth
     name: uksouth (UK)
-    iso: UK
+    iso: watttime:UK
     gps:
     - 50.941
     - -0.799
   - code: westcentralus
     name: westcentralus (PACE)
-    iso: PACE
+    iso: watttime:PACE
     gps:
     - 40.890
     - -110.234
   - code: westeurope
     name: westeurope (NL)
-    iso: NL
+    iso: watttime:NL
     gps:
     - 52.3667
     - 4.9
   - code: westus
     name: westus (CAISO_NORTH)
-    iso: CAISO_NORTH
+    iso: watttime:CAISO_NORTH
     gps:
     - 37.783
     - -122.417
   - code: westus2
     name: westus2 (GCPD)
-    iso: GCPD
+    iso: watttime:GCPD
     gps:
     - 47.233
     - -119.852
   - code: westus3
     name: westus3 (AZPS)
-    iso: AZPS
+    iso: watttime:AZPS
     gps:
     - 33.448376
     - -112.074036
