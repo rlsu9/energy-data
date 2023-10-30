@@ -83,8 +83,9 @@ def lookup_emap_balancing_authority(latitude: float, longitude: float) -> str:
     emap_response = get_emap_ba_from_loc(latitude, longitude)
     emap_json = emap_response.json()
 
-    if not emap_response.ok or emap_json.get('status', '') != 'ok':
+    if not emap_response.ok or emap_json.get('status', '') not in ['ok', 'no-data']:
         error = emap_json['error'] if 'error' in emap_json else 'Unknown'
+        current_app.logger.error('Electricity map response: %s' % emap_response.text)
         raise CustomHTTPException('Electricity map lookup error: %s' % error, emap_response.status_code)
 
     try:
