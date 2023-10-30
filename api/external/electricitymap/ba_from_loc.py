@@ -17,7 +17,7 @@ else:
 def get_ba_from_loc(latitude: float, longitude: float):
     region_url = 'https://api-access.electricitymaps.com/free-tier/home-assistant'
     headers = { "auth-token": get_auth_token() }
-    params = {'latitude': latitude, 'longitude': longitude}
+    params = {'lat': latitude, 'lon': longitude}
     return requests.get(region_url, headers=headers, params=params)
 
 if __name__ == '__main__':
