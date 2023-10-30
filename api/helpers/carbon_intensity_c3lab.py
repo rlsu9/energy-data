@@ -12,6 +12,9 @@ from api.helpers.carbon_intensity_shared import validate_region_exists, validate
 from api.models.common import ISO_PREFIX_C3LAB, ISO_PREFIX_WATTTIME
 from api.util import load_yaml_data, get_psql_connection, psql_execute_list, carbon_data_cache
 
+TABLE_NAME = 'energymixture'
+REGION_COLUMN = 'region'
+
 M_ISO_TO_C3LAB_REGION = MAPPING_WATTTIME_BA_TO_C3LAB_REGION
 
 def get_c3lab_region_from_iso(iso: str) -> str:
@@ -146,8 +149,6 @@ def fetch_emissions(region: str, start: datetime, end: datetime,
                                  desired_renewable_ratio: float) -> list[dict]:
     # TODO: make this not throw exception for memoize to work
     current_app.logger.debug(f'fetch_emissions({region}, {start}, {end}, {desired_renewable_ratio})')
-    TABLE_NAME = 'EnergyMixture'
-    REGION_COLUMN = 'Region'
     conn = get_psql_connection()
     validate_region_exists(conn, region, TABLE_NAME, REGION_COLUMN)
     validate_time_range(conn, region, start, end, TABLE_NAME, REGION_COLUMN)
@@ -188,8 +189,8 @@ def get_power_by_fuel_type(iso: str, start: datetime, end: datetime) -> list[dic
     """Retrieves the raw power (in MW) broken down by timestamp and fuel type."""
     region = get_c3lab_region_from_iso(iso)
     conn = get_psql_connection()
-    _validate_region_exists(conn, region)
-    _validate_time_range(conn, region, start, end)
+    validate_region_exists(conn, region, TABLE_NAME, REGION_COLUMN)
+    validate_time_range(conn, region, start, end, TABLE_NAME, REGION_COLUMN)
     d_timestamp_fuel_power = _get_power_by_timestamp_and_fuel_source(conn, region, start, end)
     result = []
     for timestamp in d_timestamp_fuel_power:
