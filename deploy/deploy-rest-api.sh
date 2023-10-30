@@ -16,6 +16,8 @@ rsync -auhvzP --delete \
     --filter='+ /external/' \
     --filter='+ /external/watttime/' \
     --filter='- /external/watttime/data' \
+    --filter='+ /external/electricitymap/' \
+    --filter='- /external/electricitymap/data' \
     --filter='- /external/*' \
     --filter='- /tests/*' \
     ./api/ "$PROD_DIR/api"

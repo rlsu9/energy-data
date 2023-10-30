@@ -1,9 +1,14 @@
 #!/usr/bin/env python3
 
-# Source: https://static.electricitymap.org/api/docs/index.html#zones
+# Source: https://api-portal.electricitymaps.com/
 
 import requests
 
-list_url = 'https://api.electricitymap.org/v3/zones'
-rsp = requests.get(list_url)
-print(rsp.text)
+from util import get_auth_token
+
+list_url = 'https://api-access.electricitymaps.com/free-tier/zones'
+headers = {
+  "auth-token": get_auth_token(),
+}
+response = requests.get(list_url, headers=headers)
+print(response.text)

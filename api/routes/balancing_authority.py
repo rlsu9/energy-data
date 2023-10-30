@@ -1,38 +1,41 @@
 #!/usr/bin/env python3
 
 from flask_restful import Resource
-from webargs import fields
-from webargs.flaskparser import use_kwargs
+import marshmallow_dataclass
+from webargs.flaskparser import use_args
 from flask import current_app
 
-from api.helpers.balancing_authority import convert_watttime_ba_abbrev_to_c3lab_region, \
-    lookup_watttime_balancing_authority, get_all_balancing_authorities
+from api.helpers.balancing_authority import get_iso_from_gps, lookup_watttime_balancing_authority
+from api.models.common import ISO_PREFIX_C3LAB, IsoFormat
+from api.models.dataclass_extensions import *
 
-balancing_authority_args = {
-    'latitude': fields.Float(required=True, validate=lambda x: abs(x) <= 90.),
-    'longitude': fields.Float(required=True, validate=lambda x: abs(x) <= 180.),
-}
+
+@marshmallow_dataclass.dataclass
+class BalancingAuthorityRequest:
+    latitude: float = field_with_validation(lambda x: abs(x) <= 90.)
+    longitude: float = field_with_validation(lambda x: abs(x) <= 180.)
+    iso_format: IsoFormat = field_enum(IsoFormat, IsoFormat.WattTime)
 
 
 class BalancingAuthority(Resource):
-    @use_kwargs(balancing_authority_args, location='query')
-    def get(self, latitude: float, longitude: float):
-        current_app.logger.info("BalancingAuthority.get(%f, %f)" % (latitude, longitude))
+    @use_args(marshmallow_dataclass.class_schema(BalancingAuthorityRequest)(), location='query')
+    def get(self, args: BalancingAuthorityRequest):
+        current_app.logger.info("BalancingAuthority.get(%f, %f)" % (args.latitude, args.longitude))
         orig_request = {'request': {
-            'latitude': latitude,
-            'longitude': longitude,
+            'latitude': args.latitude,
+            'longitude': args.longitude,
         }}
 
-        watttime_lookup_result = lookup_watttime_balancing_authority(latitude, longitude)
-        iso = watttime_lookup_result['watttime_abbrev']
-        region = convert_watttime_ba_abbrev_to_c3lab_region(iso)
+        watttime_lookup_result = lookup_watttime_balancing_authority(args.latitude, args.longitude)
+        iso = get_iso_from_gps(args.latitude, args.longitude, args.iso_format)
+        region = get_iso_from_gps(args.latitude, args.longitude, IsoFormat.C3Lab).removeprefix(ISO_PREFIX_C3LAB)
         return orig_request | watttime_lookup_result | {
             'iso': iso,
             'region': region,
         }
 
 
-class BalancingAuthorityList(Resource):
-    def get(self):
-        current_app.logger.info("BalancingAuthorityList.get()")
-        return get_all_balancing_authorities()
+# class BalancingAuthorityList(Resource):
+#     def get(self):
+#         current_app.logger.info("BalancingAuthorityList.get()")
+#         return get_all_balancing_authorities()

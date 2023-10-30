@@ -12,15 +12,15 @@ import numpy as np
 import pandas as pd
 from pandas.tseries.frequencies import to_offset
 from webargs.flaskparser import use_args
+from api.helpers.balancing_authority import get_iso_from_gps
 
-from api.helpers.carbon_intensity import CarbonDataSource, calculate_total_carbon_emissions, get_carbon_intensity_list
+from api.helpers.carbon_intensity import calculate_total_carbon_emissions, get_carbon_intensity_list
 from api.models.cloud_location import CloudLocationManager, CloudRegion, get_iso_route_between_region
-from api.models.common import Coordinate, ISOName, RouteInISO
+from api.models.common import CarbonDataSource, ISOName, RouteInISO, get_iso_format_for_carbon_source, identify_iso_format
 from api.models.optimization_engine import OptimizationEngine, OptimizationFactor
 from api.models.wan_bandwidth import load_wan_bandwidth_model
 from api.models.workload import DEFAULT_DC_PUE, DEFAULT_NETWORK_PUE, DEFAULT_STORAGE_POWER, CloudLocation, Workload
 from api.models.dataclass_extensions import *
-from api.routes.balancing_authority import lookup_watttime_balancing_authority
 from api.util import Rate, RateUnit, Size, SizeUnit, round_up
 
 g_cloud_manager = CloudLocationManager()
@@ -59,19 +59,18 @@ def get_candidate_regions(candidate_providers: list[str], candidate_locations: l
     except Exception as ex:
         raise ValueError(f'Failed to get candidate regions: {ex}') from ex
 
-def lookup_iso_from_coordinate(coordinate: Coordinate):
-    try:
-        (latitude, longitude) = coordinate
-        watttime_lookup_result = lookup_watttime_balancing_authority(latitude, longitude)
-        return watttime_lookup_result['watttime_abbrev']
-    except Exception as ex:
-        raise ValueError(f'Failed to lookup ISO region: {ex}') from ex
+def init_lookup_iso(_carbon_data_source: CarbonDataSource):
+    global carbon_data_source
+    carbon_data_source = _carbon_data_source
 
 def task_lookup_iso(region: CloudRegion) -> tuple:
-    if region.iso:
+    global carbon_data_source
+    iso_format = get_iso_format_for_carbon_source(carbon_data_source)
+    if region.iso and iso_format == identify_iso_format(region.iso):
         return str(region), region.iso, None, None
     try:
-        iso = lookup_iso_from_coordinate(region.gps)
+        (latitude, longitude) = region.gps
+        iso = get_iso_from_gps(latitude, longitude, iso_format)
         return str(region), iso, None, None
     except Exception as ex:
         return str(region), None, str(ex), traceback.format_exc()
@@ -153,13 +152,13 @@ def get_carbon_emission_rates_as_pd_series(iso: ISOName, start: datetime, end: d
     ds = df['carbon_intensity'].sort_index()
     # Conversion: gCO2/kWh * W * 1/(1000*3600) kh/s = gCO2/s
     ds = ds * power_in_watts / (1000 * 3600)
-
+    ds.sort_index(inplace=True)
 
     # Insert end-of-time index with zero value to avoid out-of-bound read corner case handling
     if len(ds.index) < 2:
         ds_freq = pd.DateOffset(hours=1)
     else:
-        ds_freq = to_offset(np.diff(df.index).min())
+        ds_freq = to_offset(np.diff(ds.index).min())
         # pd.infer_freq() only works with perfectly regular frequency
         # ds_freq = to_offset(pd.infer_freq(ds.index))
     end_time_of_series = ds.index.max() + ds_freq
@@ -310,7 +309,9 @@ class CarbonAwareScheduler(Resource):
         d_region_warnings = dict()
         d_misc_details = dict()
 
-        with Pool(1 if __debug__ else 4) as pool:
+        with Pool(1 if __debug__ else 4,
+                  initializer=init_lookup_iso,
+                  initargs=(args.carbon_data_source,)) as pool:
             result_iso = pool.map(task_lookup_iso, candidate_regions)
         for i in range(len(candidate_regions)):
             (region_name, iso, ex, stack_trace) = result_iso[i]

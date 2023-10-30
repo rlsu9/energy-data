@@ -6,11 +6,11 @@ from flask_restful import Resource
 from webargs.flaskparser import use_args
 from typing import Optional
 import marshmallow_dataclass
+from api.helpers.balancing_authority import get_iso_from_gps
 
-from api.helpers.carbon_intensity import CarbonDataSource, get_carbon_intensity_list
+from api.helpers.carbon_intensity import get_carbon_intensity_list
+from api.models.common import ISO_PREFIX_C3LAB, CarbonDataSource, IsoFormat, get_iso_format_for_carbon_source
 from api.models.dataclass_extensions import *
-from api.routes.balancing_authority import convert_watttime_ba_abbrev_to_c3lab_region, \
-    lookup_watttime_balancing_authority
 
 
 @marshmallow_dataclass.dataclass
@@ -31,14 +31,14 @@ class CarbonIntensity(Resource):
         orig_request = { 'request': request }
         current_app.logger.info("CarbonIntensity.get(%s)" % request)
 
-        watttime_lookup_result = lookup_watttime_balancing_authority(request.latitude, request.longitude)
-        iso = watttime_lookup_result['watttime_abbrev']
-        region = convert_watttime_ba_abbrev_to_c3lab_region(iso)
+        iso_format = get_iso_format_for_carbon_source(request.carbon_data_source)
+        iso = get_iso_from_gps(request.latitude, request.longitude, iso_format)
+        region = get_iso_from_gps(request.latitude, request.longitude, IsoFormat.C3Lab).removeprefix(ISO_PREFIX_C3LAB)
         l_carbon_intensity = get_carbon_intensity_list(iso, request.start, request.end,
                                                        request.carbon_data_source, request.use_prediction,
                                                        request.desired_renewable_ratio)
 
-        return orig_request | watttime_lookup_result | {
+        return orig_request | {
             'region': region,
             'iso': iso,
             'carbon_intensities': l_carbon_intensity,

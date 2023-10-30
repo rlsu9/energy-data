@@ -40,7 +40,7 @@ def create_app():
         app.logger.handlers = gunicorn_logger.handlers
         app.logger.setLevel(gunicorn_logger.level)
 
-    from api.routes.balancing_authority import BalancingAuthority, BalancingAuthorityList
+    from api.routes.balancing_authority import BalancingAuthority
     from api.routes.carbon_intensity import CarbonIntensity
     from api.routes.carbon_aware_scheduler import CarbonAwareScheduler
     from api.routes.energy_mixture import EnergyMixture
@@ -55,7 +55,6 @@ def create_app():
 
     api = CustomApi(app, errors=errors_custom_responses)
     api.add_resource(BalancingAuthority, '/balancing-authority/')
-    api.add_resource(BalancingAuthorityList, '/balancing-authority/list')
     api.add_resource(CarbonIntensity, '/carbon-intensity/')
     api.add_resource(CarbonAwareScheduler, '/carbon-aware-scheduler/')
     api.add_resource(EnergyMixture, '/energy-mixture/')

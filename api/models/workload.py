@@ -7,7 +7,7 @@ from typing import Optional
 import numpy as np
 from marshmallow import validates_schema, ValidationError
 from marshmallow_dataclass import dataclass
-from api.helpers.carbon_intensity import CarbonDataSource
+from api.models.common import CarbonDataSource
 
 # from api.models.common import Coordinate
 from api.models.cloud_location import CloudLocationManager
