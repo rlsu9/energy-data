@@ -26,13 +26,18 @@ class BalancingAuthority(Resource):
             'longitude': args.longitude,
         }}
 
-        watttime_lookup_result = lookup_watttime_balancing_authority(args.latitude, args.longitude)
         iso = get_iso_from_gps(args.latitude, args.longitude, args.iso_format)
-        region = get_iso_from_gps(args.latitude, args.longitude, IsoFormat.C3Lab).removeprefix(ISO_PREFIX_C3LAB)
-        return orig_request | watttime_lookup_result | {
-            'iso': iso,
-            'region': region,
-        }
+        if args.iso_format == IsoFormat.EMap:
+            return orig_request | {
+                'iso': iso,
+            }
+        else:   # For legacy compatibility
+            watttime_lookup_result = lookup_watttime_balancing_authority(args.latitude, args.longitude)
+            region = get_iso_from_gps(args.latitude, args.longitude, IsoFormat.C3Lab).removeprefix(ISO_PREFIX_C3LAB)
+            return orig_request | watttime_lookup_result | {
+                'iso': iso,
+                'region': region,
+            }
 
 
 # class BalancingAuthorityList(Resource):
