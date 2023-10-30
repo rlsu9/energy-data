@@ -6,11 +6,11 @@ import numpy as np
 import psycopg2
 from pathlib import Path
 from datetime import datetime
-from werkzeug.exceptions import NotFound, BadRequest
 
 from api.helpers.balancing_authority import MAPPING_WATTTIME_BA_TO_C3LAB_REGION
+from api.helpers.carbon_intensity_shared import validate_region_exists, validate_time_range
 from api.models.common import ISO_PREFIX_C3LAB, ISO_PREFIX_WATTTIME
-from api.util import load_yaml_data, get_psql_connection, psql_execute_list, psql_execute_scalar, carbon_data_cache
+from api.util import load_yaml_data, get_psql_connection, psql_execute_list, carbon_data_cache
 
 M_ISO_TO_C3LAB_REGION = MAPPING_WATTTIME_BA_TO_C3LAB_REGION
 
@@ -39,40 +39,6 @@ def get_map_carbon_intensity_by_fuel_source(config_path: os.path) -> dict[str, f
 MAP_CARBON_INTENSITY_BY_FUEL_SOURCE = get_map_carbon_intensity_by_fuel_source(
     os.path.join(Path(__file__).parent.absolute(), 'carbon_intensity.yaml'))
 DEFAULT_CARBON_INTENSITY_FOR_UNKNOWN_SOURCE = 700
-
-
-def _validate_region_exists(conn: psycopg2.extensions.connection, region: str) -> None:
-    cursor = conn.cursor()
-    region_exists = psql_execute_scalar(cursor,
-                                        "SELECT EXISTS(SELECT 1 FROM EnergyMixture WHERE region = %s)",
-                                        [region])
-    if not region_exists:
-        raise NotFound(f"Region {region} doesn't exist in database.")
-
-
-def _get_available_time_range(conn: psycopg2.extensions.connection, region: str) -> \
-        tuple[datetime, datetime]:
-    """Get the timestamp range for which we have electricity data in given region."""
-    cursor = conn.cursor()
-    timestamp_min: datetime | None = psql_execute_scalar(cursor,
-                                                         "SELECT MIN(DateTime) FROM EnergyMixture WHERE Region = %s;",
-                                                         [region])
-    timestamp_max: datetime | None = psql_execute_scalar(cursor,
-                                                         "SELECT MAX(DateTime) FROM EnergyMixture WHERE Region = %s;",
-                                                         [region])
-    return timestamp_min, timestamp_max
-
-
-def _validate_time_range(conn: psycopg2.extensions.connection,
-                        region: str, start: datetime, end: datetime) -> None:
-    """Validate we have electricity data for the given time range."""
-    if start > end:
-        raise BadRequest("end must be before start")
-    (available_start, available_end) = _get_available_time_range(conn, region)
-    if start > available_end:
-        raise BadRequest("Time range is too new. Data not yet available.")
-    if end < available_start:
-        raise BadRequest("Time range is too old. No data available.")
 
 
 def _calculate_scaled_carbon_intensity(
@@ -180,9 +146,11 @@ def fetch_emissions(region: str, start: datetime, end: datetime,
                                  desired_renewable_ratio: float) -> list[dict]:
     # TODO: make this not throw exception for memoize to work
     current_app.logger.debug(f'fetch_emissions({region}, {start}, {end}, {desired_renewable_ratio})')
+    TABLE_NAME = 'EnergyMixture'
+    REGION_COLUMN = 'Region'
     conn = get_psql_connection()
-    _validate_region_exists(conn, region)
-    _validate_time_range(conn, region, start, end)
+    validate_region_exists(conn, region, TABLE_NAME, REGION_COLUMN)
+    validate_time_range(conn, region, start, end, TABLE_NAME, REGION_COLUMN)
     return _get_average_carbon_intensity(conn, region, start, end, desired_renewable_ratio)
     # power_by_fuel_source = get_power_by_timestamp_and_fuel_source(conn, region, start, end)
     # return _calculate_average_carbon_intensity(power_by_fuel_source)
