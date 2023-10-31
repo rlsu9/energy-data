@@ -62,8 +62,8 @@ DEFAULT_CPU_TDP = 240
 DEFAULT_CPU_POWER_PER_CORE = DEFAULT_CPU_TDP / 48  # in watt
 # Storage system consumes roughly 20% of total DC energy, based on Borroso book.
 DEFAULT_STORAGE_POWER = DEFAULT_CPU_TDP * 0.2
-DEFAULT_DC_PUE = 1.2
-DEFAULT_NETWORK_PUE = 2.4
+DEFAULT_DC_PUE = 1
+DEFAULT_NETWORK_PUE = 2
 
 ALL_CLOUD_PROVIDERS = g_cloud_manager.get_all_cloud_providers()
 
