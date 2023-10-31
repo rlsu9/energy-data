@@ -31,7 +31,7 @@ def fetch_emissions(region: str, start: datetime, end: datetime) -> tuple[bool, 
     response = requests.get(url_get_carbon_intensity, params={
         'location': [region],
         'time': arrow.get(start).for_json(),
-        'toTime': arrow.get(end).shift(minutes=-1).for_json(),
+        'toTime': arrow.get(end).for_json(),
     })
     try:
         assert response.ok
