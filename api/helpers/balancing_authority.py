@@ -63,7 +63,6 @@ def lookup_watttime_balancing_authority(latitude: float, longitude: float) -> di
     try:
         watttime_abbrev = watttime_json['abbrev']
         watttime_name = watttime_json['name']
-        watttime_id = watttime_json['id']
     except Exception as e:
         current_app.logger.error('Response: %s' % watttime_json)
         current_app.logger.error(f"Failed to parse watttime response: {e}")
@@ -72,7 +71,6 @@ def lookup_watttime_balancing_authority(latitude: float, longitude: float) -> di
     return {
         'watttime_abbrev': watttime_abbrev,
         'watttime_name': watttime_name,
-        'watttime_id': watttime_id,
     }
 
 
