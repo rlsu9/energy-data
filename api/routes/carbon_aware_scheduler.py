@@ -350,6 +350,8 @@ class CarbonAwareScheduler(Resource):
         for (region_name, iso, scores, d_misc, ex, stack_trace) in result:
             d_region_isos[region_name] = iso
             if not ex:
+                scores[OptimizationFactor.EnergyUsage + '-unit'] = 'kWh'
+                scores[OptimizationFactor.CarbonEmission + '-unit'] = 'gCO2'
                 d_region_scores[region_name] = scores
                 d_misc_details[region_name] = d_misc
             else:
