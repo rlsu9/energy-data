@@ -3,9 +3,12 @@
 import configparser
 import os
 
+from api.util import simple_cache
+
 CONFIG_FILE = "electricitymap.ini"
 
 
+@simple_cache.memoize()
 def get_auth_token():
     try:
         parser = configparser.ConfigParser()
