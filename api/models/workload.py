@@ -125,7 +125,7 @@ class Workload:
     schedule: WorkloadSchedule
     dataset: Dataset
 
-    original_location: str = field()
+    original_location: Optional[str] = field()
     candidate_providers: Optional[list[str]] = field(default_factory=list)
     candidate_locations: Optional[list[CloudLocation]] = field(default_factory=list)
 

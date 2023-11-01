@@ -41,11 +41,16 @@ def get_candidate_regions(candidate_providers: list[str], candidate_locations: l
         if candidate_providers:
             candidate_regions = g_cloud_manager.get_all_cloud_regions(candidate_providers)
             d_candidate_regions = { str(region): region for region in candidate_regions }
-            assert original_location in d_candidate_regions, "Original location not defined in candidate regions"
+            # TODO: change original_location to be required
+            if original_location:
+                assert original_location in d_candidate_regions, "Original location not defined in candidate regions"
             return d_candidate_regions
 
         d_candidate_regions = {}
-        for location in candidate_locations + [CloudLocation(original_location)]:
+        # TODO: change original_location to be required
+        if not original_location:
+            candidate_locations += [CloudLocation(original_location)]
+        for location in candidate_locations:
             if location.id in d_candidate_regions:
                 continue
             (provider, region_name) = location.id.split(':', 1)
@@ -282,7 +287,8 @@ def get_routes_in_iso_by_region(original_location: str, d_candidate_regions: dic
     # TODO: route must include the src/dst ISOs for the src/dst locations.
     d_region_route = {}
     for candidate_region in d_candidate_regions:
-        route_in_iso = get_iso_route_between_region(original_location, candidate_region)
+        # TODO: change original_location to be required
+        route_in_iso = get_iso_route_between_region(original_location, candidate_region) if original_location else []
         d_region_route[candidate_region] = route_in_iso
     return d_region_route
 
