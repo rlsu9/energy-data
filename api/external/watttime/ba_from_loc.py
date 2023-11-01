@@ -5,7 +5,7 @@
 import requests
 import argparse
 
-from api.util import simple_cache
+from api.util import exponential_backoff, simple_cache
 from flask import current_app
 
 if __package__:
@@ -16,12 +16,15 @@ else:
 
 # Get the balancing authority based on GPS location
 @simple_cache.memoize(timeout=0)
+@exponential_backoff(should_retry=lambda ex: ex.response.status_code == 429)
 def get_ba_from_loc(latitude: float, longitude: float):
     current_app.logger.debug(f'get_ba_from_loc({latitude}, {longitude})')
     region_url = 'https://api2.watttime.org/v2/ba-from-loc'
     headers = {'Authorization': 'Bearer {}'.format(get_watttime_token())}
     params = {'latitude': latitude, 'longitude': longitude}
-    return requests.get(region_url, headers=headers, params=params)
+    response = requests.get(region_url, headers=headers, params=params)
+    response.raise_for_status()
+    return response
 
 
 if __name__ == '__main__':

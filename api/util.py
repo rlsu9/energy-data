@@ -2,8 +2,10 @@
 
 from copy import deepcopy
 from enum import Enum, IntEnum
-from typing import Any, Sequence, Union
+import random
+from typing import Any, Callable, Sequence, Union
 from datetime import datetime, date, timedelta, time
+from time import sleep
 import yaml
 import traceback
 import psycopg2
@@ -309,3 +311,25 @@ class Rate(ValueWithUnit):
 
 def dict_min_key(d: dict, sort_key):
     return min(d.items(), key=sort_key)[0]
+
+def exponential_backoff(max_retries: int = 3,
+                        base_delay_s: int = 1,
+                        should_retry: Callable[[Exception], bool] = lambda _: True):
+    def decorator(func):
+        def wrapper(*args, **kwargs):
+            retries = 0
+            while True:
+                try:
+                    result_func = func(*args, **kwargs)
+                    return result_func
+                except Exception as ex:
+                    current_app.logger.debug(f"Attempt {retries + 1} failed: {ex}")
+                    if retries < max_retries and should_retry(ex):
+                        delay = (base_delay_s * 2 ** retries + random.uniform(0, 1))
+                        current_app.logger.debug(f"Retrying in {delay:.2f} seconds...")
+                        sleep(delay)
+                        retries += 1
+                    else:
+                        raise
+        return wrapper
+    return decorator
