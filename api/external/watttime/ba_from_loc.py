@@ -15,8 +15,8 @@ else:
 
 
 # Get the balancing authority based on GPS location
-@simple_cache.memoize(timeout=0)
 @exponential_backoff(should_retry=lambda ex: ex.response.status_code == 429)
+@simple_cache.memoize(timeout=0)
 def get_watttime_ba_from_loc(latitude: float, longitude: float):
     current_app.logger.debug(f'get_watttime_ba_from_loc({latitude}, {longitude})')
     region_url = 'https://api2.watttime.org/v2/ba-from-loc'
