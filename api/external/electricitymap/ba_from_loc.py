@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import argparse
+from flask import current_app
 import requests
 
 from api.util import simple_cache, exponential_backoff
@@ -14,7 +15,8 @@ else:
 # Get the balancing authority based on GPS location
 @simple_cache.memoize(timeout=0)
 @exponential_backoff(should_retry=lambda ex: ex.response.status_code == 429)
-def get_ba_from_loc(latitude: float, longitude: float):
+def get_emap_ba_from_loc(latitude: float, longitude: float):
+    current_app.logger.debug(f'get_emap_ba_from_loc({latitude}, {longitude})')
     region_url = 'https://api-access.electricitymaps.com/free-tier/home-assistant'
     headers = { "auth-token": get_auth_token() }
     params = {'lat': latitude, 'lon': longitude}
@@ -34,6 +36,6 @@ if __name__ == '__main__':
         latitude = float(loc_array[0])
         longitude = float(loc_array[1])
         loc = (latitude, longitude)
-    response = get_ba_from_loc(loc[0], loc[1])
+    response = get_emap_ba_from_loc(loc[0], loc[1])
     assert response.ok, "Request failed %d: %s" % (response.status_code, response.text)
     print(response.json())

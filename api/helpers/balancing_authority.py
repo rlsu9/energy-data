@@ -11,8 +11,8 @@ from api.models.common import ISO_PREFIX_C3LAB
 from api.models.common import ISO_PREFIX_EMAP
 
 from api.util import CustomHTTPException, load_yaml_data, simple_cache
-from api.external.watttime.ba_from_loc import get_ba_from_loc as get_watttime_ba_from_loc
-from api.external.electricitymap.ba_from_loc import get_ba_from_loc as get_emap_ba_from_loc
+from api.external.watttime.ba_from_loc import get_watttime_ba_from_loc
+from api.external.electricitymap.ba_from_loc import get_emap_ba_from_loc
 
 YAML_CONFIG = 'balancing_authority.yaml'
 
