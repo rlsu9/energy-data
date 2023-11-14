@@ -1,13 +1,37 @@
 import requests
 import configparser
-import os
+from typing import Callable
 import psycopg2
 import psycopg2.extras
 from crawl import get_db_connection
 import datetime
+from flask import current_app
+import random
+from time import sleep
 import sys
 CONFIG_FILE = "../api/external/electricitymap/electricitymap.ini"
 
+def exponential_backoff(max_retries: int = 3,
+                        base_delay_s: int = 1,
+                        should_retry: Callable[[Exception], bool] = lambda _: True):
+    def decorator(func):
+        def wrapper(*args, **kwargs):
+            retries = 0
+            while True:
+                try:
+                    result_func = func(*args, **kwargs)
+                    return result_func
+                except Exception as ex:
+                    current_app.logger.debug(f"Attempt {retries + 1} failed: {ex}")
+                    if retries < max_retries and should_retry(ex):
+                        delay = (base_delay_s * 2 ** retries + random.uniform(0, 1))
+                        current_app.logger.debug(f"Retrying in {delay:.2f} seconds...")
+                        sleep(delay)
+                        retries += 1
+                    else:
+                        raise
+        return wrapper
+    return decorator
 
 def get_auth_token():
     try:
@@ -43,7 +67,7 @@ def prepare_insert_query(data):
 
     return query, (datetime, zone_id, carbon_intensity, low_carbon_percentage, renewable_percentage)
 
-
+@exponential_backoff(should_retry=lambda ex: ex.response.status_code == 429)
 def fetch(zone):
     url = f"https://api-access.electricitymaps.com/free-tier/carbon-intensity/history?zone={zone}"
     headers = {
