@@ -5,11 +5,20 @@ import psycopg2
 import psycopg2.extras
 from crawl import get_db_connection
 import datetime
-from flask import current_app
 import random
 from time import sleep
 import sys
+import traceback
+import logging
 CONFIG_FILE = "../api/external/electricitymap/electricitymap.ini"
+
+
+def init_logging(level=logging.DEBUG):
+    logging.basicConfig(level=level,
+                        stream=sys.stderr,
+                        format='%(asctime)s %(levelname)-8s %(message)s',
+                        datefmt='%Y-%m-%d %H:%M:%S')
+
 
 def exponential_backoff(max_retries: int = 3,
                         base_delay_s: int = 1,
@@ -22,16 +31,20 @@ def exponential_backoff(max_retries: int = 3,
                     result_func = func(*args, **kwargs)
                     return result_func
                 except Exception as ex:
-                    current_app.logger.debug(f"Attempt {retries + 1} failed: {ex}")
+                    logging.info(
+                        f"Attempt {retries + 1} failed: {ex}")
                     if retries < max_retries and should_retry(ex):
-                        delay = (base_delay_s * 2 ** retries + random.uniform(0, 1))
-                        current_app.logger.debug(f"Retrying in {delay:.2f} seconds...")
+                        delay = (base_delay_s * 2 ** retries +
+                                 random.uniform(0, 1))
+                        logging.info(
+                            f"Retrying in {delay:.2f} seconds...")
                         sleep(delay)
                         retries += 1
                     else:
                         raise
         return wrapper
     return decorator
+
 
 def get_auth_token():
     try:
@@ -67,6 +80,7 @@ def prepare_insert_query(data):
 
     return query, (datetime, zone_id, carbon_intensity, low_carbon_percentage, renewable_percentage)
 
+
 @exponential_backoff(should_retry=lambda ex: ex.response.status_code == 429)
 def fetch(zone):
     url = f"https://api-access.electricitymaps.com/free-tier/carbon-intensity/history?zone={zone}"
@@ -75,15 +89,8 @@ def fetch(zone):
     }
 
     history_response = requests.get(url, headers=headers)
-
-    history_response_json = history_response.json()
-    try:
-        assert history_response.ok, f"Error in EMap request for getting history according to zone ({history_response.status_code}): {history_response.text}"
-        # Rest of your code goes here, which will execute if the assertion passes
-    except AssertionError as error:
-        print(str(error), file=sys.stderr)
-
-    return history_response_json
+    history_response.raise_for_status()
+    return history_response
 
 
 def update(conn, history_response_json):
@@ -97,10 +104,15 @@ def update(conn, history_response_json):
                     print(datetime.now().isoformat(),
                           f"Failed to execute set_last_updated query.: {ex}",
                           file=sys.stderr)
+                    print(traceback.format_exc(), file=sys.stderr)
 
 
 def fetch_and_update(conn, zone):
-    history_response_json = fetch(zone)
+
+    history_response = fetch(zone)
+    assert history_response.ok, "Request failed %d: %s" % (
+        history_response.status_code, history_response.text)
+    history_response_json = history_response.json()
 
     update(conn, history_response_json)
 
@@ -113,17 +125,15 @@ def get_all_electricity_zones():
 
     zone_response = requests.get(url, headers=headers)
 
-    zone_response_json = zone_response.json()
+    assert zone_response.ok, f"Error in EMap request for getting all zones in electricity map ({zone_response.status_code}): {zone_response.text}"
 
-    try:
-        assert zone_response.ok, f"Error in EMap request for getting all zones in electricity map ({zone_response.status_code}): {zone_response.text}"
-    except AssertionError as error:
-        print(str(error), file=sys.stderr)
+    zone_response_json = zone_response.json()
 
     return zone_response_json.keys()
 
 
 if __name__ == '__main__':
+    init_logging(level=logging.INFO)
     conn = get_db_connection()
     for item in get_all_electricity_zones():
         fetch_and_update(conn, item)
