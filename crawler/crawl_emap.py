@@ -98,23 +98,21 @@ def update(conn, history_response_json):
         for history in history_response_json['history']:
             query, data = prepare_insert_query(history)
             with conn, conn.cursor() as cur:
-                try:
-                    cur.execute(query, data)
-                except psycopg2.Error as ex:
-                    print(datetime.now().isoformat(),
-                          f"Failed to execute set_last_updated query.: {ex}",
-                          file=sys.stderr)
-                    print(traceback.format_exc(), file=sys.stderr)
+                cur.execute(query, data)
 
 
 def fetch_and_update(conn, zone):
+    try:
+        history_response = fetch(zone)
+        assert history_response.ok, "Request failed %d: %s" % (
+            history_response.status_code, history_response.text)
+        history_response_json = history_response.json()
 
-    history_response = fetch(zone)
-    assert history_response.ok, "Request failed %d: %s" % (
-        history_response.status_code, history_response.text)
-    history_response_json = history_response.json()
-
-    update(conn, history_response_json)
+        update(conn, history_response_json)
+    except Exception as ex:  # Catch exceptions from fetch and update
+        print(datetime.now().isoformat(),
+              f"Error occurred: {ex}", file=sys.stderr)
+        print(traceback.format_exc(), file=sys.stderr)
 
 
 def get_all_electricity_zones():
